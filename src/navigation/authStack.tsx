@@ -1,11 +1,13 @@
 import React, { FC } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { WelcomePage, SignUpPage } from "../screens";
-import { View, Image } from "react-native";
+import { WelcomePage, SignUpPage, LoginPage } from "../screens";
+import { View, Image, Button } from "react-native";
+import { black } from "../constants/colors";
 
 export type RootStackParams = {
   Welcome: undefined;
   Signup: undefined;
+  Login: undefined;
 };
 const RootStack = createNativeStackNavigator<RootStackParams>();
 
@@ -31,7 +33,35 @@ const AuthStack: FC = () => {
           ),
         }}
       />
-      <RootStack.Screen name="Signup" component={SignUpPage} />
+      <RootStack.Screen
+        name="Signup"
+        component={SignUpPage}
+        options={{
+          headerShadowVisible: false,
+          headerTitle: (props) => (
+            <Image
+              style={{ width: 36, height: 36 }}
+              source={require("../../assets/imgs/logo.png")}
+              resizeMode="contain"
+            />
+          ),
+        }}
+      />
+
+      <RootStack.Screen
+        name="Login"
+        component={LoginPage}
+        options={{
+          headerShadowVisible: false,
+          headerTitle: (props) => (
+            <Image
+              style={{ width: 36, height: 36 }}
+              source={require("../../assets/imgs/logo.png")}
+              resizeMode="contain"
+            />
+          ),
+        }}
+      />
     </RootStack.Navigator>
   );
 };

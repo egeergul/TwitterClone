@@ -1,9 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { FC } from "react";
-import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { StyledButton, StyledText } from "../../components";
-import { black, blue, grey, white, transparent } from "../../constants/colors";
+import { blue, grey, white, transparent } from "../../constants/colors";
 import { RootStackParams } from "../../navigation/authStack";
 
 const WelcomePage = () => {
@@ -35,9 +35,7 @@ const WelcomePage = () => {
         <StyledText text="Have an account already?" color={grey} />
         <TouchableOpacity
           style={{ marginLeft: 10 }}
-          onPress={() => {
-            alert("pressed");
-          }}
+          onPress={() => navigation.navigate("Login")}
         >
           <StyledText text="Log in" color={blue} />
         </TouchableOpacity>

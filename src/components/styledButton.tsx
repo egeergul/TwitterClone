@@ -50,6 +50,7 @@ const StyledButton = (props: Props) => {
         marginEnd: props.margin[3],
         alignSelf: props.alignSelf,
         backgroundColor: props.backgroundColor,
+        borderWidth: props.borderWidth,
         borderColor: props.borderColor,
       }}
       onPress={props.onPress}
