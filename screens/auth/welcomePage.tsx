@@ -42,7 +42,7 @@ const WelcomePage: FC = () => {
         <TouchableOpacity
           style={{ marginLeft: 10 }}
           onPress={() => {
-            console.log("pressed");
+            alert("pressed");
           }}
         >
           <StyledText text="Log in" color={blue} />
