@@ -17,13 +17,6 @@ const HomePage = () => {
   return (
     <View style={styles.container}>
       <Text>Home Page</Text>
-      <Button title="log out" onPress={signOut} />
-      <Button
-        title="profile"
-        onPress={() => {
-          navigation.navigate("Profile");
-        }}
-      />
     </View>
   );
 };

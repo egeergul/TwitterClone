@@ -1,7 +1,7 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { WelcomePage, SignUpPage, LoginPage } from "../screens";
-import { Alert, Image } from "react-native";
+import { Image } from "react-native";
 import { Icon } from "@rneui/themed";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
