@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 
-import AppStack from "./appStack";
+import AppBottomTabStack from "./appBottomTabStack";
 import AuthStack from "./authStack";
 import { auth } from "../constants/firebase";
 
@@ -19,7 +19,7 @@ const MainNav: FC = () => {
 
   return (
     <NavigationContainer>
-      {user ? <AppStack /> : <AuthStack />}
+      {user ? <AppBottomTabStack /> : <AuthStack />}
     </NavigationContainer>
   );
 };
