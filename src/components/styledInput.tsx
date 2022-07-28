@@ -77,6 +77,7 @@ const StyledInput = (props: Props) => {
             >
               <Icon
                 type="ionicon"
+                color={grey}
                 onPress={() => setHidden(!hidden)}
                 name={hidden ? "eye-outline" : "eye-off-outline"}
               />
