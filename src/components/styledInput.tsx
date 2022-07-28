@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { TextInput, View, Text, TouchableOpacity } from "react-native";
 import { blue, grey, transparent } from "../constants/colors";
 import StyledText from "./styledText";
+import { Icon } from "@rneui/themed";
 
 // Required props
 interface RequiredProps {
@@ -68,13 +69,18 @@ const StyledInput = (props: Props) => {
             maxLength={props.maxLength}
           />
           {props.secureTextEntry ? (
-            <TouchableOpacity onPress={() => setHidden(!hidden)}>
-              <Text
-                style={{ paddingVertical: 20, marginRight: 10, color: grey }}
-              >
-                {hidden ? "See" : "Hide"}
-              </Text>
-            </TouchableOpacity>
+            <View
+              style={{
+                justifyContent: "center",
+                marginRight: 10,
+              }}
+            >
+              <Icon
+                type="ionicon"
+                onPress={() => setHidden(!hidden)}
+                name={hidden ? "eye-outline" : "eye-off-outline"}
+              />
+            </View>
           ) : (
             <></>
           )}

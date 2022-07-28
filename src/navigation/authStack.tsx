@@ -1,7 +1,10 @@
 import React, { FC, useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { WelcomePage, SignUpPage, LoginPage } from "../screens";
-import { Image } from "react-native";
+import { Alert, Image } from "react-native";
+import { Icon } from "@rneui/themed";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
 
 export type RootStackParams = {
   Welcome: undefined;
@@ -11,6 +14,8 @@ export type RootStackParams = {
 const RootStack = createNativeStackNavigator<RootStackParams>();
 
 const AuthStack: FC = () => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParams>>();
   return (
     <RootStack.Navigator
       initialRouteName="Welcome"
@@ -44,6 +49,13 @@ const AuthStack: FC = () => {
               resizeMode="contain"
             />
           ),
+          headerLeft: () => (
+            <Icon
+              type="ionicon"
+              name="chevron-back"
+              onPress={() => navigation.goBack()}
+            />
+          ),
         }}
       />
 
@@ -57,6 +69,13 @@ const AuthStack: FC = () => {
               style={{ width: 36, height: 36 }}
               source={require("../../assets/imgs/logo.png")}
               resizeMode="contain"
+            />
+          ),
+          headerLeft: () => (
+            <Icon
+              type="ionicon"
+              name="chevron-back"
+              onPress={() => navigation.goBack()}
             />
           ),
         }}
