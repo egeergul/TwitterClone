@@ -1,12 +1,51 @@
 import React, { FC, useState } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, Alert } from "react-native";
 import { StyledButton, StyledInput, StyledText } from "../../components";
 
 import { black, blue, grey, transparent, white } from "../../constants/colors";
+import { auth } from "../../constants/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 const LoginPage: FC = () => {
   const [email, setEmail] = useState<null | string>(null);
   const [password, setPassword] = useState<null | string>(null);
+
+  const signin = () => {
+    if (email === null) {
+      Alert.alert("Email must be filled!");
+    } else if (password === null) {
+      Alert.alert("Password must be filled!");
+    } else if (password.length < 6) {
+      Alert.alert("Password must be at elast 6 characters long!");
+    } else {
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user.uid);
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(
+            "Error in sign up function with error code " +
+              errorCode +
+              " and error message " +
+              errorMessage
+          );
+          if (error.code === "auth/user-not-found") {
+            Alert.alert("No such user is found!");
+          } else if (error.code === "auth/invalid-email") {
+            Alert.alert("That email address is invalid!");
+          } else if (errorCode === "auth/wrong-password") {
+            Alert.alert(
+              "Wrong credentials! Check your email address and password."
+            );
+          }
+        });
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -47,7 +86,7 @@ const LoginPage: FC = () => {
           color={white}
           backgroundColor={black}
           margin={[0, 0, 40, 0]}
-          onPress={() => alert("Signup")}
+          onPress={signin}
         />
       </View>
     </View>

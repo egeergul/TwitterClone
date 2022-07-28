@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { WelcomePage } from "../screens";
+import { Test } from "../screens";
 
 const RootStack = createNativeStackNavigator();
 
@@ -8,10 +8,10 @@ const AppStack: FC = () => {
   return (
     <RootStack.Navigator
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
       }}
     >
-      <RootStack.Screen name="welcome" component={WelcomePage} />
+      <RootStack.Screen name="test" component={Test} />
     </RootStack.Navigator>
   );
 };

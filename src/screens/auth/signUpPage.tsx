@@ -2,35 +2,48 @@ import React, { FC, useState } from "react";
 import { View, StyleSheet, Alert } from "react-native";
 import { StyledButton, StyledInput, StyledText } from "../../components";
 import { blue, white } from "../../constants/colors";
-
-import auth from "@react-native-firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../constants/firebase";
 
 const SignupPage: FC = () => {
   const [name, setName] = useState<null | string>(null);
   const [email, setEmail] = useState<null | string>(null);
   const [password, setPassword] = useState<null | string>(null);
 
-  const signup = async () => {
-    Alert.alert("PRESSED");
-    await auth()
-      .createUserWithEmailAndPassword(
-        "jane.doe@example.com",
-        "SuperSecretPassword!"
-      )
-      .then(() => {
-        console.log("User account created & signed in!");
-      })
-      .catch((error) => {
-        if (error.code === "auth/email-already-in-use") {
-          console.log("That email address is already in use!");
-        }
-
-        if (error.code === "auth/invalid-email") {
-          console.log("That email address is invalid!");
-        }
-
-        console.error(error);
-      });
+  const signup = () => {
+    if (name === null) {
+      Alert.alert("Name field must be filled!");
+    } else if (email === null) {
+      Alert.alert("Email must be filled!");
+    } else if (password === null) {
+      Alert.alert("Password must be filled!");
+    } else if (password.length < 6) {
+      Alert.alert("Password must be at elast 6 characters long!");
+    } else {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Signed up
+          const user = userCredential.user;
+          console.log("Signed up and the uid is" + user.uid);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(
+            "Error in sign up function with error code " +
+              errorCode +
+              " and error message " +
+              errorMessage
+          );
+          if (error.code === "auth/email-already-in-use") {
+            Alert.alert("That email address is already in use!");
+          } else if (error.code === "auth/invalid-email") {
+            Alert.alert("That email address is invalid!");
+          } else {
+            Alert.alert("Something went wrong!");
+          }
+        });
+    }
   };
 
   return (
