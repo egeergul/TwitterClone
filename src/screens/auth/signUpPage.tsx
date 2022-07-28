@@ -1,13 +1,37 @@
 import React, { FC, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Alert } from "react-native";
 import { StyledButton, StyledInput, StyledText } from "../../components";
-
 import { blue, white } from "../../constants/colors";
+
+import auth from "@react-native-firebase/auth";
 
 const SignupPage: FC = () => {
   const [name, setName] = useState<null | string>(null);
   const [email, setEmail] = useState<null | string>(null);
   const [password, setPassword] = useState<null | string>(null);
+
+  const signup = async () => {
+    Alert.alert("PRESSED");
+    await auth()
+      .createUserWithEmailAndPassword(
+        "jane.doe@example.com",
+        "SuperSecretPassword!"
+      )
+      .then(() => {
+        console.log("User account created & signed in!");
+      })
+      .catch((error) => {
+        if (error.code === "auth/email-already-in-use") {
+          console.log("That email address is already in use!");
+        }
+
+        if (error.code === "auth/invalid-email") {
+          console.log("That email address is invalid!");
+        }
+
+        console.error(error);
+      });
+  };
 
   return (
     <View style={styles.container}>
@@ -47,7 +71,7 @@ const SignupPage: FC = () => {
         backgroundColor={blue}
         alignSelf="stretch"
         margin={[0, 0, 40, 0]}
-        onPress={() => alert("Signup")}
+        onPress={signup}
       />
     </View>
   );

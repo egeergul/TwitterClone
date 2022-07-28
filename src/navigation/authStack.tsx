@@ -1,8 +1,7 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { WelcomePage, SignUpPage, LoginPage } from "../screens";
-import { View, Image, Button } from "react-native";
-import { black } from "../constants/colors";
+import { Image } from "react-native";
 
 export type RootStackParams = {
   Welcome: undefined;
