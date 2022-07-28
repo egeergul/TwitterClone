@@ -1,24 +1,18 @@
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { FC } from "react";
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  Button,
-  TouchableOpacity,
-  Dimensions,
-  Alert,
-} from "react-native";
+import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { StyledButton, StyledText } from "../../components";
 import { black, blue, grey, white, transparent } from "../../constants/colors";
+import { RootStackParams } from "../../navigation/authStack";
 
-const WelcomePage: FC = () => {
+const WelcomePage = () => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParams>>();
   return (
     <View style={styles.container}>
-      <Image
-        style={styles.logo}
-        source={require("../../assets/imgs/logo.png")}
-      />
+      {/* This is a buffer view to make space-between spread evenly */}
+      <View style={{ backgroundColor: transparent }}></View>
       <View>
         <StyledText
           text="See what's happening in the world right now."
@@ -33,7 +27,7 @@ const WelcomePage: FC = () => {
           backgroundColor={blue}
           alignSelf="stretch"
           margin={[30, 0, 0, 0]}
-          onPress={() => alert("Pressed")}
+          onPress={() => navigation.navigate("Signup")}
         />
       </View>
 
@@ -58,6 +52,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "center",
+    backgroundColor: white,
+    padding: 40,
   },
   logo: {
     marginTop: 10,
