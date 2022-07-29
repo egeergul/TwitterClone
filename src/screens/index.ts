@@ -7,6 +7,7 @@ import NotificationsPage from "./app/notificationsPage";
 import DirectMessagesPage from "./app/directMessagesPage";
 import EditProfilePicturePage from "./edit_profile/editProfilePicturePage";
 import EditHeaderPicturePage from "./edit_profile/editHeaderPicturePage";
+import EditBioPage from "./edit_profile/editBioPage";
 
 export {
   WelcomePage,
@@ -18,4 +19,5 @@ export {
   DirectMessagesPage,
   EditProfilePicturePage,
   EditHeaderPicturePage,
+  EditBioPage,
 };

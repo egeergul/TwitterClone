@@ -8,3 +8,7 @@
 // https://github.com/facebookexperimental/Recoil
 // https://reactjs.org/docs/context.html
 // https://docs.expo.dev/guides/icons/
+
+
+// Make firebase signup atomic
+// signup functionu error catchle, hatta belki yeni sayfaya al

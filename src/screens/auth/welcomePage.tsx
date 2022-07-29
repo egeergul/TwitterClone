@@ -1,5 +1,5 @@
-import React, { FC } from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import React, { FC, useState } from "react";
+import { View, StyleSheet, TouchableOpacity, Image, Text } from "react-native";
 import { StyledButton, StyledText } from "../../components";
 import { blue, grey, white, transparent } from "../../constants/colors";
 import { useNavigation } from "@react-navigation/native";
@@ -9,13 +9,14 @@ import { RootStackParams } from "../../navigation/authStack";
 const WelcomePage = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParams>>();
+
   return (
     <View style={styles.container}>
       {/* This is a buffer view to make space-between spread evenly */}
       <View style={{ backgroundColor: transparent }}></View>
       <View>
         <StyledText
-          text="See what's hhs happening in the world right now."
+          text="See what's happening in the world right now."
           fontSize={36}
           fontWeight="bold"
           textAlign={"left"}

@@ -6,12 +6,8 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParams } from "../../navigation/authStack";
 import { StyledButton, StyledInput, StyledText } from "../../components";
 import { black, transparent } from "../../constants/colors";
-
 import { fetchSignInMethodsForEmail } from "firebase/auth";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { ref, set } from "firebase/database";
-import { auth, database } from "../../constants/firebase";
-import { async } from "@firebase/util";
+import { auth } from "../../constants/firebase";
 
 const SignupPage: FC = () => {
   const [name, setName] = useState<null | string>(null);
@@ -69,58 +65,6 @@ const SignupPage: FC = () => {
     }
   };
 
-  /*else {
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          // Signed up
-          const user = userCredential.user;
-          auth.signOut();
-
-          set(ref(database, "users/" + user.uid), {
-            name: name,
-            email: email,
-            password: password,
-          })
-            .then(() => {
-              console.log(
-                "User with uid " +
-                  user.uid +
-                  " has been saved both to auth and real-time db"
-              );
-              // good to go
-              navigation.navigate("EditProfilePicture", {
-                user: user,
-              });
-            })
-            .catch((error) => {
-              const errorCode = error.code;
-              const errorMessage = error.message;
-              console.log(
-                "Error in sign up function with error code " +
-                  errorCode +
-                  " and error message " +
-                  errorMessage
-              );
-            });
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log(
-            "Error in sign up function with error code " +
-              errorCode +
-              " and error message " +
-              errorMessage
-          );
-          if (error.code === "auth/email-already-in-use") {
-            Alert.alert("That email address is already in use!");
-          } else if (error.code === "auth/invalid-email") {
-            Alert.alert("That email address is invalid!");
-          } else {
-            Alert.alert("Something went wrong!");
-          }
-        });
-    }* */
   return (
     <View style={styles.container}>
       <StyledText

@@ -1,38 +1,22 @@
 import { useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Image } from "react-native";
 import { StyledButton, StyledText } from "../../components";
 import { black, grey, transparent, white } from "../../constants/colors";
 import { RootStackParams } from "../../navigation/authStack";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Icon } from "@rneui/themed";
-import { database } from "../../constants/firebase";
-import { ref, child, get } from "firebase/database";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { ref, set } from "firebase/database";
+import { auth, database } from "../../constants/firebase";
+import { useNavigation, StackActions } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 type Props = NativeStackScreenProps<RootStackParams, "EditHeaderPicture">;
 
 const EditHeaderPicturePage = ({ route }: Props) => {
-  const [user, setUser] = useState(null);
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParams>>();
 
-  const getUserInfo = (uid: string): any => {
-    const dbRef = ref(database);
-    get(child(dbRef, `users/${uid}`))
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          setUser(snapshot.val());
-        } else {
-          console.log("No data available");
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  /**useEffect(() => {
-    const user = getUserInfo(route.params.user.uid);
-    return user; // unsubscribe on unmount
-  }, []);
- */
   return (
     <View style={styles.container}>
       <View style={{ alignSelf: "stretch" }}>
@@ -49,23 +33,68 @@ const EditHeaderPicturePage = ({ route }: Props) => {
         />
       </View>
 
-      <View style={{ alignSelf: "center" }}>
-        <Icon
-          size={50}
-          type="ionicon"
-          name="camera-outline"
-          color={grey}
-          reverse
-          reverseColor={white}
-          onPress={() => alert("Upload picture")}
-        />
-      </View>
+      <View style={{ alignSelf: "stretch" }}>
+        <View
+          style={{
+            padding: 30,
+            flexDirection: "row",
+            backgroundColor: "#b2b2b2",
+            alignSelf: "stretch",
+            justifyContent: "center",
+            alignContent: "center",
+          }}
+        >
+          <Icon
+            size={25}
+            type="ionicon"
+            name="camera-outline"
+            color={grey}
+            reverse
+            reverseColor={white}
+            onPress={() => alert("Upload picture")}
+          />
+        </View>
 
-      <StyledText text={user ? user : "User could not be found!"}></StyledText>
+        <View
+          style={{
+            marginTop: 20,
+            alignSelf: "baseline",
+            alignItems: "center",
+          }}
+        >
+          {route.params.profilePic ? (
+            <Image
+              source={{ uri: route.params.profilePic }}
+              style={{ width: 100, height: 100, borderRadius: 50 }}
+            />
+          ) : (
+            <Icon
+              type="material-community"
+              name="account"
+              size={40}
+              color={grey}
+              reverseColor={white}
+              reverse
+            />
+          )}
+          <StyledText
+            fontWeight={"bold"}
+            fontSize={28}
+            text={route.params.name}
+          ></StyledText>
+        </View>
+      </View>
 
       <StyledButton
         title="Skip for now"
-        onPress={() => console.log("pressed")}
+        onPress={() => {
+          navigation.navigate("EditBio", {
+            name: route.params.name,
+            email: route.params.email,
+            password: route.params.password,
+            profilePic: route.params.profilePic,
+          });
+        }}
         backgroundColor={transparent}
         borderColor={black}
         color={black}

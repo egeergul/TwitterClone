@@ -13,6 +13,7 @@ interface RequiredProps {
 interface OptionalProps {
   secureTextEntry: boolean;
   maxLength: number | undefined;
+  multiline: boolean;
 }
 // Combine required and optional props to build the full prop interface
 interface Props extends RequiredProps, OptionalProps {}
@@ -21,6 +22,7 @@ interface Props extends RequiredProps, OptionalProps {}
 const defaultProps: OptionalProps = {
   secureTextEntry: false,
   maxLength: undefined,
+  multiline: false,
 };
 
 // Use the full props within the actual component
@@ -48,26 +50,60 @@ const StyledInput = (props: Props) => {
             flexDirection: "row",
           }}
         >
-          <TextInput
-            style={{ flex: 1, padding: 20 }}
-            placeholderTextColor={grey}
-            placeholder={props.placeholder}
-            secureTextEntry={hidden}
-            onFocus={() => setColor(blue)}
-            onBlur={() => setColor(grey)}
-            onChangeText={(text) => {
-              props.onChangeText(text);
-              setLength(text.length);
-              if (props.maxLength) {
-                if (text.length >= props.maxLength * 0.8) {
-                  setRemainingColor("red");
-                } else {
-                  setRemainingColor(grey);
+          {props.multiline ? (
+            <TextInput
+              multiline
+              style={{
+                flex: 1,
+                padding: 20,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              placeholderTextColor={grey}
+              placeholder={props.placeholder}
+              secureTextEntry={hidden}
+              onFocus={() => setColor(blue)}
+              onBlur={() => setColor(grey)}
+              onChangeText={(text) => {
+                props.onChangeText(text);
+                setLength(text.length);
+                if (props.maxLength) {
+                  if (text.length >= props.maxLength * 0.8) {
+                    setRemainingColor("red");
+                  } else {
+                    setRemainingColor(grey);
+                  }
                 }
-              }
-            }}
-            maxLength={props.maxLength}
-          />
+              }}
+              maxLength={props.maxLength}
+            />
+          ) : (
+            <TextInput
+              style={{
+                flex: 1,
+                padding: 20,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              placeholderTextColor={grey}
+              placeholder={props.placeholder}
+              secureTextEntry={hidden}
+              onFocus={() => setColor(blue)}
+              onBlur={() => setColor(grey)}
+              onChangeText={(text) => {
+                props.onChangeText(text);
+                setLength(text.length);
+                if (props.maxLength) {
+                  if (text.length >= props.maxLength * 0.8) {
+                    setRemainingColor("red");
+                  } else {
+                    setRemainingColor(grey);
+                  }
+                }
+              }}
+              maxLength={props.maxLength}
+            />
+          )}
           {props.secureTextEntry ? (
             <View
               style={{
