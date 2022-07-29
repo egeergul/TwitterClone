@@ -6,6 +6,7 @@ import SearchPage from "./app/searchPage";
 import NotificationsPage from "./app/notificationsPage";
 import DirectMessagesPage from "./app/directMessagesPage";
 import EditProfilePicturePage from "./edit_profile/editProfilePicturePage";
+import EditHeaderPicturePage from "./edit_profile/editHeaderPicturePage";
 
 export {
   WelcomePage,
@@ -16,4 +17,5 @@ export {
   NotificationsPage,
   DirectMessagesPage,
   EditProfilePicturePage,
+  EditHeaderPicturePage,
 };

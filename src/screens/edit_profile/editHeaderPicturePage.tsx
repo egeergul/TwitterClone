@@ -1,18 +1,38 @@
-import { View, StyleSheet, Image } from "react-native";
+import { useEffect, useState } from "react";
+import { View, StyleSheet } from "react-native";
 import { StyledButton, StyledText } from "../../components";
 import { black, grey, transparent, white } from "../../constants/colors";
 import { RootStackParams } from "../../navigation/authStack";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Icon } from "@rneui/themed";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { database } from "../../constants/firebase";
+import { ref, child, get } from "firebase/database";
 
-type Props = NativeStackScreenProps<RootStackParams, "EditProfilePicture">;
+type Props = NativeStackScreenProps<RootStackParams, "EditHeaderPicture">;
 
-const EditProfilePicturePage = ({ route }: Props) => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParams>>();
+const EditHeaderPicturePage = ({ route }: Props) => {
+  const [user, setUser] = useState(null);
 
+  const getUserInfo = (uid: string): any => {
+    const dbRef = ref(database);
+    get(child(dbRef, `users/${uid}`))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          setUser(snapshot.val());
+        } else {
+          console.log("No data available");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  /**useEffect(() => {
+    const user = getUserInfo(route.params.user.uid);
+    return user; // unsubscribe on unmount
+  }, []);
+ */
   return (
     <View style={styles.container}>
       <View style={{ alignSelf: "stretch" }}>
@@ -20,12 +40,12 @@ const EditProfilePicturePage = ({ route }: Props) => {
           textAlign={"left"}
           fontWeight={"bold"}
           fontSize={28}
-          text="Select a profile picture"
+          text="Pick a header"
         />
         <View style={{ width: 1, height: 20 }}></View>
         <StyledText
           textAlign={"left"}
-          text="Do you have a favorite selfie? Upload now!"
+          text="People who visit your profile will see it. Show your style."
         />
       </View>
 
@@ -41,17 +61,11 @@ const EditProfilePicturePage = ({ route }: Props) => {
         />
       </View>
 
-      <StyledText text={route.params.email}></StyledText>
+      <StyledText text={user ? user : "User could not be found!"}></StyledText>
 
       <StyledButton
         title="Skip for now"
-        onPress={() => {
-          navigation.navigate("EditProfilePicture", {
-            name: route.params.name,
-            email: route.params.email,
-            password: route.params.password,
-          });
-        }}
+        onPress={() => console.log("pressed")}
         backgroundColor={transparent}
         borderColor={black}
         color={black}
@@ -74,4 +88,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EditProfilePicturePage;
+export default EditHeaderPicturePage;

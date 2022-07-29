@@ -5,19 +5,25 @@ import {
   SignUpPage,
   LoginPage,
   EditProfilePicturePage,
+  EditHeaderPicturePage,
 } from "../screens";
 import { Image } from "react-native";
-import { Icon } from "@rneui/themed";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
-import { User } from "firebase/auth";
 
 export type RootStackParams = {
   Welcome: undefined;
   Signup: undefined;
   Login: undefined;
   EditProfilePicture: {
-    user: User;
+    name: string;
+    email: string;
+    password: string;
+  };
+  EditHeaderPicture: {
+    name: string;
+    email: string;
+    password: string;
   };
 };
 const RootStack = createNativeStackNavigator<RootStackParams>();
@@ -30,6 +36,8 @@ const AuthStack: FC = () => {
       initialRouteName="Welcome"
       screenOptions={{
         headerShown: true,
+        headerTitleAlign: "center",
+        headerBackTitleVisible: false,
       }}
     >
       <RootStack.Screen
@@ -39,7 +47,10 @@ const AuthStack: FC = () => {
           headerShadowVisible: false,
           headerTitle: (props) => (
             <Image
-              style={{ width: 36, height: 36 }}
+              style={{
+                width: 36,
+                height: 36,
+              }}
               source={require("../../assets/imgs/logo.png")}
               resizeMode="contain"
             />
@@ -58,13 +69,6 @@ const AuthStack: FC = () => {
               resizeMode="contain"
             />
           ),
-          headerLeft: () => (
-            <Icon
-              type="ionicon"
-              name="chevron-back"
-              onPress={() => navigation.goBack()}
-            />
-          ),
         }}
       />
 
@@ -78,13 +82,6 @@ const AuthStack: FC = () => {
               style={{ width: 36, height: 36 }}
               source={require("../../assets/imgs/logo.png")}
               resizeMode="contain"
-            />
-          ),
-          headerLeft: () => (
-            <Icon
-              type="ionicon"
-              name="chevron-back"
-              onPress={() => navigation.goBack()}
             />
           ),
         }}
@@ -102,11 +99,19 @@ const AuthStack: FC = () => {
               resizeMode="contain"
             />
           ),
-          headerLeft: () => (
-            <Icon
-              type="ionicon"
-              name="chevron-back"
-              onPress={() => navigation.goBack()}
+        }}
+      />
+
+      <RootStack.Screen
+        name="EditHeaderPicture"
+        component={EditHeaderPicturePage}
+        options={{
+          headerShadowVisible: false,
+          headerTitle: (props) => (
+            <Image
+              style={{ width: 36, height: 36 }}
+              source={require("../../assets/imgs/logo.png")}
+              resizeMode="contain"
             />
           ),
         }}

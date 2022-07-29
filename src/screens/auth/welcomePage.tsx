@@ -15,7 +15,7 @@ const WelcomePage = () => {
       <View style={{ backgroundColor: transparent }}></View>
       <View>
         <StyledText
-          text="See what's happening in the world right now."
+          text="See what's hhs happening in the world right now."
           fontSize={36}
           fontWeight="bold"
           textAlign={"left"}

@@ -24,11 +24,12 @@ const HomeStack: FC = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<HomeStackParams>>();
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerBackTitleVisible: false }}>
       <Stack.Screen
         name="Home"
         component={HomePage}
         options={{
+          headerTitleAlign: "center",
           headerTitle: (props) => (
             <Image
               style={{ width: 36, height: 36 }}

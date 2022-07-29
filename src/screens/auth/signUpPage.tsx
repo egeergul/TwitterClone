@@ -1,14 +1,17 @@
-import React, { FC, useState } from "react";
-import { View, StyleSheet, Alert } from "react-native";
-import { StyledButton, StyledInput, StyledText } from "../../components";
-import { black, blue, transparent, white } from "../../constants/colors";
+import { FC, useState } from "react";
+import { StyleSheet, Alert, View } from "react-native";
+import { white } from "../../constants/colors";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParams } from "../../navigation/authStack";
+import { StyledButton, StyledInput, StyledText } from "../../components";
+import { black, transparent } from "../../constants/colors";
 
+import { fetchSignInMethodsForEmail } from "firebase/auth";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { ref, set } from "firebase/database";
 import { auth, database } from "../../constants/firebase";
+import { async } from "@firebase/util";
 
 const SignupPage: FC = () => {
   const [name, setName] = useState<null | string>(null);
@@ -17,7 +20,38 @@ const SignupPage: FC = () => {
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParams>>();
-  const signup = () => {
+
+  const checkEmail = async (email: string): Promise<boolean> => {
+    var result: boolean = false;
+    await fetchSignInMethodsForEmail(auth, email)
+      .then((arr) => {
+        if (arr.length != 0) {
+          Alert.alert("That email address is already in use!");
+          result = false;
+        } else {
+          result = true;
+        }
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(
+          "Error in sign up function with error code " +
+            errorCode +
+            " and error message " +
+            errorMessage
+        );
+        if (error.code === "auth/invalid-email") {
+          Alert.alert("That email address is invalid!");
+        } else {
+          Alert.alert("Something went wrong!");
+        }
+        result = false;
+      });
+    return result;
+  };
+
+  const signup = async () => {
     if (name === null) {
       Alert.alert("Name field must be filled!");
     } else if (email === null) {
@@ -26,7 +60,16 @@ const SignupPage: FC = () => {
       Alert.alert("Password must be filled!");
     } else if (password.length < 6) {
       Alert.alert("Password must be at elast 6 characters long!");
-    } else {
+    } else if (await checkEmail(email)) {
+      navigation.navigate("EditProfilePicture", {
+        name,
+        email,
+        password,
+      });
+    }
+  };
+
+  /*else {
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           // Signed up
@@ -77,9 +120,7 @@ const SignupPage: FC = () => {
             Alert.alert("Something went wrong!");
           }
         });
-    }
-  };
-
+    }* */
   return (
     <View style={styles.container}>
       <StyledText
