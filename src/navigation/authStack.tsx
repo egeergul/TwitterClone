@@ -4,18 +4,21 @@ import {
   WelcomePage,
   SignUpPage,
   LoginPage,
-  ChooseProfilePicture,
+  EditProfilePicturePage,
 } from "../screens";
 import { Image } from "react-native";
 import { Icon } from "@rneui/themed";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
+import { User } from "firebase/auth";
 
 export type RootStackParams = {
   Welcome: undefined;
   Signup: undefined;
   Login: undefined;
-  ProfilePicture: undefined;
+  EditProfilePicture: {
+    user: User;
+  };
 };
 const RootStack = createNativeStackNavigator<RootStackParams>();
 
@@ -88,8 +91,8 @@ const AuthStack: FC = () => {
       />
 
       <RootStack.Screen
-        name="ProfilePicture"
-        component={ChooseProfilePicture}
+        name="EditProfilePicture"
+        component={EditProfilePicturePage}
         options={{
           headerShadowVisible: false,
           headerTitle: (props) => (

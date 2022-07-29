@@ -7,3 +7,7 @@ const grey: string = "#526371";
 const transparent: string = "transparent";
 
 export { white, black, blue, grey, lightgrey, transparent };
+
+//https://reactnativeelements.com/docs/next/components/icon
+//import { Icon } from "@rneui/themed";
+//https://oblador.github.io/react-native-vector-icons/

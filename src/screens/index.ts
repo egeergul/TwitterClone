@@ -5,7 +5,7 @@ import HomePage from "./app/homePage";
 import SearchPage from "./app/searchPage";
 import NotificationsPage from "./app/notificationsPage";
 import DirectMessagesPage from "./app/directMessagesPage";
-import ChooseProfilePicture from "./edit_profile/chooseProfilePicture";
+import EditProfilePicturePage from "./edit_profile/editProfilePicturePage";
 
 export {
   WelcomePage,
@@ -15,5 +15,5 @@ export {
   SearchPage,
   NotificationsPage,
   DirectMessagesPage,
-  ChooseProfilePicture,
+  EditProfilePicturePage,
 };

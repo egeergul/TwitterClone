@@ -1,7 +1,11 @@
 import React, { FC, useState } from "react";
 import { View, StyleSheet, Alert } from "react-native";
 import { StyledButton, StyledInput, StyledText } from "../../components";
-import { blue, white } from "../../constants/colors";
+import { black, blue, transparent, white } from "../../constants/colors";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParams } from "../../navigation/authStack";
+
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { ref, set } from "firebase/database";
 import { auth, database } from "../../constants/firebase";
@@ -11,6 +15,8 @@ const SignupPage: FC = () => {
   const [email, setEmail] = useState<null | string>(null);
   const [password, setPassword] = useState<null | string>(null);
 
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const signup = () => {
     if (name === null) {
       Alert.alert("Name field must be filled!");
@@ -25,6 +31,8 @@ const SignupPage: FC = () => {
         .then((userCredential) => {
           // Signed up
           const user = userCredential.user;
+          auth.signOut();
+
           set(ref(database, "users/" + user.uid), {
             name: name,
             email: email,
@@ -36,6 +44,10 @@ const SignupPage: FC = () => {
                   user.uid +
                   " has been saved both to auth and real-time db"
               );
+              // good to go
+              navigation.navigate("EditProfilePicture", {
+                user: user,
+              });
             })
             .catch((error) => {
               const errorCode = error.code;
@@ -101,10 +113,12 @@ const SignupPage: FC = () => {
       </View>
 
       <StyledButton
-        title="Sign Up"
-        color={white}
-        backgroundColor={blue}
-        alignSelf="stretch"
+        title="Next"
+        color={black}
+        backgroundColor={transparent}
+        borderColor={black}
+        borderWidth={1}
+        alignSelf="flex-end"
         margin={[0, 0, 40, 0]}
         onPress={signup}
       />
