@@ -3,7 +3,8 @@ import { View, StyleSheet, Alert } from "react-native";
 import { StyledButton, StyledInput, StyledText } from "../../components";
 import { blue, white } from "../../constants/colors";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../constants/firebase";
+import { ref, set } from "firebase/database";
+import { auth, database } from "../../constants/firebase";
 
 const SignupPage: FC = () => {
   const [name, setName] = useState<null | string>(null);
@@ -24,7 +25,28 @@ const SignupPage: FC = () => {
         .then((userCredential) => {
           // Signed up
           const user = userCredential.user;
-          console.log("Signed up and the uid is" + user.uid);
+          set(ref(database, "users/" + user.uid), {
+            name: name,
+            email: email,
+            password: password,
+          })
+            .then(() => {
+              console.log(
+                "User with uid " +
+                  user.uid +
+                  " has been saved both to auth and real-time db"
+              );
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              console.log(
+                "Error in sign up function with error code " +
+                  errorCode +
+                  " and error message " +
+                  errorMessage
+              );
+            });
         })
         .catch((error) => {
           const errorCode = error.code;

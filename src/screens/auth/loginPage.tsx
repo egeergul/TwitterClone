@@ -22,7 +22,6 @@ const LoginPage: FC = () => {
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          console.log(user.uid);
           // ...
         })
         .catch((error) => {

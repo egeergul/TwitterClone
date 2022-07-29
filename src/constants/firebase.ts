@@ -15,6 +15,8 @@ const firebaseConfig = {
   messagingSenderId: "23650807100",
   appId: "1:23650807100:web:10929a0c259487748dc239",
   measurementId: "G-ML86ZLV4F0",
+  databaseURL:
+    "https://twitter-clone-cbe40-default-rtdb.europe-west1.firebasedatabase.app/",
 };
 
 // Initialize Firebase
