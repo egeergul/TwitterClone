@@ -18,8 +18,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-start",
     backgroundColor: white,
-    padding: 40,
-    paddingTop: 0,
   },
 });
 

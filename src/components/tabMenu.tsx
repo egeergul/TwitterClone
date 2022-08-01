@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import {
+  Dimensions,
+  TabBarIOS,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import StyledText from "./styledText";
 import { black, blue, grey, lightgrey, white } from "../constants/colors";
 import { Alert } from "native-base";
@@ -9,6 +15,8 @@ interface RequiredProps {
   setActiveTab: (tab: number) => void;
   initialTab?: number;
 }
+
+const { height, width } = Dimensions.get("screen");
 
 const TabMenu = (props: RequiredProps) => {
   const [activeIndex, setActiveIndex] = useState(props.initialTab || 0);
@@ -42,12 +50,13 @@ const TabMenu = (props: RequiredProps) => {
               >
                 <StyledText
                   text={tab}
+                  textAlign="center"
                   fontWeight={activeIndex == index ? "bold" : "normal"}
                 />
               </View>
             ) : (
               <View>
-                <StyledText text={tab} />
+                <StyledText text={tab} textAlign="center" />
               </View>
             )}
           </TouchableOpacity>

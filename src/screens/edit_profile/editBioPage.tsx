@@ -10,7 +10,7 @@ import { auth, database } from "../../constants/firebase";
 import { useNavigation, StackActions } from "@react-navigation/native";
 import { useState } from "react";
 import { uploadImage } from "../../constants/storageHelper";
-import { generateUniqueID } from "../../constants/storageHelper";
+import { NavigationContext } from "../../../App";
 
 type Props = NativeStackScreenProps<RootStackParams, "EditBio">;
 
@@ -19,9 +19,9 @@ const EditBioPage = ({ route }: Props) => {
     useNavigation<NativeStackNavigationProp<RootStackParams>>();
 
   const [bio, setBio] = useState<string>("");
-  const [uploading, setUploading] = useState<boolean>(false);
 
-  const signup = async () => {
+  const signup = async (setNavStack: (stack: string) => void) => {
+    navigation.navigate("Loading");
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       route.params.email,
@@ -39,42 +39,49 @@ const EditBioPage = ({ route }: Props) => {
       bio: bio,
       profilePicture: filename,
     });
+
+    navigation.dispatch(StackActions.pop(1));
+    navigation.navigate("Completed");
   };
 
   return (
-    <View style={styles.container}>
-      <View style={{ alignSelf: "stretch" }}>
-        <StyledText
-          textAlign={"left"}
-          fontWeight={"bold"}
-          fontSize={28}
-          text="Describe yourself"
-        />
-        <View style={{ width: 1, height: 20 }}></View>
-        <StyledText
-          textAlign={"left"}
-          text="What makes you special? Don't think too hard, just have fun with it."
-        />
-      </View>
+    <NavigationContext.Consumer>
+      {(context) => (
+        <View style={styles.container}>
+          <View style={{ alignSelf: "stretch" }}>
+            <StyledText
+              textAlign={"left"}
+              fontWeight={"bold"}
+              fontSize={28}
+              text="Describe yourself"
+            />
+            <View style={{ width: 1, height: 20 }}></View>
+            <StyledText
+              textAlign={"left"}
+              text="What makes you special? Don't think too hard, just have fun with it."
+            />
+          </View>
 
-      <StyledInput
-        multiline={true}
-        placeholder="Your bio"
-        maxLength={160}
-        onChangeText={(text) => setBio(text)}
-      />
+          <StyledInput
+            multiline={true}
+            placeholder="Your bio"
+            maxLength={160}
+            onChangeText={(text) => setBio(text)}
+          />
 
-      <StyledButton
-        title="Skip for now"
-        onPress={signup}
-        backgroundColor={transparent}
-        borderColor={black}
-        color={black}
-        alignSelf={"stretch"}
-        margin={[0, 0, 40, 0]}
-        borderWidth={1}
-      />
-    </View>
+          <StyledButton
+            title="Skip for now"
+            onPress={() => signup(context.setNavStack)}
+            backgroundColor={transparent}
+            borderColor={black}
+            color={black}
+            alignSelf={"stretch"}
+            margin={[0, 0, 40, 0]}
+            borderWidth={1}
+          />
+        </View>
+      )}
+    </NavigationContext.Consumer>
   );
 };
 

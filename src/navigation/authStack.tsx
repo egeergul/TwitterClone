@@ -4,9 +4,11 @@ import {
   WelcomePage,
   SignUpPage,
   LoginPage,
+  LoadingPage,
   EditProfilePicturePage,
   EditHeaderPicturePage,
   EditBioPage,
+  EditProfileCompletedPage,
 } from "../screens";
 import { Image } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -33,6 +35,8 @@ export type RootStackParams = {
     password: string;
     profilePic: string | null;
   };
+  Loading: undefined;
+  Completed: undefined;
 };
 const RootStack = createNativeStackNavigator<RootStackParams>();
 
@@ -135,6 +139,17 @@ const AuthStack: FC = () => {
             />
           ),
         }}
+      />
+      <RootStack.Screen
+        name="Loading"
+        component={LoadingPage}
+        options={{ headerShown: false }}
+      />
+
+      <RootStack.Screen
+        name="Completed"
+        component={EditProfileCompletedPage}
+        options={{ headerShown: false }}
       />
     </RootStack.Navigator>
   );

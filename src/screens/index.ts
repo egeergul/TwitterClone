@@ -12,6 +12,8 @@ import TweetsTab from "./profile/tweetsTab";
 import TweetsAndRepliesTab from "./profile/tweetsAndRepliesTab";
 import LikesTab from "./profile/likesTab";
 import MediaTab from "./profile/mediaTab";
+import LoadingPage from "./loadingPage";
+import EditProfileCompletedPage from "./edit_profile/editProfileCompleted";
 
 export {
   WelcomePage,
@@ -28,4 +30,6 @@ export {
   TweetsAndRepliesTab,
   LikesTab,
   MediaTab,
+  LoadingPage,
+  EditProfileCompletedPage,
 };
