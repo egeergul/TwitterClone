@@ -1,12 +1,12 @@
 import React, { FC } from "react";
 import { HomePage } from "../screens";
-import { Image } from "react-native";
+import { Image, View } from "react-native";
 import { Icon } from "@rneui/themed";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import ProfilePage from "../screens/app/profilePage";
-import { StyledButton } from "../components";
+import { StyledButton, StyledText } from "../components";
 import { auth } from "../constants/firebase";
-import { black, transparent } from "../constants/colors";
+import { blue, black, transparent, white } from "../constants/colors";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 
@@ -56,7 +56,34 @@ const HomeStack: FC = () => {
           ),
         }}
       />
-      <Stack.Screen name="Profile" component={ProfilePage} />
+      <Stack.Screen
+        name="Profile"
+        component={ProfilePage}
+        options={{
+          headerShown: false,
+          headerTintColor: white,
+          headerLargeStyle: { backgroundColor: blue },
+          headerTitleAlign: "center",
+          headerTitle: (props) => (
+            <View style={{ flex: 1 }}>
+              <StyledText color={white} fontWeight="bold" text="Boşun Sanatı" />
+              <StyledText color={white} text="43 Tweets" />
+            </View>
+          ),
+
+          headerRight: () => (
+            <View style={{ flexDirection: "row" }}>
+              <Icon color={white} type="ionicon" name="search" />
+              <Icon
+                color={white}
+                type="ionicon"
+                name="ellipsis-vertical"
+                style={{ marginLeft: 20 }}
+              />
+            </View>
+          ),
+        }}
+      />
     </Stack.Navigator>
   );
 };

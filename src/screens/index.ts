@@ -8,6 +8,10 @@ import DirectMessagesPage from "./app/directMessagesPage";
 import EditProfilePicturePage from "./edit_profile/editProfilePicturePage";
 import EditHeaderPicturePage from "./edit_profile/editHeaderPicturePage";
 import EditBioPage from "./edit_profile/editBioPage";
+import TweetsTab from "./profile/tweetsTab";
+import TweetsAndRepliesTab from "./profile/tweetsAndRepliesTab";
+import LikesTab from "./profile/likesTab";
+import MediaTab from "./profile/mediaTab";
 
 export {
   WelcomePage,
@@ -20,4 +24,8 @@ export {
   EditProfilePicturePage,
   EditHeaderPicturePage,
   EditBioPage,
+  TweetsTab,
+  TweetsAndRepliesTab,
+  LikesTab,
+  MediaTab,
 };

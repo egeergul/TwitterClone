@@ -18,6 +18,7 @@ interface OptionalProps {
   borderWidth: number;
   alignSelf: any;
   margin: [number, number, number, number];
+  padding: [number, number, number, number];
 }
 // Combine required and optional props to build the full prop interface
 interface Props extends RequiredProps, OptionalProps {}
@@ -32,6 +33,7 @@ const defaultProps: OptionalProps = {
   borderWidth: 0,
   alignSelf: "center",
   margin: [0, 0, 0, 0],
+  padding: [10, 10, 10, 10],
 };
 
 // Use the full props within the actual component
@@ -39,7 +41,6 @@ const StyledButton = (props: Props) => {
   return (
     <TouchableOpacity
       style={{
-        padding: 10,
         borderRadius: 100,
         alignItems: "center",
         justifyContent: "center",
@@ -47,7 +48,13 @@ const StyledButton = (props: Props) => {
         marginTop: props.margin[0],
         marginRight: props.margin[1],
         marginBottom: props.margin[2],
-        marginEnd: props.margin[3],
+        marginLeft: props.margin[3],
+
+        paddingTop: props.padding[0],
+        paddingRight: props.padding[1],
+        paddingBottom: props.padding[2],
+        paddingLeft: props.padding[3],
+
         alignSelf: props.alignSelf,
         backgroundColor: props.backgroundColor,
         borderWidth: props.borderWidth,

@@ -7,7 +7,6 @@ import { auth } from "../constants/firebase";
 
 const MainNav: FC = () => {
   const [user, setUser] = useState();
-  const [loading, setLoading] = useState(false);
 
   function onAuthStateChanged(user: any) {
     setUser(user);

@@ -103,6 +103,7 @@ const SignupPage: FC = () => {
         backgroundColor={transparent}
         borderColor={black}
         borderWidth={1}
+        padding={[5, 15, 5, 15]}
         alignSelf="flex-end"
         margin={[0, 0, 40, 0]}
         onPress={signup}
