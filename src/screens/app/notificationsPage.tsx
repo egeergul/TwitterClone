@@ -1,11 +1,12 @@
 import React, { FC } from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { TabMenu } from "../../components";
 import { white } from "../../constants/colors";
 
 const NotificationsPage = () => {
   return (
     <View style={styles.container}>
-      <Text>Notifications Page</Text>
+      <TabMenu tabs={["All", "Mentions"]} setActiveTab={() => {}} />
     </View>
   );
 };
@@ -18,6 +19,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     backgroundColor: white,
     padding: 40,
+    paddingTop: 0,
   },
 });
 

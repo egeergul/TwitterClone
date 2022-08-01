@@ -97,13 +97,15 @@ function App() {
         <Icon name="chevron-back" type="ionicon" color="white" size={26} />
       </TouchableOpacity>
 
+      {/* New Tweet button */}
+
       <TouchableOpacity
         onPress={() => Alert.alert("Pressed")}
         style={{
           zIndex: 1000,
           position: "absolute",
-          bottom: 10,
-          right: 10,
+          bottom: 20,
+          right: 20,
           backgroundColor: blue,
           height: 50,
           width: 50,
@@ -111,8 +113,8 @@ function App() {
           alignItems: "center",
           justifyContent: "center",
           shadowColor: "#171717",
-          shadowOffset: { width: -2, height: 4 },
-          shadowOpacity: 0.2,
+          shadowOffset: { width: 2, height: 4 },
+          shadowOpacity: 0.3,
           shadowRadius: 3,
         }}
       >
