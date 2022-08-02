@@ -8,7 +8,8 @@
 // https://github.com/facebookexperimental/Recoil
 // https://reactjs.org/docs/context.html
 // https://docs.expo.dev/guides/icons/
-
+// https://jestjs.io/docs/tutorial-react-native
 
 // Make firebase signup atomic
 // signup functionu error catchle, hatta belki yeni sayfaya al
+// https://github.com/satya164/react-native-tab-view

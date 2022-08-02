@@ -39,6 +39,7 @@ const EditBioPage = ({ route }: Props) => {
     }
     await set(ref(database, "users/" + user.uid), {
       name: route.params.name,
+      username: route.params.username,
       email: route.params.email,
       password: route.params.password,
       bio: bio,
@@ -47,6 +48,7 @@ const EditBioPage = ({ route }: Props) => {
 
     let newUser = new User(
       route.params.name,
+      route.params.username,
       route.params.email,
       bio,
       filename

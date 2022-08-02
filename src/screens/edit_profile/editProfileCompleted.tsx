@@ -19,7 +19,7 @@ const EditProfileCompleted: FC = () => {
             source={require("../../../assets/imgs/logo.png")}
           />
           <StyledText
-            text="Your profile is updated"
+            text="Your profile is created"
             fontWeight={"bold"}
             fontSize={24}
           />

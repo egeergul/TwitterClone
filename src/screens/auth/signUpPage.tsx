@@ -61,7 +61,7 @@ const SignupPage: FC = () => {
     } else if (password.length < 6) {
       Alert.alert("Password must be at elast 6 characters long!");
     } else if (await checkEmail(email)) {
-      navigation.navigate("EditProfilePicture", {
+      navigation.navigate("EditUsername", {
         name,
         email,
         password,

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   Alert,
   Animated,
@@ -22,6 +22,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { HomeStackParams } from "../../navigation/homeStack";
 import { UserContext } from "../../navigation/mainNav";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 function generateTweets(limit: number) {
   return new Array(limit).fill(0).map((_, index) => {
@@ -239,9 +240,9 @@ function App() {
               >
                 <Animated.Image
                   source={
-                    userContext.userInfo.profilePicLink == "DEFAULT"
-                      ? require("../../../assets/imgs/round-account-button-with-user-inside.png")
-                      : require("../../../assets/imgs/pp_example.jpg")
+                    userContext.userInfo.profilePicURL == "DEFAULT"
+                      ? require("../../../assets/imgs/account_man_filled.png")
+                      : { uri: userContext.userInfo.profilePicURL }
                   }
                   style={{
                     width: 75,
@@ -341,7 +342,6 @@ function App() {
               tabs={["Tweets", "Tweets & replies", "Media", "Likes"]}
               setActiveTab={setActiveTab}
             />
-
             <Tweet />
             <Tweet />
             <Tweet />

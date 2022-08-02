@@ -1,8 +1,9 @@
 class User {
   public name: string;
+  public username: string;
   public email: string;
   public bio: string;
-  public profilePicLink: string;
+  public profilePicURL: string;
 
   /** TODO
    *
@@ -18,26 +19,30 @@ class User {
 
   constructor(
     name: string,
+    username: string,
     email: string,
     bio: string,
-    profilePicLink: string
+    profilePicURL: string
   ) {
     this.name = name;
+    this.username = username;
     this.bio = bio;
     this.email = email;
-    this.profilePicLink = profilePicLink;
+    this.profilePicURL = profilePicURL;
   }
 
   toString() {
     return (
       "Name: " +
       this.name +
+      "\nUsername: " +
+      this.username +
       "\nEmail: " +
       this.email +
       "\nBio: " +
       this.bio +
       "\nProfile Pic Link: " +
-      this.profilePicLink
+      this.profilePicURL
     );
   }
 }

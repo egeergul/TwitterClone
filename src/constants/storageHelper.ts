@@ -1,5 +1,5 @@
 import { storage } from "../constants/firebase";
-import { uploadBytes, ref } from "firebase/storage";
+import { uploadBytes, ref, getStorage, getDownloadURL } from "firebase/storage";
 
 export const uploadImage = async (source: string): Promise<string> => {
   const response = await fetch(source);
@@ -68,3 +68,17 @@ export const generateUniqueID = (function () {
     return id;
   };
 })();
+
+export const getImageURL = async (reference: string): Promise<string> => {
+  const storage = getStorage();
+  const imageRef = ref(storage, reference);
+
+  if (reference == "DEFAULT") {
+    return "DEFAULT";
+  }
+
+  let result: string = "DEFAULT";
+  // Get the download URL
+  result = await getDownloadURL(imageRef);
+  return result;
+};

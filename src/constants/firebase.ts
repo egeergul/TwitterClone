@@ -25,5 +25,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 const storage = getStorage(app);
+const PROFILE_PICTURES = "profile-pictures/";
 
-export { auth, database, storage };
+export { auth, database, storage, PROFILE_PICTURES };

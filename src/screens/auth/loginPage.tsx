@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, Alert } from "react-native";
 import { StyledButton, StyledInput, StyledText } from "../../components";
 
 import { black, blue, grey, transparent, white } from "../../constants/colors";
-import { auth } from "../../constants/firebase";
+import { auth, PROFILE_PICTURES } from "../../constants/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { NavigationContext } from "../../../App";
 import { HOME_STACK } from "../../constants/navigation";
@@ -14,6 +14,7 @@ import { database } from "../../constants/firebase";
 import { ref, get, child } from "firebase/database";
 import { UserContext } from "../../navigation/mainNav";
 import { User } from "../../models";
+import { getImageURL } from "../../constants/storageHelper";
 
 const LoginPage: FC = () => {
   const [email, setEmail] = useState<null | string>(null);
@@ -40,14 +41,23 @@ const LoginPage: FC = () => {
           const user = userCredential.user;
 
           get(child(ref(database), `users/${user.uid}`))
-            .then((snapshot) => {
+            .then(async (snapshot) => {
               if (snapshot.exists()) {
                 const data = snapshot.val();
+
+                let profilePicURL = "DEFAULT";
+
+                if (data.profilePicture != "DEFAULT")
+                  profilePicURL = await getImageURL(
+                    PROFILE_PICTURES + data.profilePicture
+                  );
+
                 let newUser = new User(
                   data.name,
+                  data.username,
                   data.email,
                   data.bio,
-                  data.profilePicture
+                  profilePicURL
                 );
                 setUserInfo(newUser);
                 navigation.dispatch(StackActions.popToTop());
@@ -67,7 +77,7 @@ const LoginPage: FC = () => {
               } else {
                 Alert.alert("Something went wrong!");
               }
-              //
+
               navigation.goBack();
             });
         })

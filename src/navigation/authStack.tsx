@@ -9,6 +9,7 @@ import {
   EditHeaderPicturePage,
   EditBioPage,
   EditProfileCompletedPage,
+  EditUsername,
 } from "../screens";
 import { Image } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -18,19 +19,27 @@ export type RootStackParams = {
   Welcome: undefined;
   Signup: undefined;
   Login: undefined;
+  EditUsername: {
+    name: string;
+    email: string;
+    password: string;
+  };
   EditProfilePicture: {
     name: string;
+    username: string;
     email: string;
     password: string;
   };
   EditHeaderPicture: {
     name: string;
+    username: string;
     email: string;
     password: string;
     profilePic: string | null;
   };
   EditBio: {
     name: string;
+    username: string;
     email: string;
     password: string;
     profilePic: string | null;
@@ -86,6 +95,21 @@ const AuthStack: FC = () => {
       <RootStack.Screen
         name="Login"
         component={LoginPage}
+        options={{
+          headerShadowVisible: false,
+          headerTitle: (props) => (
+            <Image
+              style={{ width: 36, height: 36 }}
+              source={require("../../assets/imgs/logo.png")}
+              resizeMode="contain"
+            />
+          ),
+        }}
+      />
+
+      <RootStack.Screen
+        name="EditUsername"
+        component={EditUsername}
         options={{
           headerShadowVisible: false,
           headerTitle: (props) => (

@@ -90,6 +90,7 @@ const EditHeaderPicturePage = ({ route }: Props) => {
         onPress={() => {
           navigation.navigate("EditBio", {
             name: route.params.name,
+            username: route.params.username,
             email: route.params.email,
             password: route.params.password,
             profilePic: route.params.profilePic,
