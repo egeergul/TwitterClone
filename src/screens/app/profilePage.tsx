@@ -172,7 +172,7 @@ function App() {
 
           {/* Banner */}
           <AnimatedImageBackground
-            source={require("../../../assets/imgs/header_example.jpg")}
+            source={require("../../../assets/imgs/default_header.jpg")}
             style={{
               position: "absolute",
               left: 0,
