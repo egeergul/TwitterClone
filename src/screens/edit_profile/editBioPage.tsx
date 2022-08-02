@@ -1,6 +1,6 @@
 import { View, StyleSheet, Alert, Image, Text } from "react-native";
 import { StyledButton, StyledInput, StyledText } from "../../components";
-import { black, transparent, white } from "../../constants/colors";
+import { black, blue, transparent, white } from "../../constants/colors";
 import { RootStackParams } from "../../navigation/authStack";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -87,16 +87,16 @@ const EditBioPage = ({ route }: Props) => {
               />
 
               <StyledButton
-                title="Skip for now"
+                title={bio ? "Sign Up" : "Skip for now"}
                 onPress={() =>
                   signup(navigationContext.setNavStack, userContext.setUserInfo)
                 }
-                backgroundColor={transparent}
+                backgroundColor={bio ? blue : transparent}
                 borderColor={black}
-                color={black}
+                color={bio ? white : black}
                 alignSelf={"stretch"}
                 margin={[0, 0, 40, 0]}
-                borderWidth={1}
+                borderWidth={bio ? 0 : 1}
               />
             </View>
           )}
