@@ -16,6 +16,21 @@ const EditUsername = ({ route }: Props) => {
 
   const [username, setUsername] = useState<null | string>();
 
+  const checkUsernameUnique = async (username: string): Promise<boolean> => {
+    /**ref
+      .child("users")
+      .orderByChild("ID")
+      .equalTo("U1EL5623")
+      .once("value", (snapshot) => {
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          console.log("exists!", userData);
+        }
+      });
+    return false; */
+    return false;
+  };
+
   return (
     <View style={styles.container}>
       <View style={{ alignSelf: "stretch" }}>
