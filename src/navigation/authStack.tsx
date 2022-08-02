@@ -145,7 +145,6 @@ const AuthStack: FC = () => {
         component={LoadingPage}
         options={{ headerShown: false }}
       />
-
       <RootStack.Screen
         name="Completed"
         component={EditProfileCompletedPage}

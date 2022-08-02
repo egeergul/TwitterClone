@@ -6,6 +6,7 @@ import { HomeStackParams } from "../../navigation/homeStack";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../../constants/firebase";
 import { Tweet } from "../../components";
+import { UserContext } from "../../navigation/mainNav";
 
 const HomePage = () => {
   const navigation =
@@ -16,12 +17,14 @@ const HomePage = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-    </ScrollView>
+    <UserContext.Consumer>
+      {(userContext) => (
+        <ScrollView style={styles.container}>
+          <Text>{userContext.userInfo.toString()}</Text>
+          <Text> {userContext.userInfo.name} </Text>
+        </ScrollView>
+      )}
+    </UserContext.Consumer>
   );
 };
 

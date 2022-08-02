@@ -1,17 +1,22 @@
+import { Icon } from "@rneui/base";
 import React, { FC } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ActivityIndicator, Image } from "react-native";
 import { StyledText } from "../components";
 import { blue, white } from "../constants/colors";
 
 const LoadingPage: FC = () => {
   return (
     <View style={styles.contaier}>
-      <StyledText
-        text="LOADING..."
-        fontSize={46}
-        fontWeight="bold"
-        color={white}
-      />
+      <Icon color={white} name="twitter" type="antdesign" size={40} />
+      <View style={{ flexDirection: "column" }}>
+        <ActivityIndicator
+          color={white}
+          size="large"
+          style={{ marginBottom: 10 }}
+        />
+        <StyledText text="Loading..." fontWeight="bold" color={white} />
+      </View>
+      <View />
     </View>
   );
 };
@@ -22,8 +27,9 @@ const styles = StyleSheet.create({
   contaier: {
     flex: 1,
     flexDirection: "column",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: blue,
+    padding: 75,
   },
 });
