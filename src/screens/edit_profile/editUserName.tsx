@@ -6,7 +6,17 @@ import { RootStackParams } from "../../navigation/authStack";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { USERS, database } from "../../constants/firebase";
+import {
+  onValue,
+  orderByChild,
+  ref,
+  query,
+  equalTo,
+  get,
+  child,
+} from "firebase/database";
 
 type Props = NativeStackScreenProps<RootStackParams, "EditProfilePicture">;
 
@@ -16,19 +26,28 @@ const EditUsername = ({ route }: Props) => {
 
   const [username, setUsername] = useState<null | string>();
 
-  const checkUsernameUnique = async (username: string): Promise<boolean> => {
-    /**ref
-      .child("users")
-      .orderByChild("ID")
-      .equalTo("U1EL5623")
-      .once("value", (snapshot) => {
+  const checkUsernameIsUnique = async (username: string): Promise<boolean> => {
+    let result = true;
+    const topUserPostsRef = query(
+      ref(database, "users"),
+      orderByChild("username"),
+      equalTo(username)
+    );
+
+    await get(topUserPostsRef)
+      .then((snapshot) => {
         if (snapshot.exists()) {
-          const userData = snapshot.val();
-          console.log("exists!", userData);
+          console.log(snapshot.val());
+          result = false;
+        } else {
+          console.log("Username is unique");
         }
+      })
+      .catch((error) => {
+        console.error(error);
       });
-    return false; */
-    return false;
+
+    return result;
   };
 
   return (
@@ -55,14 +74,18 @@ const EditUsername = ({ route }: Props) => {
 
       <StyledButton
         title="Next"
-        onPress={() => {
-          Alert.alert("CHECK IF IT IS UNIQUE");
-          navigation.navigate("EditProfilePicture", {
-            name: route.params.name,
-            username: username!,
-            email: route.params.email,
-            password: route.params.password,
-          });
+        onPress={async () => {
+          const isUnique = await checkUsernameIsUnique(username!);
+          if (isUnique) {
+            navigation.navigate("EditProfilePicture", {
+              name: route.params.name,
+              username: username!,
+              email: route.params.email,
+              password: route.params.password,
+            });
+          } else {
+            Alert.alert("This username is already taken!");
+          }
         }}
         backgroundColor={transparent}
         borderColor={black}

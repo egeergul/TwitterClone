@@ -25,6 +25,11 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 const storage = getStorage(app);
+
+// PATHS FOR STORAGE
 const PROFILE_PICTURES = "profile-pictures/";
 
-export { auth, database, storage, PROFILE_PICTURES };
+// RPATHS FOR REALTIME DATABASE
+const USERS = "users/";
+
+export { auth, database, storage, PROFILE_PICTURES, USERS };

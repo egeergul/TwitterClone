@@ -6,7 +6,12 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { ref, set } from "firebase/database";
-import { auth, database, PROFILE_PICTURES } from "../../constants/firebase";
+import {
+  auth,
+  database,
+  PROFILE_PICTURES,
+  USERS,
+} from "../../constants/firebase";
 import { useNavigation, StackActions } from "@react-navigation/native";
 import { useState } from "react";
 import { getImageURL, uploadImage } from "../../constants/storageHelper";
@@ -41,7 +46,7 @@ const EditBioPage = ({ route }: Props) => {
     if (filename != "DEFAULT") {
       profilePicURL = await getImageURL(PROFILE_PICTURES + filename);
     }
-    await set(ref(database, "users/" + user.uid), {
+    await set(ref(database, USERS + user.uid), {
       name: route.params.name,
       username: route.params.username,
       email: route.params.email,
