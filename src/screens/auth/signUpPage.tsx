@@ -37,7 +37,11 @@ const SignupPage: FC = () => {
             " and error message " +
             errorMessage
         );
-        if (error.code === "auth/invalid-email") {
+        if (error.code === "auth/network-request-failed") {
+          Alert.alert(
+            "Something went wrong! Please check your internet connection and try again."
+          );
+        } else if (error.code === "auth/invalid-email") {
           Alert.alert("That email address is invalid!");
         } else {
           Alert.alert("Something went wrong!");

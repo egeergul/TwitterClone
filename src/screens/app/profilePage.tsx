@@ -329,7 +329,7 @@ function App() {
                     fontWeight="bold"
                   />
                   <StyledText
-                    margin={[0, 0, 0, 0]}
+                    margin={[0, 0, 0, 3]}
                     text="Following"
                     color={grey}
                   />

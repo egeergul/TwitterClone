@@ -58,6 +58,16 @@ const LoginPage: FC = () => {
             })
             .catch((error) => {
               console.error(error);
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              if (error.code === "auth/network-request-failed") {
+                Alert.alert(
+                  "Something went wrong! Please check your internet connection and try again."
+                );
+              } else {
+                Alert.alert("Something went wrong!");
+              }
+              //
               navigation.goBack();
             });
         })
@@ -65,12 +75,16 @@ const LoginPage: FC = () => {
           const errorCode = error.code;
           const errorMessage = error.message;
           console.log(
-            "Error in sign up function with error code " +
+            "Error in log in function with error code " +
               errorCode +
               " and error message " +
               errorMessage
           );
-          if (error.code === "auth/user-not-found") {
+          if (error.code === "auth/network-request-failed") {
+            Alert.alert(
+              "Something went wrong! Please check your internet connection and try again."
+            );
+          } else if (error.code === "auth/user-not-found") {
             Alert.alert("No such user is found!");
           } else if (error.code === "auth/invalid-email") {
             Alert.alert("That email address is invalid!");
@@ -78,6 +92,8 @@ const LoginPage: FC = () => {
             Alert.alert(
               "Wrong credentials! Check your email address and password."
             );
+          } else {
+            Alert.alert("Something went wrong!");
           }
           navigation.goBack();
         });

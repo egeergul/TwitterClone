@@ -4,6 +4,18 @@ class User {
   public bio: string;
   public profilePicLink: string;
 
+  /** TODO
+   *
+   * Followers
+   * Following
+   * Date of birth
+   * Joined Date
+   * Username
+   * Tweets
+   * Header Img Url
+   *
+   */
+
   constructor(
     name: string,
     email: string,

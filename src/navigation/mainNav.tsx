@@ -9,8 +9,7 @@ import { NavigationContext } from "../../App";
 import { User } from "../models";
 
 const UserContext = createContext({
-  //userInfo: {} as User,
-  userInfo: new User("Sıla Vuran", "ssiilavuran@gmail.com", "bio", "DEFAULT"),
+  userInfo: {} as User,
   setUserInfo: (user: User) => {},
 });
 
@@ -28,13 +27,9 @@ const MainNav: FC = () => {
   }, []);
 
   // Manually register user info as a global value with context API
-  //const [userInfo, setUserInfo] = useState<User>({} as User);
-  const [userInfo, setUserInfo] = useState<User>(
-    new User("Sıla Vuran", "ssiilavuran@gmail.com", "bio", "DEFAULT")
-  );
+  const [userInfo, setUserInfo] = useState<User>({} as User);
 
   function renderStack(stack: string) {
-    return <HomeStack />;
     if (stack == APP_BOTTOM_TAB_STACK) {
       return <AppBottomTabStack />;
     } else if (stack == HOME_STACK) {
