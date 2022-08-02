@@ -47,7 +47,7 @@ const AppBottomTabStack: FC = () => {
                 tabBarShowLabel: false,
                 headerLeft: () => (
                   <View>
-                    {userContext.userInfo.profilePicLink == "DEFAULT" ? (
+                    {userContext.userInfo.profilePicURL == "DEFAULT" ? (
                       <Icon
                         type="material-community"
                         name="account"
@@ -63,7 +63,7 @@ const AppBottomTabStack: FC = () => {
                         }}
                       >
                         <Image
-                          source={require("../../assets/imgs/pp_example.jpg")}
+                          source={{ uri: userContext.userInfo.profilePicURL }}
                           style={{
                             marginLeft: 10,
                             width: 40,

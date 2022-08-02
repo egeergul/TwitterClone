@@ -303,14 +303,18 @@ function App() {
                 </View>
 
                 <StyledText
-                  text="@BosunSanati"
+                  text={"@" + userContext.userInfo.username}
                   color={grey}
                   margin={[0, 0, 0, 0]}
                 />
-                <StyledText
-                  text={userContext.userInfo.bio}
-                  margin={[10, 0, 10, 0]}
-                />
+                {userContext.userInfo.bio ? (
+                  <StyledText
+                    text={userContext.userInfo.bio}
+                    margin={[10, 0, 10, 0]}
+                  />
+                ) : (
+                  <></>
+                )}
                 <StyledText
                   text="Born October 23, 2001   Joined July 2020"
                   color={grey}
