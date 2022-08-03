@@ -3,7 +3,11 @@ import { View, StyleSheet, Text, Alert } from "react-native";
 import { StyledButton, StyledInput, StyledText } from "../../components";
 
 import { black, blue, grey, transparent, white } from "../../constants/colors";
-import { auth, PROFILE_PICTURES } from "../../constants/firebase";
+import {
+  auth,
+  HEADER_PICTURES,
+  PROFILE_PICTURES,
+} from "../../constants/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { NavigationContext } from "../../../App";
 import { HOME_STACK } from "../../constants/navigation";
@@ -52,18 +56,28 @@ const LoginPage: FC = () => {
                     PROFILE_PICTURES + data.profilePicture
                   );
 
+                let headerPicURL = "DEFAULT";
+
+                if (data.headerPicture != "DEFAULT")
+                  headerPicURL = await getImageURL(
+                    HEADER_PICTURES + data.headerPicture
+                  );
+
                 let newUser = new User(
                   data.name,
                   data.username,
                   data.email,
                   data.bio,
-                  profilePicURL
+                  profilePicURL,
+                  headerPicURL
                 );
                 setUserInfo(newUser);
                 navigation.dispatch(StackActions.popToTop());
                 setNavStack(HOME_STACK);
               } else {
                 console.log("No data available");
+                Alert.alert("No data available");
+                navigation.goBack();
               }
             })
             .catch((error) => {

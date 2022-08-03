@@ -4,6 +4,7 @@ class User {
   public email: string;
   public bio: string;
   public profilePicURL: string;
+  public headerPicURL: string;
 
   /** TODO
    *
@@ -22,13 +23,15 @@ class User {
     username: string,
     email: string,
     bio: string,
-    profilePicURL: string
+    profilePicURL: string,
+    headerPicURL: string
   ) {
     this.name = name;
     this.username = username;
     this.bio = bio;
     this.email = email;
     this.profilePicURL = profilePicURL;
+    this.headerPicURL = headerPicURL;
   }
 
   toString() {
@@ -42,7 +45,9 @@ class User {
       "\nBio: " +
       this.bio +
       "\nProfile Pic Link: " +
-      this.profilePicURL
+      this.profilePicURL +
+      "\nHeader Pic Link: " +
+      this.headerPicURL
     );
   }
 }

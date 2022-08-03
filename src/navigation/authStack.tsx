@@ -43,6 +43,7 @@ export type RootStackParams = {
     email: string;
     password: string;
     profilePic: string | null;
+    headerPic: string | null;
   };
   Loading: undefined;
   Completed: undefined;

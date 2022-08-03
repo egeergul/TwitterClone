@@ -1,13 +1,16 @@
 import { storage } from "../constants/firebase";
 import { uploadBytes, ref, getStorage, getDownloadURL } from "firebase/storage";
 
-export const uploadImage = async (source: string): Promise<string> => {
+export const uploadImage = async (
+  path: string,
+  source: string
+): Promise<string> => {
   const response = await fetch(source);
   const blob = await response.blob();
   const filename = source.substring(source.lastIndexOf("/") + 1);
   var result = "Something went wrong during the image upload";
 
-  const spaceRef = ref(storage, `profile-pictures/${filename}`);
+  const spaceRef = ref(storage, path + filename);
   await uploadBytes(spaceRef, blob)
     .then((snapshot) => {
       console.log("Uploaded a blob or file!");

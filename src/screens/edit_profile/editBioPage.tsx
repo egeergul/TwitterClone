@@ -9,6 +9,7 @@ import { ref, set } from "firebase/database";
 import {
   auth,
   database,
+  HEADER_PICTURES,
   PROFILE_PICTURES,
   USERS,
 } from "../../constants/firebase";
@@ -40,11 +41,23 @@ const EditBioPage = ({ route }: Props) => {
     const user = userCredential.user;
     var filename = "DEFAULT";
     if (route.params.profilePic) {
-      filename = await uploadImage(route.params.profilePic);
+      filename = await uploadImage(PROFILE_PICTURES, route.params.profilePic);
     }
     let profilePicURL = "DEFAULT";
     if (filename != "DEFAULT") {
       profilePicURL = await getImageURL(PROFILE_PICTURES + filename);
+    }
+
+    var headerFilename = "DEFAULT";
+    if (route.params.headerPic) {
+      headerFilename = await uploadImage(
+        HEADER_PICTURES,
+        route.params.headerPic
+      );
+    }
+    let headerPicURL = "DEFAULT";
+    if (headerFilename != "DEFAULT") {
+      headerPicURL = await getImageURL(HEADER_PICTURES + headerFilename);
     }
     await set(ref(database, USERS + user.uid), {
       name: route.params.name,
@@ -53,6 +66,7 @@ const EditBioPage = ({ route }: Props) => {
       password: route.params.password,
       bio: bio,
       profilePicture: filename,
+      headerPicture: headerFilename,
     });
 
     let newUser = new User(
@@ -60,7 +74,8 @@ const EditBioPage = ({ route }: Props) => {
       route.params.username,
       route.params.email,
       bio,
-      profilePicURL
+      profilePicURL,
+      headerPicURL
     );
 
     setUserInfo(newUser);

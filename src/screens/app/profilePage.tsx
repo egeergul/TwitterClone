@@ -172,7 +172,11 @@ function App() {
 
           {/* Banner */}
           <AnimatedImageBackground
-            source={require("../../../assets/imgs/default_header.jpg")}
+            source={
+              userContext.userInfo.headerPicURL == "DEFAULT"
+                ? require("../../../assets/imgs/default_header.jpg")
+                : { uri: userContext.userInfo.headerPicURL }
+            }
             style={{
               position: "absolute",
               left: 0,

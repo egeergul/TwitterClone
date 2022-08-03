@@ -28,8 +28,9 @@ const storage = getStorage(app);
 
 // PATHS FOR STORAGE
 const PROFILE_PICTURES = "profile-pictures/";
+const HEADER_PICTURES = "header-pictures/";
 
 // RPATHS FOR REALTIME DATABASE
 const USERS = "users/";
 
-export { auth, database, storage, PROFILE_PICTURES, USERS };
+export { auth, database, storage, PROFILE_PICTURES, USERS, HEADER_PICTURES };

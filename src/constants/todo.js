@@ -13,3 +13,12 @@
 // Make firebase signup atomic
 // signup functionu error catchle, hatta belki yeni sayfaya al
 // https://github.com/satya164/react-native-tab-view
+
+/** TODO 
+ * 
+ * HEADER EKLE
+ * DATE OF BIRTH EKLE
+ * REGISTERATION DATE EKLE
+ * FOLLOWING VE FOLLOWERS EKLE
+ * 
+*/
