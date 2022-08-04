@@ -3,6 +3,7 @@ class User {
   public name: string;
   public username: string;
   public email: string;
+  public isPublic: boolean;
   public bio: string;
   public profilePicURL: string;
   public headerPicURL: string;
@@ -24,6 +25,7 @@ class User {
     name: string,
     username: string,
     email: string,
+    isPublic: boolean,
     bio: string,
     profilePicURL: string,
     profilPicFilename: string,
@@ -34,6 +36,7 @@ class User {
     this.name = name;
     this.username = username;
     this.bio = bio;
+    this.isPublic = isPublic;
     this.email = email;
     this.profilePicURL = profilePicURL;
     this.headerPicURL = headerPicURL;
@@ -51,6 +54,8 @@ class User {
       this.username +
       "\nEmail: " +
       this.email +
+      "\nIsPublic: " +
+      this.isPublic +
       "\nBio: " +
       this.bio +
       "\nProfile Pic Link: " +

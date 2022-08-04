@@ -54,6 +54,7 @@ const LoginPage: FC = () => {
                   data.name,
                   data.username,
                   data.email,
+                  data.isPublic,
                   data.bio,
                   data.profilePictureURL,
                   data.profilePictureFilename,

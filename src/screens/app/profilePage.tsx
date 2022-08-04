@@ -288,10 +288,10 @@ function App() {
                       fontSize={24}
                       margin={[0, 10, 0, 0]}
                     />
-                    {true ? (
-                      <Icon name="locked" type="fontisto" />
+                    {userContext.userInfo.isPublic ? (
+                      <></>
                     ) : (
-                      <Icon name="unlocked" type="fontisto" />
+                      <Icon name="locked" type="fontisto" />
                     )}
                   </View>
                   <StyledButton
