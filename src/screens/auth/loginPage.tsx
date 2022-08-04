@@ -49,28 +49,16 @@ const LoginPage: FC = () => {
               if (snapshot.exists()) {
                 const data = snapshot.val();
 
-                let profilePicURL = "DEFAULT";
-
-                if (data.profilePicture != "DEFAULT")
-                  profilePicURL = await getImageURL(
-                    PROFILE_PICTURES + data.profilePicture
-                  );
-
-                let headerPicURL = "DEFAULT";
-
-                if (data.headerPicture != "DEFAULT")
-                  headerPicURL = await getImageURL(
-                    HEADER_PICTURES + data.headerPicture
-                  );
-
                 let newUser = new User(
                   data.uid,
                   data.name,
                   data.username,
                   data.email,
                   data.bio,
-                  profilePicURL,
-                  headerPicURL
+                  data.profilePictureURL,
+                  data.profilePictureFilename,
+                  data.headerPicURL,
+                  data.headerPictureFilename
                 );
                 setUserInfo(newUser);
                 navigation.dispatch(StackActions.popToTop());

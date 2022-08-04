@@ -94,15 +94,19 @@ export const getImageURL = async (reference: string): Promise<string> => {
 
 export const deleteImage = async (path: string, filename: string) => {
   // Create a reference to the file to delete
-  const desertRef = ref(storage, path + filename);
+  const fileRef = ref(storage, path + filename);
 
-  // Delete the file
-  deleteObject(desertRef)
-    .then(() => {
-      // File deleted successfully
-    })
-    .catch((error) => {
-      // Uh-oh, an error occurred!
-      console.log(error);
-    });
+  if (filename != "DEFAULT") {
+    // Delete the file
+    deleteObject(fileRef)
+      .then(() => {
+        console.log("File deleted");
+
+        // File deleted successfully
+      })
+      .catch((error) => {
+        // Uh-oh, an error occurred!
+        console.log(error);
+      });
+  }
 };

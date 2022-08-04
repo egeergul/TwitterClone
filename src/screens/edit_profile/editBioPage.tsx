@@ -66,8 +66,10 @@ const EditBioPage = ({ route }: Props) => {
       email: route.params.email,
       password: route.params.password,
       bio: bio,
-      profilePicture: filename,
-      headerPicture: headerFilename,
+      profilePictureFilename: filename,
+      profilePictureURL: profilePicURL,
+      headerPictureFilename: headerFilename,
+      headerPicURL: headerPicURL,
     });
 
     let newUser = new User(
@@ -77,7 +79,9 @@ const EditBioPage = ({ route }: Props) => {
       route.params.email,
       bio,
       profilePicURL,
-      headerPicURL
+      filename,
+      headerPicURL,
+      headerFilename
     );
 
     setUserInfo(newUser);

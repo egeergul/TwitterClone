@@ -6,6 +6,8 @@ class User {
   public bio: string;
   public profilePicURL: string;
   public headerPicURL: string;
+  public headerPicFilename: string;
+  public profilPicFilename: string;
 
   /** TODO
    *
@@ -24,14 +26,19 @@ class User {
     email: string,
     bio: string,
     profilePicURL: string,
-    headerPicURL: string
+    profilPicFilename: string,
+    headerPicURL: string,
+    headerPicFilename: string
   ) {
-    (this.uid = uid), (this.name = name);
+    this.uid = uid;
+    this.name = name;
     this.username = username;
     this.bio = bio;
     this.email = email;
     this.profilePicURL = profilePicURL;
     this.headerPicURL = headerPicURL;
+    this.headerPicFilename = headerPicFilename;
+    this.profilPicFilename = profilPicFilename;
   }
 
   toString() {
@@ -48,8 +55,12 @@ class User {
       this.bio +
       "\nProfile Pic Link: " +
       this.profilePicURL +
+      "\nProfile Pic Filename: " +
+      this.profilPicFilename +
       "\nHeader Pic Link: " +
-      this.headerPicURL
+      this.headerPicURL +
+      "\nHeader Pic Filename: " +
+      this.headerPicFilename
     );
   }
 }

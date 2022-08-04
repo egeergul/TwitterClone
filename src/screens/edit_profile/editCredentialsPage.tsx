@@ -155,19 +155,23 @@ const EditCredentialsPage: FC = () => {
     }
 
     if (headerPic != null) {
-      //deleteImage(HEADER_PICTURES, user.headerPicURL)
+      deleteImage(HEADER_PICTURES, user.headerPicFilename);
       let headerFilename = await uploadImage(HEADER_PICTURES, headerPic);
       let headerPicURL = await getImageURL(HEADER_PICTURES + headerFilename);
-      updates[USERS + user.uid + "/headerPicture"] = headerFilename;
+      updates[USERS + user.uid + "/headerPictureFilename"] = headerFilename;
+      updates[USERS + user.uid + "/headerPicURL"] = headerPicURL;
       user.headerPicURL = headerPicURL;
+      user.headerPicFilename = headerFilename;
     }
 
     if (profilePic != null) {
-      //deleteImage(HEADER_PICTURES, user.headerPicURL)
+      deleteImage(PROFILE_PICTURES, user.profilPicFilename);
       let ppFilename = await uploadImage(PROFILE_PICTURES, profilePic);
       let profilePicURL = await getImageURL(PROFILE_PICTURES + ppFilename);
-      updates[USERS + user.uid + "/profilePicture"] = ppFilename;
+      updates[USERS + user.uid + "/profilePictureFilename"] = ppFilename;
+      updates[USERS + user.uid + "/profilePictureURL"] = profilePicURL;
       user.profilePicURL = profilePicURL;
+      user.profilPicFilename = ppFilename;
     }
 
     console.log(updates);
