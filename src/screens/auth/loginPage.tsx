@@ -64,6 +64,7 @@ const LoginPage: FC = () => {
                   );
 
                 let newUser = new User(
+                  data.uid,
                   data.name,
                   data.username,
                   data.email,

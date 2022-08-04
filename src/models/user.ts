@@ -1,4 +1,5 @@
 class User {
+  public uid: string;
   public name: string;
   public username: string;
   public email: string;
@@ -12,13 +13,12 @@ class User {
    * Following
    * Date of birth
    * Joined Date
-   * Username
    * Tweets
-   * Header Img Url
    *
    */
 
   constructor(
+    uid: string,
     name: string,
     username: string,
     email: string,
@@ -26,7 +26,7 @@ class User {
     profilePicURL: string,
     headerPicURL: string
   ) {
-    this.name = name;
+    (this.uid = uid), (this.name = name);
     this.username = username;
     this.bio = bio;
     this.email = email;
@@ -36,7 +36,9 @@ class User {
 
   toString() {
     return (
-      "Name: " +
+      "Uid: " +
+      this.uid +
+      "\nName: " +
       this.name +
       "\nUsername: " +
       this.username +

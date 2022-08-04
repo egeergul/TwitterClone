@@ -60,6 +60,7 @@ const EditBioPage = ({ route }: Props) => {
       headerPicURL = await getImageURL(HEADER_PICTURES + headerFilename);
     }
     await set(ref(database, USERS + user.uid), {
+      uid: userCredential.user.uid,
       name: route.params.name,
       username: route.params.username,
       email: route.params.email,
@@ -70,6 +71,7 @@ const EditBioPage = ({ route }: Props) => {
     });
 
     let newUser = new User(
+      userCredential.user.uid,
       route.params.name,
       route.params.username,
       route.params.email,

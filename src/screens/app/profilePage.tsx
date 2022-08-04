@@ -302,7 +302,7 @@ function App() {
                     padding={[5, 10, 5, 10]}
                     borderColor={grey}
                     borderWidth={1}
-                    onPress={() => console.log("pressed")}
+                    onPress={() => navigation.navigate("EditCredentials")}
                   />
                 </View>
 

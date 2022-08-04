@@ -15,6 +15,8 @@ import MediaTab from "./profile/mediaTab";
 import LoadingPage from "./loadingPage";
 import EditProfileCompletedPage from "./edit_profile/editProfileCompleted";
 import EditUsername from "./edit_profile/editUserName";
+import EditCredentialsPage from "./edit_profile/editCredentialsPage";
+
 export {
   WelcomePage,
   SignUpPage,
@@ -33,4 +35,5 @@ export {
   LoadingPage,
   EditProfileCompletedPage,
   EditUsername,
+  EditCredentialsPage,
 };

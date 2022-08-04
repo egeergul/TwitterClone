@@ -1,5 +1,11 @@
 import { storage } from "../constants/firebase";
-import { uploadBytes, ref, getStorage, getDownloadURL } from "firebase/storage";
+import {
+  uploadBytes,
+  ref,
+  getStorage,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 
 export const uploadImage = async (
   path: string,
@@ -84,4 +90,19 @@ export const getImageURL = async (reference: string): Promise<string> => {
   // Get the download URL
   result = await getDownloadURL(imageRef);
   return result;
+};
+
+export const deleteImage = async (path: string, filename: string) => {
+  // Create a reference to the file to delete
+  const desertRef = ref(storage, path + filename);
+
+  // Delete the file
+  deleteObject(desertRef)
+    .then(() => {
+      // File deleted successfully
+    })
+    .catch((error) => {
+      // Uh-oh, an error occurred!
+      console.log(error);
+    });
 };
