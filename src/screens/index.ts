@@ -16,6 +16,8 @@ import LoadingPage from "./loadingPage";
 import EditProfileCompletedPage from "./edit_profile/editProfileCompleted";
 import EditUsername from "./edit_profile/editUserName";
 import EditCredentialsPage from "./edit_profile/editCredentialsPage";
+import NewTweetPage from "./tweets/newTweetPage";
+import ProfilePage from "./app/profilePage";
 
 export {
   WelcomePage,
@@ -36,4 +38,6 @@ export {
   EditProfileCompletedPage,
   EditUsername,
   EditCredentialsPage,
+  NewTweetPage,
+  ProfilePage,
 };

@@ -32,5 +32,16 @@ const HEADER_PICTURES = "header-pictures/";
 
 // RPATHS FOR REALTIME DATABASE
 const USERS = "users/";
+const FOLLOWERS = "follows/followers/";
+const FOLLOWINGS = "follows/followings/";
 
-export { auth, database, storage, PROFILE_PICTURES, USERS, HEADER_PICTURES };
+export {
+  auth,
+  database,
+  storage,
+  PROFILE_PICTURES,
+  USERS,
+  HEADER_PICTURES,
+  FOLLOWERS,
+  FOLLOWINGS,
+};

@@ -14,13 +14,12 @@
 // signup functionu error catchle, hatta belki yeni sayfaya al
 // https://github.com/satya164/react-native-tab-view
 
-/** TODO 
- * 
- * HEADER EKLE
+/** TODO
+ *
  * DATE OF BIRTH EKLE
  * REGISTERATION DATE EKLE
  * FOLLOWING VE FOLLOWERS EKLE
  * UPDATE EDİLİNCE HOME KENDİNİ UPDATELEMİYOR
  * UPDATE DE HEM PP HEM DE HEADER AYNANDA UPDATELEMİYOR
- * 
-*/
+ *
+ */
