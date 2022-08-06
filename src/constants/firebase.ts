@@ -29,11 +29,13 @@ const storage = getStorage(app);
 // PATHS FOR STORAGE
 const PROFILE_PICTURES = "profile-pictures/";
 const HEADER_PICTURES = "header-pictures/";
+const TWEET_MEDIA = "tweet-media/";
 
 // RPATHS FOR REALTIME DATABASE
 const USERS = "users/";
 const FOLLOWERS = "follows/followers/";
 const FOLLOWINGS = "follows/followings/";
+const TWEETS = "tweets/";
 
 export {
   auth,
@@ -44,4 +46,6 @@ export {
   HEADER_PICTURES,
   FOLLOWERS,
   FOLLOWINGS,
+  TWEETS,
+  TWEET_MEDIA,
 };

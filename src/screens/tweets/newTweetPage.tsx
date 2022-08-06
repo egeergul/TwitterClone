@@ -12,14 +12,21 @@ import {
 } from "react-native";
 import { Icon } from "@rneui/themed";
 import { FullWidthImage, StyledButton } from "../../components";
-import { blue, lightgrey, white } from "../../constants/colors";
+import { black, blue, grey, lightgrey, white } from "../../constants/colors";
 import { HomeStackParams } from "../../navigation/homeStack";
-import { useNavigation } from "@react-navigation/native";
+import { StackActions, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { UserContext } from "../../navigation/mainNav";
 import ProgressCircle from "react-native-progress-circle";
 import * as ImagePicker from "expo-image-picker";
-
+import { ref, set } from "firebase/database";
+import { database, TWEETS, TWEET_MEDIA } from "../../constants/firebase";
+import {
+  generateUniqueID,
+  getImageURL,
+  uploadImage,
+} from "../../constants/storageHelper";
+import { getDownloadURL } from "firebase/storage";
 const MAX_CHARCTERS = 280;
 const { height, width } = Dimensions.get("screen");
 
@@ -31,9 +38,10 @@ const NewTweetPage: FC = () => {
   const [percentage, setPercentage] = useState<number>(0);
   const [percentageColor, setPercentageColor] = useState(blue);
 
-  //const [media, setMedia] = useState<null | string>("null");
+  const [media, setMedia] = useState<null | string>();
+  const [mediaRatio, setMediaRatio] = useState<number>(1);
 
-  const pickProfilePic = async () => {
+  const pickMedia = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -42,7 +50,8 @@ const NewTweetPage: FC = () => {
     });
 
     if (!result.cancelled) {
-      //setMedia(result.uri);
+      setMedia(result.uri);
+      setMediaRatio(result.height / result.width);
     }
   };
 
@@ -68,6 +77,45 @@ const NewTweetPage: FC = () => {
     }
   };
 
+  const postTweet = async () => {
+    if (tweet || media) {
+      navigation.navigate("Loading");
+
+      let tweetText = "DEFAULT";
+      if (tweet) {
+        tweetText = tweet;
+      }
+
+      let tweetMediaFilename = "DEFAULT";
+      let tweetMediaURL = "DEFAULT";
+
+      if (media) {
+        tweetMediaFilename = media;
+        tweetMediaFilename = await uploadImage(
+          TWEET_MEDIA + user.uid + "/",
+          media
+        );
+        tweetMediaURL = await getImageURL(
+          TWEET_MEDIA + user.uid + "/" + tweetMediaFilename
+        );
+      }
+
+      const timestamp = new Date().getTime();
+      const tweetUID = generateUniqueID();
+      await set(ref(database, TWEETS + user.uid + "/" + tweetUID), {
+        text: tweetText,
+        timestamp: timestamp,
+        uid: user.uid,
+        mediaURL: tweetMediaURL,
+        mediaFilename: tweetMediaFilename,
+      });
+      navigation.goBack();
+      navigation.goBack();
+    } else {
+      Alert.alert("You have to type something first.");
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {/**   HEADER   */}
@@ -78,7 +126,7 @@ const NewTweetPage: FC = () => {
           title="Tweet"
           backgroundColor={blue}
           color={white}
-          onPress={() => {}}
+          onPress={postTweet}
         />
       </View>
 
@@ -92,13 +140,18 @@ const NewTweetPage: FC = () => {
                 : { uri: user.profilePicURL }
             }
             style={{
-              width: 40,
-              height: 40,
-              borderRadius: 20,
+              width: width / 7 - 5,
+              height: width / 7 - 5,
+              borderRadius: width / 14,
               marginRight: 10,
+              marginLeft: 10,
             }}
           />
-          <View>
+          <View
+            style={{
+              width: (11 * width) / 14,
+            }}
+          >
             <TextInput
               multiline
               placeholder="What's happening?"
@@ -118,20 +171,46 @@ const NewTweetPage: FC = () => {
             />
 
             {/** MEDIA SECTION */}
-            <View style={{ marginTop: 25 }}>
-              <FullWidthImage
-                requireSource={require("../../../assets/imgs/pp_example.jpg")}
-                width={(width * 11) / 14}
-                borderRadius={15}
-              />
-            </View>
+            {media ? (
+              <View style={{ marginTop: 15 }}>
+                <View style={{ position: "absolute", right: 0, zIndex: 100 }}>
+                  <Icon
+                    size={15}
+                    type="ionicon"
+                    name="close"
+                    onPress={() => {
+                      setMedia(null);
+                    }}
+                    color={black}
+                    reverseColor={white}
+                    reverse
+                  />
+                </View>
+
+                <Image
+                  source={{ uri: media }}
+                  style={{
+                    width: (width * 11) / 14,
+                    height: ((width * 11) / 14) * mediaRatio,
+                    borderRadius: 15,
+                  }}
+                />
+              </View>
+            ) : (
+              <></>
+            )}
           </View>
         </View>
       </ScrollView>
 
       {/**  BOTTOM TAB   */}
       <View style={styles.bottomTab}>
-        <Icon type="ionicon" name="image-outline" color={blue} />
+        <Icon
+          type="ionicon"
+          name="image-outline"
+          color={blue}
+          onPress={pickMedia}
+        />
 
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <ProgressCircle
@@ -171,9 +250,9 @@ export default NewTweetPage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: 15,
   },
   header: {
+    margin: 15,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -184,7 +263,7 @@ const styles = StyleSheet.create({
   },
   bottomTab: {
     paddingTop: 15,
-    marginBottom: 15,
+    margin: 15,
     borderTopColor: lightgrey,
     borderTopWidth: 1,
     flexDirection: "row",

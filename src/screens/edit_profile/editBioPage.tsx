@@ -71,14 +71,6 @@ const EditBioPage = ({ route }: Props) => {
       profilePictureURL: profilePicURL,
       headerPictureFilename: headerFilename,
       headerPicURL: headerPicURL,
-      followrs: [
-        "mZaUb0kHGAT4ZclRLpZxpszTfIJ2",
-        "3sSHmtTrjzUChzJDjBuFjdnzVpt2",
-      ],
-      followings: [
-        "mZaUb0kHGAT4ZclRLpZxpszTfIJ2",
-        "3sSHmtTrjzUChzJDjBuFjdnzVpt2",
-      ],
     });
 
     let newUser = new User(
