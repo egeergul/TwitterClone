@@ -17,6 +17,7 @@ import { black, transparent } from "../constants/colors";
 import { NavigationContext } from "../../App";
 import { AUTH_STACK } from "../constants/navigation";
 import { UserContext } from "./mainNav";
+import NotificationStack from "./notificationStack";
 
 export type AppBottomTabStackParams = {
   HomeTab: undefined;
@@ -124,7 +125,7 @@ const AppBottomTabStack: FC = () => {
               />
               <TabStack.Screen
                 name="Notifications"
-                component={NotificationsPage}
+                component={NotificationStack}
                 options={{
                   tabBarIcon: ({ focused }) =>
                     focused ? (

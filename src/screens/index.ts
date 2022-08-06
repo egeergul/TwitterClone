@@ -18,6 +18,8 @@ import EditUsername from "./edit_profile/editUserName";
 import EditCredentialsPage from "./edit_profile/editCredentialsPage";
 import NewTweetPage from "./tweets/newTweetPage";
 import ProfilePage from "./app/profilePage";
+import MentionsTab from "./notification_tabs/mentionsTab";
+import AllTab from "./notification_tabs/allTab";
 
 export {
   WelcomePage,
@@ -40,4 +42,6 @@ export {
   EditCredentialsPage,
   NewTweetPage,
   ProfilePage,
+  MentionsTab,
+  AllTab,
 };
