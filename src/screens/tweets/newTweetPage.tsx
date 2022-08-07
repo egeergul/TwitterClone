@@ -26,7 +26,7 @@ import {
   getImageURL,
   uploadImage,
 } from "../../constants/storageHelper";
-import { getDownloadURL } from "firebase/storage";
+
 const MAX_CHARCTERS = 280;
 const { height, width } = Dimensions.get("screen");
 
@@ -39,7 +39,6 @@ const NewTweetPage: FC = () => {
   const [percentageColor, setPercentageColor] = useState(blue);
 
   const [media, setMedia] = useState<null | string>();
-  const [mediaRatio, setMediaRatio] = useState<number>(1);
 
   const pickMedia = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -51,7 +50,6 @@ const NewTweetPage: FC = () => {
 
     if (!result.cancelled) {
       setMedia(result.uri);
-      setMediaRatio(result.height / result.width);
     }
   };
 
@@ -108,6 +106,9 @@ const NewTweetPage: FC = () => {
         uid: user.uid,
         mediaURL: tweetMediaURL,
         mediaFilename: tweetMediaFilename,
+        isPinned: false,
+        name: user.name,
+        username: user.username,
       });
       navigation.goBack();
       navigation.goBack();
@@ -187,13 +188,10 @@ const NewTweetPage: FC = () => {
                   />
                 </View>
 
-                <Image
-                  source={{ uri: media }}
-                  style={{
-                    width: (width * 11) / 14,
-                    height: ((width * 11) / 14) * mediaRatio,
-                    borderRadius: 15,
-                  }}
+                <FullWidthImage
+                  uriSource={media}
+                  width={(width * 11) / 14}
+                  borderRadius={15}
                 />
               </View>
             ) : (

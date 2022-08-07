@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import {
   Alert,
   Animated,
@@ -22,27 +22,13 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { HomeStackParams } from "../../navigation/homeStack";
 import { UserContext } from "../../navigation/mainNav";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import { ref, onValue } from "firebase/database";
+import { database, TWEETS } from "../../constants/firebase";
+import { TweetModel } from "../../models";
+import { getFormattedDate } from "../../helpers/helpers";
 
-function generateTweets(limit: number) {
-  return new Array(limit).fill(0).map((_, index) => {
-    const repetitions = Math.floor(Math.random() * 3) + 1;
-
-    return {
-      key: index.toString(),
-      text: "Lorem ipsum dolor amet ".repeat(repetitions),
-      author: "Arnaud",
-      tag: "eveningkid",
-    };
-  });
-}
-
-const TWEETS = generateTweets(30);
 const HEADER_HEIGHT_EXPANDED = 35;
 const HEADER_HEIGHT_NARROWED = 100;
-
-const PROFILE_BANNER_URI =
-  "https://pbs.twimg.com/profile_banners/3296259169/1438473955/1500x500";
 
 const AnimatedImageBackground =
   Animated.createAnimatedComponent(ImageBackground);
@@ -64,13 +50,47 @@ function App() {
   const navigation =
     useNavigation<NativeStackNavigationProp<HomeStackParams>>();
   const [activeTab, setActiveTab] = useState<number>(0);
+  const user = useContext(UserContext).userInfo;
+  const [tweets, setTweets] = useState<TweetModel[]>([]);
 
-  const animateHeaderBackgroundColor = scrollY.interpolate({
-    inputRange: [-200, 0],
-    outputRange: ["blue", "red"],
-    extrapolateLeft: "extend",
-    extrapolateRight: "clamp",
-  });
+  const fetchTweets = () => {
+    const dbRef = ref(database, TWEETS + user.uid);
+    onValue(
+      dbRef,
+      (snapshot) => {
+        if (snapshot.exists()) {
+          snapshot.forEach((childSnapshot) => {
+            if (childSnapshot.exists()) {
+              const key = childSnapshot.key;
+              const data = childSnapshot.val();
+              const tweet = new TweetModel(
+                key!,
+                data.uid,
+                data.name,
+                data.username,
+                data.isPinned,
+                data.text,
+                data.timestamp,
+                data.mediaURL,
+                data.mediaFilename
+              );
+              console.log(tweet.toString());
+
+              setTweets((oldArray) => [tweet, ...oldArray]);
+            }
+          });
+        }
+      },
+      {
+        onlyOnce: true,
+      }
+    );
+  };
+
+  useEffect(() => {
+    setTweets([]);
+    fetchTweets();
+  }, []);
 
   return (
     <UserContext.Consumer>
@@ -101,7 +121,7 @@ function App() {
           {/* New Tweet button */}
 
           <TouchableOpacity
-            onPress={() => Alert.alert("Pressed")}
+            onPress={() => navigation.navigate("NewTweet")}
             style={{
               zIndex: 1000,
               position: "absolute",
@@ -320,7 +340,7 @@ function App() {
                   <></>
                 )}
                 <StyledText
-                  text="Born October 23, 2001   Joined July 2020"
+                  text={"Joined " + getFormattedDate(user.joinedAt)}
                   color={grey}
                 />
 
@@ -350,11 +370,31 @@ function App() {
               tabs={["Tweets", "Tweets & replies", "Media", "Likes"]}
               setActiveTab={setActiveTab}
             />
-            <Tweet />
-            <Tweet />
-            <Tweet />
-            <Tweet />
-            <Tweet />
+
+            {tweets.map((tweet) => {
+              return (
+                <Tweet
+                  name={tweet.name}
+                  username={tweet.username}
+                  text={tweet.text}
+                  mediaURL={tweet.mediaURL}
+                  isPinned={tweet.isPinned}
+                  profilePicURL={user.profilePicURL}
+                  timestamp={parseInt(tweet.timestamp)}
+                />
+              );
+            })}
+
+            <View
+              style={{
+                flex: 1,
+                height: 70,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text>.</Text>
+            </View>
           </Animated.ScrollView>
         </View>
       )}
@@ -386,48 +426,3 @@ const styles = StyleSheet.create({
     borderTopColor: "rgba(255, 255, 255, 0.25)",
   },
 });
-
-/** 
- * 
- * <View style={styles.container}>
-          {TWEETS.map((item, index) => (
-            <View key={item.key} style={styles.tweet}>
-              <Image
-                source={{
-                  uri: PROFILE_PICTURE_URI,
-                }}
-                style={{
-                  height: 50,
-                  width: 50,
-                  borderRadius: 25,
-                  marginRight: 10,
-                }}
-              />
-
-              <View style={styles.container}>
-                <Text
-                  style={[
-                    styles.text,
-                    {
-                      fontWeight: "bold",
-                      fontSize: 15,
-                    },
-                  ]}
-                >
-                  {item.author}{" "}
-                  <Text
-                    style={{
-                      color: "gray",
-                      fontWeight: "normal",
-                    }}
-                  >
-                    @{item.tag} · {index + 1}d
-                  </Text>
-                </Text>
-
-                <Text style={[styles.text, { fontSize: 15 }]}>{item.text}</Text>
-              </View>
-            </View>
-          ))}
-        </View>
- */

@@ -1,3 +1,5 @@
+import { getFormattedDate } from "../helpers/helpers";
+
 class User {
   public uid: string;
   public name: string;
@@ -9,6 +11,7 @@ class User {
   public headerPicURL: string;
   public headerPicFilename: string;
   public profilPicFilename: string;
+  public joinedAt: number;
 
   /** TODO
    *
@@ -30,7 +33,8 @@ class User {
     profilePicURL: string,
     profilPicFilename: string,
     headerPicURL: string,
-    headerPicFilename: string
+    headerPicFilename: string,
+    joinedAt: number
   ) {
     this.uid = uid;
     this.name = name;
@@ -42,6 +46,7 @@ class User {
     this.headerPicURL = headerPicURL;
     this.headerPicFilename = headerPicFilename;
     this.profilPicFilename = profilPicFilename;
+    this.joinedAt = joinedAt;
   }
 
   toString() {
@@ -65,7 +70,9 @@ class User {
       "\nHeader Pic Link: " +
       this.headerPicURL +
       "\nHeader Pic Filename: " +
-      this.headerPicFilename
+      this.headerPicFilename +
+      "\nJoined At: " +
+      getFormattedDate(this.joinedAt)
     );
   }
 }

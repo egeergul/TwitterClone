@@ -59,7 +59,8 @@ const LoginPage: FC = () => {
                   data.profilePictureURL,
                   data.profilePictureFilename,
                   data.headerPicURL,
-                  data.headerPictureFilename
+                  data.headerPictureFilename,
+                  data.joinedAt
                 );
                 setUserInfo(newUser);
                 navigation.dispatch(StackActions.popToTop());

@@ -59,6 +59,9 @@ const EditBioPage = ({ route }: Props) => {
     if (headerFilename != "DEFAULT") {
       headerPicURL = await getImageURL(HEADER_PICTURES + headerFilename);
     }
+
+    const joinedAt = Date.now();
+
     await set(ref(database, USERS + user.uid), {
       uid: userCredential.user.uid,
       name: route.params.name,
@@ -71,6 +74,7 @@ const EditBioPage = ({ route }: Props) => {
       profilePictureURL: profilePicURL,
       headerPictureFilename: headerFilename,
       headerPicURL: headerPicURL,
+      joinedAt: joinedAt,
     });
 
     let newUser = new User(
@@ -83,7 +87,8 @@ const EditBioPage = ({ route }: Props) => {
       profilePicURL,
       filename,
       headerPicURL,
-      headerFilename
+      headerFilename,
+      joinedAt
     );
 
     setUserInfo(newUser);
