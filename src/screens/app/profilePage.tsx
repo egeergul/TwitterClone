@@ -105,19 +105,33 @@ function App(props: UserProps) {
 
   const renderActiveTab = () => {
     if (activeTab == 0) {
-      return <TweetsTab tweets={tweets} />;
+      return (
+        <TweetsTab
+          isMyProfile={props.isMyProfile}
+          tweets={tweets}
+          username={user.username}
+        />
+      );
     } else if (activeTab == 1) {
-      return <TweetsAndRepliesTab tweets={tweets} />;
+      return (
+        <TweetsAndRepliesTab
+          isMyProfile={props.isMyProfile}
+          tweets={tweets}
+          username={user.username}
+        />
+      );
     } else if (activeTab == 2) {
       return (
         <MediaTab
+          isMyProfile={props.isMyProfile}
           tweets={tweets.filter((tweet) => {
             return tweet.mediaURL != "DEFAULT";
           })}
+          username={user.username}
         />
       );
     } else {
-      return <LikesTab />;
+      return <LikesTab isMyProfile={props.isMyProfile} />;
     }
   };
 

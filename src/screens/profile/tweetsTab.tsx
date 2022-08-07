@@ -9,14 +9,19 @@ const { width, height } = Dimensions.get("screen");
 // Required props
 interface RequiredProps {
   tweets: TweetModel[];
+  isMyProfile: boolean;
 }
 // Optional props
-interface OptionalProps {}
+interface OptionalProps {
+  username: string;
+}
 // Combine required and optional props to build the full prop interface
 interface Props extends RequiredProps, OptionalProps {}
 
 // Use the optional prop interface to define the default props
-const defaultProps: OptionalProps = {};
+const defaultProps: OptionalProps = {
+  username: "",
+};
 
 const TweetsTab = (props: Props) => {
   return (
@@ -37,14 +42,22 @@ const TweetsTab = (props: Props) => {
             />
           </View>
           <StyledText
-            text="What's happening?"
+            text={
+              props.isMyProfile
+                ? "What's happening?"
+                : props.username! + " hasn't Tweeted"
+            }
             fontWeight={"bold"}
             fontSize={32}
           />
           <StyledText
             margin={[15, 0, 0, 0]}
             color={grey}
-            text="All of your Tweets be shown here. Share your ideas and experiences with the world."
+            text={
+              props.isMyProfile
+                ? "All of your Tweets be shown here. Share your ideas and experiences with the world."
+                : "Once they do, those Tweets will show up here."
+            }
           />
         </View>
       ) : (
@@ -91,4 +104,6 @@ const styles = StyleSheet.create({
     height: height * 0.85,
   },
 });
+
+TweetsTab.defaultProps = defaultProps;
 export default TweetsTab;

@@ -9,14 +9,19 @@ const { width, height } = Dimensions.get("screen");
 // Required props
 interface RequiredProps {
   tweets: TweetModel[];
+  isMyProfile: boolean;
 }
 // Optional props
-interface OptionalProps {}
+interface OptionalProps {
+  username: string;
+}
 // Combine required and optional props to build the full prop interface
 interface Props extends RequiredProps, OptionalProps {}
 
 // Use the optional prop interface to define the default props
-const defaultProps: OptionalProps = {};
+const defaultProps: OptionalProps = {
+  username: "",
+};
 
 const MediaTab = (props: Props) => {
   return (
@@ -37,14 +42,22 @@ const MediaTab = (props: Props) => {
             />
           </View>
           <StyledText
-            text="Ligts, camera... attachments!"
+            text={
+              props.isMyProfile
+                ? "Ligts, camera... attachments!"
+                : props.username! + " hasn't Tweeted media"
+            }
             fontWeight={"bold"}
             fontSize={32}
           />
           <StyledText
             margin={[15, 0, 0, 0]}
             color={grey}
-            text="Your photo and video Tweets will show up here."
+            text={
+              props.isMyProfile
+                ? "Your photo and video Tweets will show up here."
+                : "Once they do, those Tweets will show up here."
+            }
           />
         </View>
       ) : (
@@ -91,4 +104,5 @@ const styles = StyleSheet.create({
   },
 });
 
+MediaTab.defaultProps = defaultProps;
 export default MediaTab;
