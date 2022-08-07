@@ -4,7 +4,7 @@ import StyledInput from "./styledInput";
 import TabMenu from "./tabMenu";
 import Tweet from "./tweet";
 import FullWidthImage from "./fullWidthImage";
-
+import UserListItem from "./userListItem";
 export {
   StyledText,
   StyledButton,
@@ -12,4 +12,5 @@ export {
   TabMenu,
   Tweet,
   FullWidthImage,
+  UserListItem,
 };

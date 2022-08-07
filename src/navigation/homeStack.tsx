@@ -11,7 +11,9 @@ import { View, Text } from "react-native";
 
 export type HomeStackParams = {
   Home: undefined;
-  Profile: undefined;
+  Profile: {
+    uid: string;
+  };
   EditCredentials: undefined;
   NewTweet: undefined;
   Loading: undefined;

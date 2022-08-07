@@ -53,14 +53,18 @@ const AppBottomTabStack: FC = () => {
                         type="material-community"
                         name="account"
                         onPress={() => {
-                          navigation.navigate("Profile");
+                          navigation.navigate("Profile", {
+                            uid: userContext.userInfo.uid,
+                          });
                         }}
                         style={{ marginLeft: 10 }}
                       />
                     ) : (
                       <TouchableOpacity
                         onPress={() => {
-                          navigation.navigate("Profile");
+                          navigation.navigate("Profile", {
+                            uid: userContext.userInfo.uid,
+                          });
                         }}
                       >
                         <Image
