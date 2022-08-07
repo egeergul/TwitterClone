@@ -109,6 +109,7 @@ const NewTweetPage: FC = () => {
         isPinned: false,
         name: user.name,
         username: user.username,
+        userProfilePicURL: user.profilePicURL,
       });
 
       navigation.dispatch(StackActions.popToTop());

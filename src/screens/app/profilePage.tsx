@@ -60,11 +60,17 @@ function App() {
 
   const renderActiveTab = () => {
     if (activeTab == 0) {
-      return <TweetsTab />;
+      return <TweetsTab tweets={tweets} />;
     } else if (activeTab == 1) {
-      return <TweetsAndRepliesTab />;
+      return <TweetsAndRepliesTab tweets={tweets} />;
     } else if (activeTab == 2) {
-      return <MediaTab />;
+      return (
+        <MediaTab
+          tweets={tweets.filter((tweet) => {
+            return tweet.mediaURL != "DEFAULT";
+          })}
+        />
+      );
     } else {
       return <LikesTab />;
     }
@@ -89,7 +95,8 @@ function App() {
                 data.text,
                 data.timestamp,
                 data.mediaURL,
-                data.mediaFilename
+                data.mediaFilename,
+                data.userProfilePicURL
               );
 
               setTweets((oldArray) => [tweet, ...oldArray]);

@@ -1,5 +1,5 @@
 class TweetModel {
-  public messageId: string;
+  public tweetId: string;
   public uid: string;
   public name: string;
   public username: string;
@@ -8,6 +8,7 @@ class TweetModel {
   public timestamp: string;
   public mediaURL: string;
   public mediaFilename: string;
+  public userProfilePicURL: string;
 
   /** TODO
    *
@@ -20,7 +21,7 @@ class TweetModel {
    */
 
   constructor(
-    messageId: string,
+    tweetId: string,
     uid: string,
     name: string,
     username: string,
@@ -28,9 +29,10 @@ class TweetModel {
     text: string,
     timestamp: string,
     mediaURL: string,
-    mediaFilename: string
+    mediaFilename: string,
+    userProfilePicURL: string
   ) {
-    this.messageId = messageId;
+    this.tweetId = tweetId;
     this.uid = uid;
     this.name = name;
     this.username = username;
@@ -39,12 +41,13 @@ class TweetModel {
     this.timestamp = timestamp;
     this.mediaURL = mediaURL;
     this.mediaFilename = mediaFilename;
+    this.userProfilePicURL = userProfilePicURL;
   }
 
   toString() {
     return (
-      "Message Id: " +
-      this.messageId +
+      "Tweet Id: " +
+      this.tweetId +
       "\nUid: " +
       this.uid +
       "\nName: " +
@@ -61,6 +64,8 @@ class TweetModel {
       this.mediaURL +
       "\nMedia Filename: " +
       this.mediaFilename +
+      "\nUser Profile Picture URL: " +
+      this.userProfilePicURL +
       "\n\n"
     );
   }
