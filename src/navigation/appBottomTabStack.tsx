@@ -146,6 +146,7 @@ const AppBottomTabStack: FC = () => {
                 name="DirectMessages"
                 component={DirectMessagesPage}
                 options={{
+                  headerTitle: "Direct Messages",
                   tabBarIcon: ({ focused }) =>
                     focused ? (
                       <Icon type="material-community" name="email" />

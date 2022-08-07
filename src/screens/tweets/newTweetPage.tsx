@@ -110,6 +110,7 @@ const NewTweetPage: FC = () => {
         name: user.name,
         username: user.username,
       });
+
       navigation.dispatch(StackActions.popToTop());
       navigation.navigate("Home");
     } else {

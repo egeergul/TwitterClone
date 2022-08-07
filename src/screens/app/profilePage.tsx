@@ -26,6 +26,11 @@ import { ref, onValue } from "firebase/database";
 import { database, TWEETS } from "../../constants/firebase";
 import { TweetModel } from "../../models";
 import { getFormattedDate } from "../../helpers/helpers";
+import NotificationStack from "../../navigation/notificationStack";
+import TweetsTab from "../profile/tweetsTab";
+import TweetsAndRepliesTab from "../profile/tweetsAndRepliesTab";
+import LikesTab from "../profile/likesTab";
+import MediaTab from "../profile/mediaTab";
 
 const HEADER_HEIGHT_EXPANDED = 35;
 const HEADER_HEIGHT_NARROWED = 100;
@@ -52,6 +57,18 @@ function App() {
   const [activeTab, setActiveTab] = useState<number>(0);
   const user = useContext(UserContext).userInfo;
   const [tweets, setTweets] = useState<TweetModel[]>([]);
+
+  const renderActiveTab = () => {
+    if (activeTab == 0) {
+      return <TweetsTab />;
+    } else if (activeTab == 1) {
+      return <TweetsAndRepliesTab />;
+    } else if (activeTab == 2) {
+      return <MediaTab />;
+    } else {
+      return <LikesTab />;
+    }
+  };
 
   const fetchTweets = () => {
     const dbRef = ref(database, TWEETS + user.uid);
@@ -175,7 +192,11 @@ function App() {
                 fontSize={18}
                 fontWeight="bold"
               />
-              <StyledText text="41 Tweets" color={white} fontSize={12} />
+              <StyledText
+                text={tweets.length + " Tweets"}
+                color={white}
+                fontSize={12}
+              />
             </View>
 
             <View style={{ flexDirection: "row" }}>
@@ -370,30 +391,7 @@ function App() {
               setActiveTab={setActiveTab}
             />
 
-            {tweets.map((tweet) => {
-              return (
-                <Tweet
-                  name={tweet.name}
-                  username={tweet.username}
-                  text={tweet.text}
-                  mediaURL={tweet.mediaURL}
-                  isPinned={tweet.isPinned}
-                  profilePicURL={user.profilePicURL}
-                  timestamp={parseInt(tweet.timestamp)}
-                />
-              );
-            })}
-
-            <View
-              style={{
-                flex: 1,
-                height: 70,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text>.</Text>
-            </View>
+            {renderActiveTab()}
           </Animated.ScrollView>
         </View>
       )}
@@ -425,3 +423,31 @@ const styles = StyleSheet.create({
     borderTopColor: "rgba(255, 255, 255, 0.25)",
   },
 });
+
+/**
+ * 
+ * {tweets.map((tweet) => {
+              return (
+                <Tweet
+                  name={tweet.name}
+                  username={tweet.username}
+                  text={tweet.text}
+                  mediaURL={tweet.mediaURL}
+                  isPinned={tweet.isPinned}
+                  profilePicURL={user.profilePicURL}
+                  timestamp={parseInt(tweet.timestamp)}
+                />
+              );
+            })}
+
+            <View
+              style={{
+                flex: 1,
+                height: 70,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text>.</Text>
+            </View>
+ */

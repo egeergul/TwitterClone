@@ -1,59 +1,49 @@
 import React, { FC } from "react";
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
+import { StyledText } from "../../components";
+import { grey, white } from "../../constants/colors";
 
+const { width, height } = Dimensions.get("screen");
 const MediaTab: FC = () => {
   return (
-    <ScrollView style={{ height: 400 }}>
-      <Text>
-        {" "}
-        Media Tab Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ab
-        fugit culpa, veniam corrupti quas libero sint. Quam, temporibus esse
-        optio, eveniet placeat nisi voluptate exercitationem pariatur sed eum,
-        voluptatem numquam! Media Tab Lorem ipsum dolor sit, amet consectetur
-        adipisicing elit. Ab fugit culpa, veniam corrupti quas libero sint.
-        Quam, temporibus esse optio, eveniet placeat nisi voluptate
-        exercitationem pariatur sed eum, voluptatem numquam! Media Tab Lorem
-        ipsum dolor sit, amet consectetur adipisicing elit. Ab fugit culpa,
-        veniam corrupti quas libero sint. Quam, temporibus esse optio, eveniet
-        placeat nisi voluptate exercitationem pariatur sed eum, voluptatem
-        numquam!
-        EEEEEEEEEEEEEEEEEERRREEEEEEEEEEErEEEEEEEEEEEEEEEEEERRREEEEEEEEEEEr
-        EEEEEEEEEEEEEEEEEERRREEEEEEEEEEErEEEEEEEEEEEEEEEEEERRREEEEEEEEEEEr
-        adipisicing elit. Ab fugit culpa, veniam corrupti quas libero sint.
-        Quam, temporibus esse optio, eveniet placeat nisi voluptate
-        exercitationem pariatur sed eum, voluptatem numquam!Media Tab Lorem
-        ipsum dolor sit, amet consectetur adipisicing elit. Ab fugit culpa,
-        veniam corrupti quas libero sint. Quam, temporibus esse optio, eveniet
-        placeat nisi voluptate exercitationem pariatur sed eum, voluptatem
-        numquam!Media Tab Lorem ipsum dolor sit, amet consectetur adipisicing
-        elit. Ab fugit culpa, veniam corrupti quas libero sint. Quam, temporibus
-        esse optio, eveniet placeat nisi voluptate exercitationem pariatur sed
-        eum, voluptatem numquam!
-        EEEEEEEEEEEEEEEEEERRREEEEEEEEEEErEEEEEEEEEEEEEEEEEERRREEEEEEEEEEEr
-        adipisicing elit. Ab fugit culpa, veniam corrupti quas libero sint.
-        Quam, temporibus esse optio, eveniet placeat nisi voluptate
-        exercitationem pariatur sed eum, voluptatem numquam!Media Tab Lorem
-        ipsum dolor sit, amet consectetur adipisicing elit. Ab fugit culpa,
-        veniam corrupti quas libero sint. Quam, temporibus esse optio, eveniet
-        placeat nisi voluptate exercitationem pariatur sed eum, voluptatem
-        numquam!Media Tab Lorem ipsum dolor sit, amet consectetur adipisicing
-        elit. Ab fugit culpa, veniam corrupti quas libero sint. Quam, temporibus
-        esse optio, eveniet placeat nisi voluptate exercitationem pariatur sed
-        eum, voluptatem numquam!
-        EEEEEEEEEEEEEEEEEERRREEEEEEEEEEErEEEEEEEEEEEEEEEEEERRREEEEEEEEEEEr
-        adipisicing elit. Ab fugit culpa, veniam corrupti quas libero sint.
-        Quam, temporibus esse optio, eveniet placeat nisi voluptate
-        exercitationem pariatur sed eum, voluptatem numquam!Media Tab Lorem
-        ipsum dolor sit, amet consectetur adipisicing elit. Ab fugit culpa,
-        veniam corrupti quas libero sint. Quam, temporibus esse optio, eveniet
-        placeat nisi voluptate exercitationem pariatur sed eum, voluptatem
-        numquam!Media Tab Lorem ipsum dolor sit, amet consectetur adipisicing
-        elit. Ab fugit culpa, veniam corrupti quas libero sint. Quam, temporibus
-        esse optio, eveniet placeat nisi voluptate exercitationem pariatur sed
-        eum, voluptatem numquam!
-      </Text>
-    </ScrollView>
+    <View style={styles.container}>
+      <View
+        style={{
+          alignSelf: "stretch",
+          flexDirection: "row",
+          justifyContent: "center",
+        }}
+      >
+        <Image
+          style={{ width: width * 0.7, height: width * 0.7 }}
+          source={require("../../../assets/imgs/no_media.png")}
+          resizeMode="contain"
+        />
+      </View>
+      <StyledText
+        text="Ligts, camera... attachments!"
+        fontWeight={"bold"}
+        fontSize={32}
+      />
+      <StyledText
+        margin={[15, 0, 0, 0]}
+        color={grey}
+        text="Your photo and video Tweets will show up here."
+      />
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    backgroundColor: white,
+    padding: 40,
+    height: height * 0.85,
+  },
+});
 
 export default MediaTab;
