@@ -110,8 +110,8 @@ const NewTweetPage: FC = () => {
         name: user.name,
         username: user.username,
       });
-      navigation.goBack();
-      navigation.goBack();
+      navigation.dispatch(StackActions.popToTop());
+      navigation.navigate("Home");
     } else {
       Alert.alert("You have to type something first.");
     }

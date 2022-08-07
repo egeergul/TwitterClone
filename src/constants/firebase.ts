@@ -8,7 +8,7 @@ import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
+/**const firebaseConfig = {
   apiKey: "AIzaSyCQACSSYLBSrKdJphh_jhJyo8CaWcLMPBQ",
   authDomain: "twitter-clone-cbe40.firebaseapp.com",
   projectId: "twitter-clone-cbe40",
@@ -18,6 +18,15 @@ const firebaseConfig = {
   measurementId: "G-ML86ZLV4F0",
   databaseURL:
     "https://twitter-clone-cbe40-default-rtdb.europe-west1.firebasedatabase.app/",
+}; */
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC4w5D9wSc8BMXObtX7m3it4ajPCQqaD40",
+  authDomain: "twitter-clone-2-5ee1c.firebaseapp.com",
+  projectId: "twitter-clone-2-5ee1c",
+  storageBucket: "twitter-clone-2-5ee1c.appspot.com",
+  messagingSenderId: "642800972039",
+  appId: "1:642800972039:web:b644d497b77becc252d5a2",
 };
 
 // Initialize Firebase

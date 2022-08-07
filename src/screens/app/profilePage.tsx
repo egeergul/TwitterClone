@@ -74,7 +74,6 @@ function App() {
                 data.mediaURL,
                 data.mediaFilename
               );
-              console.log(tweet.toString());
 
               setTweets((oldArray) => [tweet, ...oldArray]);
             }

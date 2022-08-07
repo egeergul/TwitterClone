@@ -141,7 +141,6 @@ const EditCredentialsPage: FC = () => {
 
   const saveChanges = async () => {
     navigation.navigate("Loading");
-    console.log("Loading...");
     const updates: Record<string, string> = {};
 
     if (name != user.name) {
@@ -174,12 +173,8 @@ const EditCredentialsPage: FC = () => {
       user.profilPicFilename = ppFilename;
     }
 
-    console.log(updates);
-    console.log(user.toString());
-
     setUser(user);
     update(ref(database), updates);
-    console.log("bitiyo");
 
     navigation.dispatch(StackActions.popToTop());
     navigation.navigate("Home");

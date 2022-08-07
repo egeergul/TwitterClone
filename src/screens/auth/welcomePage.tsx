@@ -12,6 +12,8 @@ import { blue, grey, white, transparent } from "../../constants/colors";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParams } from "../../navigation/authStack";
+import { deleteImage } from "../../constants/storageHelper";
+import { HEADER_PICTURES } from "../../constants/firebase";
 
 const WelcomePage = () => {
   const navigation =
