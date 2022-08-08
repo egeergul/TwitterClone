@@ -1,4 +1,4 @@
-import React, { FC, useContext } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -14,11 +14,13 @@ import { white, blue, grey } from "../../constants/colors";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { HomeStackParams } from "../../navigation/homeStack";
 import { useNavigation } from "@react-navigation/native";
-import { auth } from "../../constants/firebase";
+import { auth, database } from "../../constants/firebase";
 import { StyledButton, StyledText, Tweet } from "../../components";
 import { UserContext } from "../../navigation/mainNav";
 import { Icon } from "@rneui/themed";
 import { AppBottomTabStackParams } from "../../navigation/appBottomTabStack";
+import { onValue, ref } from "firebase/database";
+import { TweetModel } from "../../models";
 
 const HomePage = () => {
   const navigation =
@@ -26,47 +28,121 @@ const HomePage = () => {
   const navigationBottomStack =
     useNavigation<NativeStackNavigationProp<AppBottomTabStackParams>>();
   const user = useContext(UserContext).userInfo;
+  const { width, height } = Dimensions.get("screen");
 
-  const signOut = () => {
-    auth.signOut();
+  const [tweets, setTweets] = useState<TweetModel[]>([]);
+
+  const fetchTweets = () => {
+    const dbRef = ref(database, `follows/${user.uid}/followings`);
+    onValue(dbRef, (snapshot) => {
+      if (snapshot.exists()) {
+        snapshot.forEach((childSnapshot) => {
+          if (childSnapshot.exists()) {
+            const key = childSnapshot.key;
+            onValue(ref(database, `tweets/${key}`), (tweetSnapshot) => {
+              if (tweetSnapshot.exists()) {
+                tweetSnapshot.forEach((childTweetSnapshot) => {
+                  if (childTweetSnapshot.exists()) {
+                    const data = childTweetSnapshot.val();
+                    const tweet = new TweetModel(
+                      key!,
+                      data.uid,
+                      data.name,
+                      data.username,
+                      data.isPinned,
+                      data.text,
+                      data.timestamp,
+                      data.mediaURL,
+                      data.mediaFilename,
+                      data.userProfilePicURL
+                    );
+
+                    console.log(tweet.toString());
+
+                    setTweets((oldList) => [tweet, ...oldList]);
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+    });
   };
 
-  const { width, height } = Dimensions.get("screen");
+  useEffect(() => {
+    setTweets([]);
+    fetchTweets();
+  }, []);
 
   return (
     <View style={styles.emptyContainer}>
-      <View
-        style={{
-          alignSelf: "stretch",
-          flexDirection: "row",
-          justifyContent: "center",
-        }}
-      >
-        <Image
-          style={{ width: width * 0.7, height: width * 0.7 }}
-          source={require("../../../assets/imgs/no_tweets.png")}
-          resizeMode="contain"
-        />
-      </View>
-      <StyledText
-        text="Welcome to Twitter!"
-        fontWeight={"bold"}
-        fontSize={32}
-      />
-      <StyledText
-        margin={[15, 0, 0, 0]}
-        color={grey}
-        text="To see what's happening on the world, you need to follow people or topics first. Then, you will see all the new Tweets here."
-      />
+      {tweets.length == 0 ? (
+        <View style={{ padding: 40 }}>
+          <View
+            style={{
+              alignSelf: "stretch",
+              flexDirection: "row",
+              justifyContent: "center",
+            }}
+          >
+            <Image
+              style={{ width: width * 0.7, height: width * 0.7 }}
+              source={require("../../../assets/imgs/no_tweets.png")}
+              resizeMode="contain"
+            />
+          </View>
+          <StyledText
+            text="Welcome to Twitter!"
+            fontWeight={"bold"}
+            fontSize={32}
+          />
+          <StyledText
+            margin={[15, 0, 0, 0]}
+            color={grey}
+            text="To see what's happening on the world, you need to follow people or topics first. Then, you will see all the new Tweets here."
+          />
 
-      <StyledButton
-        title="Explore people"
-        onPress={() => navigationBottomStack.navigate("Search")}
-        color={white}
-        alignSelf="flex-start"
-        margin={[20, 0, 0, 0]}
-        backgroundColor={blue}
-      />
+          <StyledButton
+            title="Explore people"
+            onPress={() => navigationBottomStack.navigate("Search")}
+            color={white}
+            alignSelf="flex-start"
+            margin={[20, 0, 0, 0]}
+            backgroundColor={blue}
+          />
+        </View>
+      ) : (
+        <ScrollView
+          style={{ backgroundColor: white, width: "100%" }}
+          showsVerticalScrollIndicator={false}
+        >
+          {tweets.map((tweet) => {
+            return (
+              <Tweet
+                key={tweet.tweetId}
+                name={tweet.name}
+                username={tweet.username}
+                text={tweet.text}
+                mediaURL={tweet.mediaURL}
+                isPinned={tweet.isPinned}
+                profilePicURL={tweet.userProfilePicURL}
+                timestamp={parseInt(tweet.timestamp)}
+              />
+            );
+          })}
+          <View
+            style={{
+              flex: 1,
+              height: 70,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text>.</Text>
+          </View>
+        </ScrollView>
+      )}
 
       <TouchableOpacity
         onPress={() => navigation.navigate("NewTweet")}
@@ -96,7 +172,7 @@ const HomePage = () => {
 const styles = StyleSheet.create({
   emptyContainer: {
     flex: 1,
-    padding: 40,
+    height: "100%",
     flexDirection: "column",
     backgroundColor: white,
     alignItems: "flex-start",

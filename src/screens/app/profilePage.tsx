@@ -1,12 +1,9 @@
 import React, { useRef, useState, useEffect, useContext } from "react";
 import {
-  Alert,
   Animated,
-  Image,
   ImageBackground,
   StatusBar,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -18,7 +15,7 @@ import { BlurView } from "expo-blur";
 import { black, white, grey, transparent, blue } from "../../constants/colors";
 import { StyledText, StyledButton, TabMenu, Tweet } from "../../components";
 import { Icon } from "@rneui/themed";
-import { StackActions, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import {
   NativeStackNavigationProp,
   NativeStackScreenProps,
@@ -29,21 +26,15 @@ import { ref, onValue, get, child, set, remove } from "firebase/database";
 import { database, TWEETS } from "../../constants/firebase";
 import { TweetModel, User } from "../../models";
 import { getFormattedDate } from "../../helpers/helpers";
-import NotificationStack from "../../navigation/notificationStack";
 import TweetsTab from "../profile/tweetsTab";
 import TweetsAndRepliesTab from "../profile/tweetsAndRepliesTab";
 import LikesTab from "../profile/likesTab";
 import MediaTab from "../profile/mediaTab";
-import { propsFlattener } from "native-base/lib/typescript/hooks/useThemeProps/propsFlattener";
-import { HOME_STACK } from "../../constants/navigation";
-import user from "../../models/user";
 
 const HEADER_HEIGHT_EXPANDED = 35;
 const HEADER_HEIGHT_NARROWED = 100;
-
 const AnimatedImageBackground =
   Animated.createAnimatedComponent(ImageBackground);
-
 const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
 
 type Props = NativeStackScreenProps<HomeStackParams, "Profile">;
