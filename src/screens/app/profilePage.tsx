@@ -25,7 +25,7 @@ import {
 } from "@react-navigation/native-stack";
 import { HomeStackParams } from "../../navigation/homeStack";
 import { UserContext } from "../../navigation/mainNav";
-import { ref, onValue, get, child } from "firebase/database";
+import { ref, onValue, get, child, set, remove } from "firebase/database";
 import { database, TWEETS } from "../../constants/firebase";
 import { TweetModel, User } from "../../models";
 import { getFormattedDate } from "../../helpers/helpers";
@@ -54,11 +54,12 @@ export default function WrappedApp({ route }: Props) {
     useContext(UserContext).userInfo
   );
   const [isMyProfile, setIsMyProfile] = useState<boolean>(true);
+  const [isFollowing, setIsFollowing] = useState<boolean>(false);
 
   useEffect(() => {
     if (currentUser.uid != route.params.uid) {
-      get(child(ref(database), `users/${route.params.uid}`)).then(
-        async (snapshot) => {
+      get(child(ref(database), `users/${route.params.uid}`))
+        .then(async (snapshot) => {
           if (snapshot.exists()) {
             const data = snapshot.val();
 
@@ -78,14 +79,31 @@ export default function WrappedApp({ route }: Props) {
             setCurrentUser(newUser);
             setIsMyProfile(false);
           }
-        }
-      );
+        })
+        .then(() => {
+          get(
+            child(
+              ref(database),
+              `follows/${route.params.uid}/followers/${currentUser.uid}`
+            )
+          ).then(async (snapshot) => {
+            if (snapshot.exists()) {
+              setIsFollowing(true);
+            } else {
+              setIsFollowing(false);
+            }
+          });
+        });
     }
   }, []);
 
   return (
     <SafeAreaProvider>
-      <App user={currentUser} isMyProfile={isMyProfile} />
+      <App
+        user={currentUser}
+        isMyProfile={isMyProfile}
+        isFollowing={isFollowing}
+      />
     </SafeAreaProvider>
   );
 }
@@ -93,6 +111,7 @@ export default function WrappedApp({ route }: Props) {
 interface UserProps {
   user: User;
   isMyProfile: boolean;
+  isFollowing: boolean;
 }
 function App(props: UserProps) {
   const insets = useSafeAreaInsets();
@@ -102,6 +121,10 @@ function App(props: UserProps) {
   const [activeTab, setActiveTab] = useState<number>(0);
   const user = props.user;
   const [tweets, setTweets] = useState<TweetModel[]>([]);
+  const [followers, setFollowers] = useState<string[]>([]);
+  const [followings, setFollowings] = useState<string[]>([]);
+  const [isFollowing, setIsFollowing] = useState<boolean>(props.isFollowing);
+  const currentUser = useContext(UserContext).userInfo;
 
   const renderActiveTab = () => {
     if (activeTab == 0) {
@@ -168,12 +191,104 @@ function App(props: UserProps) {
       }
     );
   };
-
   useEffect(() => {
     setTweets([]);
     fetchTweets();
   }, [user]);
 
+  const fetchFollowers = () => {
+    console.log("YENİİ");
+
+    const dbRef = ref(database, `follows/${user.uid}/followers`);
+    onValue(
+      dbRef,
+      (snapshot) => {
+        if (snapshot.exists()) {
+          console.log("Followers of " + user.uid);
+
+          snapshot.forEach((childSnapshot) => {
+            if (childSnapshot.exists()) {
+              const key = childSnapshot.key;
+              console.log(key);
+
+              setFollowers((oldArray) => [key!, ...oldArray]);
+            }
+          });
+
+          console.log("\n");
+        }
+      },
+      {
+        onlyOnce: true,
+      }
+    );
+  };
+
+  useEffect(() => {
+    setFollowers([]);
+    fetchFollowers();
+  }, [isFollowing, user]);
+
+  const fetchFollowings = () => {
+    const dbRef = ref(database, `follows/${user.uid}/followings`);
+    onValue(
+      dbRef,
+      (snapshot) => {
+        if (snapshot.exists()) {
+          snapshot.forEach((childSnapshot) => {
+            console.log("Followings of " + user.uid + "\n");
+
+            if (childSnapshot.exists()) {
+              const key = childSnapshot.key;
+              console.log(key);
+
+              setFollowings((oldArray) => [key!, ...oldArray]);
+            }
+          });
+        }
+      },
+      {
+        onlyOnce: true,
+      }
+    );
+  };
+
+  useEffect(() => {
+    setFollowings([]);
+    fetchFollowings();
+  }, [isFollowing, user]);
+
+  useEffect(() => {
+    setIsFollowing(props.isFollowing);
+  }, [props.isFollowing]);
+
+  const follow = async () => {
+    await set(
+      ref(database, `follows/${user.uid}/followers/${currentUser.uid}`),
+      {
+        isFollowing: true,
+      }
+    );
+
+    await set(
+      ref(database, `follows/${currentUser.uid}/followings/${user.uid}`),
+      {
+        isFollowing: true,
+      }
+    );
+    setIsFollowing(true);
+  };
+
+  const unfollow = async () => {
+    await remove(
+      ref(database, `follows/${user.uid}/followers/${currentUser.uid}`)
+    );
+
+    await remove(
+      ref(database, `follows/${currentUser.uid}/followings/${user.uid}`)
+    );
+    setIsFollowing(false);
+  };
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -393,12 +508,12 @@ function App(props: UserProps) {
             ) : (
               <StyledButton
                 alignSelf={"flex-end"}
-                title="Follow"
+                title={isFollowing ? "Unfollow" : "Follow"}
                 backgroundColor={black}
                 margin={[-35, -10, 0, 0]}
                 color={white}
                 padding={[5, 25, 5, 25]}
-                onPress={() => Alert.alert("TODO")}
+                onPress={isFollowing ? unfollow : follow}
               />
             )}
 
@@ -437,10 +552,14 @@ function App(props: UserProps) {
 
             {/* Profile stats */}
             <View style={{ flexDirection: "row", marginTop: 10 }}>
-              <StyledText text="21" fontWeight="bold" />
-              <StyledText margin={[0, 0, 0, 3]} text="Following" color={grey} />
-              <StyledText margin={[0, 0, 0, 10]} text="12" fontWeight="bold" />
-              <StyledText margin={[0, 0, 0, 3]} text="Following" color={grey} />
+              <StyledText text={followings.length + ""} fontWeight="bold" />
+              <StyledText margin={[0, 0, 0, 5]} text="Following" color={grey} />
+              <StyledText
+                margin={[0, 0, 0, 10]}
+                text={followers.length + ""}
+                fontWeight="bold"
+              />
+              <StyledText margin={[0, 0, 0, 5]} text="Follower" color={grey} />
             </View>
           </View>
         </View>
