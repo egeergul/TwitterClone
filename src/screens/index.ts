@@ -20,6 +20,7 @@ import NewTweetPage from "./tweets/newTweetPage";
 import ProfilePage from "./app/profilePage";
 import MentionsTab from "./notification_tabs/mentionsTab";
 import AllTab from "./notification_tabs/allTab";
+import FollowInfoPage from "./profile/followInfoPage";
 
 export {
   WelcomePage,
@@ -44,4 +45,5 @@ export {
   ProfilePage,
   MentionsTab,
   AllTab,
+  FollowInfoPage,
 };

@@ -26,6 +26,7 @@
 
 /** PATH
  *
+ * FOllowers ları görğntüle
  * FOLLOW ETTIKLERIN FEEDE DÜŞSÜN
  * LIKE VE RETWEET YAPILSIN
  *

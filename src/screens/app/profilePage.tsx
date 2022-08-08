@@ -197,25 +197,17 @@ function App(props: UserProps) {
   }, [user]);
 
   const fetchFollowers = () => {
-    console.log("YENİİ");
-
     const dbRef = ref(database, `follows/${user.uid}/followers`);
     onValue(
       dbRef,
       (snapshot) => {
         if (snapshot.exists()) {
-          console.log("Followers of " + user.uid);
-
           snapshot.forEach((childSnapshot) => {
             if (childSnapshot.exists()) {
               const key = childSnapshot.key;
-              console.log(key);
-
               setFollowers((oldArray) => [key!, ...oldArray]);
             }
           });
-
-          console.log("\n");
         }
       },
       {
@@ -236,12 +228,8 @@ function App(props: UserProps) {
       (snapshot) => {
         if (snapshot.exists()) {
           snapshot.forEach((childSnapshot) => {
-            console.log("Followings of " + user.uid + "\n");
-
             if (childSnapshot.exists()) {
               const key = childSnapshot.key;
-              console.log(key);
-
               setFollowings((oldArray) => [key!, ...oldArray]);
             }
           });
@@ -552,14 +540,50 @@ function App(props: UserProps) {
 
             {/* Profile stats */}
             <View style={{ flexDirection: "row", marginTop: 10 }}>
-              <StyledText text={followings.length + ""} fontWeight="bold" />
-              <StyledText margin={[0, 0, 0, 5]} text="Following" color={grey} />
-              <StyledText
-                margin={[0, 0, 0, 10]}
-                text={followers.length + ""}
-                fontWeight="bold"
-              />
-              <StyledText margin={[0, 0, 0, 5]} text="Follower" color={grey} />
+              <TouchableOpacity
+                onPress={() => {
+                  if (!props.isMyProfile && followings.length == 0) {
+                  } else {
+                    navigation.push("FollowInfo", {
+                      source: "Following",
+                      list: followings,
+                    });
+                  }
+                }}
+              >
+                <View style={{ flexDirection: "row" }}>
+                  <StyledText text={followings.length + ""} fontWeight="bold" />
+                  <StyledText
+                    margin={[0, 0, 0, 5]}
+                    text="Following"
+                    color={grey}
+                  />
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  if (!props.isMyProfile && followers.length == 0) {
+                  } else {
+                    navigation.push("FollowInfo", {
+                      source: "Followers",
+                      list: followers,
+                    });
+                  }
+                }}
+              >
+                <View style={{ flexDirection: "row" }}>
+                  <StyledText
+                    margin={[0, 0, 0, 10]}
+                    text={followers.length + ""}
+                    fontWeight="bold"
+                  />
+                  <StyledText
+                    margin={[0, 0, 0, 5]}
+                    text="Follower"
+                    color={grey}
+                  />
+                </View>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
