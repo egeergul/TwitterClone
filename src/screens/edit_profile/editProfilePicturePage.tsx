@@ -1,5 +1,4 @@
 import { View, StyleSheet, Image, Alert, TouchableOpacity } from "react-native";
-import { Avatar } from "native-base";
 import { StyledButton, StyledText } from "../../components";
 import { black, grey, transparent, white } from "../../constants/colors";
 import { RootStackParams } from "../../navigation/authStack";
@@ -8,10 +7,7 @@ import { Icon } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useState } from "react";
-
 import * as ImagePicker from "expo-image-picker";
-import { storage } from "../../constants/firebase";
-import { uploadBytes, ref } from "firebase/storage";
 
 type Props = NativeStackScreenProps<RootStackParams, "EditProfilePicture">;
 
@@ -27,7 +23,7 @@ const EditProfilePicturePage = ({ route }: Props) => {
       allowsEditing: true,
       includeBase: 64,
       aspect: [1, 1],
-      quality: 1,
+      quality: 0.5,
     });
 
     if (!result.cancelled) {
@@ -85,6 +81,7 @@ const EditProfilePicturePage = ({ route }: Props) => {
         onPress={() => {
           navigation.navigate("EditHeaderPicture", {
             name: route.params.name,
+            username: route.params.username,
             email: route.params.email,
             password: route.params.password,
             profilePic: profilePic,

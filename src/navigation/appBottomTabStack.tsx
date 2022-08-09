@@ -1,64 +1,174 @@
 import React, { FC } from "react";
-import { DirectMessagesPage, NotificationsPage, SearchPage } from "../screens";
+import {
+  DirectMessagesPage,
+  HomePage,
+  NotificationsPage,
+  SearchPage,
+} from "../screens";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import HomeStack from "./homeStack";
+import HomeStack, { HomeStackParams } from "./homeStack";
 import { Icon } from "@rneui/themed";
+import { Image, TouchableOpacity, View } from "react-native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { StackActions, useNavigation } from "@react-navigation/native";
+import { StyledButton } from "../components";
+import { auth } from "../constants/firebase";
+import { black, transparent } from "../constants/colors";
+import { NavigationContext } from "../../App";
+import { AUTH_STACK } from "../constants/navigation";
+import { UserContext } from "./mainNav";
+import NotificationStack from "./notificationStack";
 
-const TabStack = createBottomTabNavigator();
+export type AppBottomTabStackParams = {
+  HomeTab: undefined;
+  Search: undefined;
+  Notifications: undefined;
+  DirectMessages: undefined;
+};
+const TabStack = createBottomTabNavigator<AppBottomTabStackParams>();
 
 const AppBottomTabStack: FC = () => {
-  return (
-    <TabStack.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarShowLabel: false,
-      }}
-    >
-      <TabStack.Screen
-        name="HomeTab"
-        component={HomeStack}
-        options={{
-          tabBarIcon: ({ focused }) =>
-            focused ? (
-              <Icon type="ionicon" name="home" />
-            ) : (
-              <Icon type="ionicon" name="home-outline" />
-            ),
-        }}
-      />
+  const navigation =
+    useNavigation<NativeStackNavigationProp<HomeStackParams>>();
 
-      <TabStack.Screen
-        name="Search"
-        component={SearchPage}
-        options={{
-          tabBarIcon: ({}) => <Icon type="ionicon" name="search" />,
-        }}
-      />
-      <TabStack.Screen
-        name="Notifications"
-        component={NotificationsPage}
-        options={{
-          tabBarIcon: ({ focused }) =>
-            focused ? (
-              <Icon type="ionicon" name="notifications" />
-            ) : (
-              <Icon type="ionicon" name="notifications-outline" />
-            ),
-        }}
-      />
-      <TabStack.Screen
-        name="DirectMessages"
-        component={DirectMessagesPage}
-        options={{
-          tabBarIcon: ({ focused }) =>
-            focused ? (
-              <Icon type="material-community" name="email" />
-            ) : (
-              <Icon type="material-community" name="email-outline" />
-            ),
-        }}
-      />
-    </TabStack.Navigator>
+  const signOut = (setNavStack: (stack: string) => void) => {
+    auth.signOut();
+    navigation.dispatch(StackActions.popToTop());
+    setNavStack(AUTH_STACK);
+  };
+
+  return (
+    <UserContext.Consumer>
+      {(userContext) => (
+        <NavigationContext.Consumer>
+          {(navigationContext) => (
+            <TabStack.Navigator
+              screenOptions={{
+                headerShown: true,
+                tabBarShowLabel: false,
+                headerLeft: () => (
+                  <View>
+                    {userContext.userInfo.profilePicURL == "DEFAULT" ? (
+                      <Icon
+                        type="material-community"
+                        name="account"
+                        onPress={() => {
+                          navigation.navigate("Profile", {
+                            uid: userContext.userInfo.uid,
+                          });
+                        }}
+                        style={{ marginLeft: 10 }}
+                      />
+                    ) : (
+                      <TouchableOpacity
+                        onPress={() => {
+                          navigation.navigate("Profile", {
+                            uid: userContext.userInfo.uid,
+                          });
+                        }}
+                      >
+                        <Image
+                          source={{ uri: userContext.userInfo.profilePicURL }}
+                          style={{
+                            marginLeft: 10,
+                            width: 40,
+                            height: 40,
+                            borderRadius: 20,
+                          }}
+                        />
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                ),
+              }}
+            >
+              <TabStack.Screen
+                name="HomeTab"
+                component={HomePage}
+                options={{
+                  headerTitleAlign: "center",
+                  headerTitle: (props) => (
+                    <Image
+                      style={{ width: 36, height: 36 }}
+                      source={require("../../assets/imgs/logo.png")}
+                      resizeMode="contain"
+                    />
+                  ),
+
+                  headerRight: () => (
+                    <View>
+                      <StyledButton
+                        title="Log out"
+                        onPress={() => {
+                          signOut(navigationContext.setNavStack);
+                        }}
+                        color={black}
+                        backgroundColor={transparent}
+                      />
+                    </View>
+                  ),
+                  tabBarIcon: ({ focused }) =>
+                    focused ? (
+                      <Icon type="ionicon" name="home" />
+                    ) : (
+                      <Icon type="ionicon" name="home-outline" />
+                    ),
+                }}
+              />
+              <TabStack.Screen
+                name="Search"
+                component={SearchPage}
+                options={{
+                  tabBarIcon: ({}) => <Icon type="ionicon" name="search" />,
+                  headerRight: () => (
+                    <View style={{ marginRight: 10 }}>
+                      <Icon type="ionicon" name="settings-outline" />
+                    </View>
+                  ),
+                }}
+              />
+              <TabStack.Screen
+                name="Notifications"
+                component={NotificationStack}
+                options={{
+                  tabBarIcon: ({ focused }) =>
+                    focused ? (
+                      <Icon type="ionicon" name="notifications" />
+                    ) : (
+                      <Icon type="ionicon" name="notifications-outline" />
+                    ),
+
+                  headerRight: () => (
+                    <View style={{ marginRight: 10 }}>
+                      <Icon type="ionicon" name="settings-outline" />
+                    </View>
+                  ),
+                }}
+              />
+
+              <TabStack.Screen
+                name="DirectMessages"
+                component={DirectMessagesPage}
+                options={{
+                  headerTitle: "Direct Messages",
+                  tabBarIcon: ({ focused }) =>
+                    focused ? (
+                      <Icon type="material-community" name="email" />
+                    ) : (
+                      <Icon type="material-community" name="email-outline" />
+                    ),
+                  headerRight: () => (
+                    <View style={{ marginRight: 10 }}>
+                      <Icon type="ionicon" name="settings-outline" />
+                    </View>
+                  ),
+                }}
+              />
+            </TabStack.Navigator>
+          )}
+        </NavigationContext.Consumer>
+      )}
+    </UserContext.Consumer>
   );
 };
 

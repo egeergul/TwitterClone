@@ -37,7 +37,11 @@ const SignupPage: FC = () => {
             " and error message " +
             errorMessage
         );
-        if (error.code === "auth/invalid-email") {
+        if (error.code === "auth/network-request-failed") {
+          Alert.alert(
+            "Something went wrong! Please check your internet connection and try again."
+          );
+        } else if (error.code === "auth/invalid-email") {
           Alert.alert("That email address is invalid!");
         } else {
           Alert.alert("Something went wrong!");
@@ -57,7 +61,7 @@ const SignupPage: FC = () => {
     } else if (password.length < 6) {
       Alert.alert("Password must be at elast 6 characters long!");
     } else if (await checkEmail(email)) {
-      navigation.navigate("EditProfilePicture", {
+      navigation.navigate("EditUsername", {
         name,
         email,
         password,
@@ -103,6 +107,7 @@ const SignupPage: FC = () => {
         backgroundColor={transparent}
         borderColor={black}
         borderWidth={1}
+        padding={[5, 15, 5, 15]}
         alignSelf="flex-end"
         margin={[0, 0, 40, 0]}
         onPress={signup}

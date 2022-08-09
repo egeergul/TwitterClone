@@ -1,40 +1,52 @@
 import React, { FC } from "react";
-import { View, Text, StyleSheet, Alert, TouchableOpacity } from "react-native";
-import { color } from "react-native-reanimated";
-import { StyledButton, StyledText } from "../../components";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
+import { FullWidthImage, StyledText } from "../../components";
 import { blue, grey, white } from "../../constants/colors";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { Icon } from "@rneui/themed";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { HomeStackParams } from "../../navigation/homeStack";
 
-const DirectMessagesPage = () => {
+const { width, height } = Dimensions.get("screen");
+const AllTab: FC = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<HomeStackParams>>();
   return (
     <View style={styles.container}>
+      <View
+        style={{
+          alignSelf: "stretch",
+          flexDirection: "row",
+          justifyContent: "center",
+        }}
+      >
+        <Image
+          style={{ width: width * 0.7, height: width * 0.7 }}
+          source={require("../../../assets/imgs/no_notifications.png")}
+          resizeMode="contain"
+        />
+      </View>
+
       <StyledText
-        text="Welcome to your inbox!"
+        text="Join the conversation"
         fontWeight={"bold"}
         fontSize={32}
       />
       <StyledText
         margin={[15, 0, 0, 0]}
         color={grey}
-        text="Drop a line, share Tweets and more with private conversations between you and others on Twitter."
-      />
-
-      <StyledButton
-        title="Write a message"
-        onPress={() => Alert.alert("DM coming soon!")}
-        color={white}
-        alignSelf="flex-start"
-        margin={[20, 0, 0, 0]}
-        backgroundColor={blue}
+        text="From Retweets to likes and whole lot more, this is where ll the action happens about your Tweets and followers. You'll like it here."
       />
 
       <TouchableOpacity
-        onPress={() => Alert.alert("DM coming soon!")}
+        onPress={() => navigation.navigate("NewTweet")}
         style={{
           zIndex: 1000,
           position: "absolute",
@@ -52,12 +64,7 @@ const DirectMessagesPage = () => {
           shadowRadius: 3,
         }}
       >
-        <Icon
-          name="email-plus-outline"
-          type="material-community"
-          color="white"
-          size={26}
-        />
+        <Icon name="plus" type="antdesign" color="white" size={26} />
       </TouchableOpacity>
     </View>
   );
@@ -74,4 +81,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DirectMessagesPage;
+export default AllTab;

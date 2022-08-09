@@ -1,62 +1,70 @@
 import React, { FC } from "react";
-import { HomePage } from "../screens";
-import { Image } from "react-native";
-import { Icon } from "@rneui/themed";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ProfilePage from "../screens/app/profilePage";
-import { StyledButton } from "../components";
-import { auth } from "../constants/firebase";
-import { black, transparent } from "../constants/colors";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useNavigation } from "@react-navigation/native";
+import AppBottomTabStack from "./appBottomTabStack";
+import {
+  EditCredentialsPage,
+  LoadingPage,
+  NewTweetPage,
+  ProfilePage,
+  FollowInfoPage,
+  TweetDetailPage,
+} from "../screens";
+import { View, Text, Image } from "react-native";
+import { TweetModel } from "../models";
 
 export type HomeStackParams = {
   Home: undefined;
-  Profile: undefined;
+  Profile: {
+    uid: string;
+  };
+  FollowInfo: {
+    source: string;
+    list: string[];
+  };
+  TweetDetail: {
+    tweet: TweetModel;
+  };
+  EditCredentials: undefined;
+  NewTweet: undefined;
+  Loading: undefined;
 };
 const Stack = createNativeStackNavigator<HomeStackParams>();
 
-const signOut = () => {
-  auth.signOut();
-};
-
 const HomeStack: FC = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<HomeStackParams>>();
   return (
-    <Stack.Navigator screenOptions={{ headerBackTitleVisible: false }}>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Home" component={AppBottomTabStack} />
+      <Stack.Screen name="Profile" component={ProfilePage} />
       <Stack.Screen
-        name="Home"
-        component={HomePage}
+        name="FollowInfo"
+        component={FollowInfoPage}
+        options={({ route }) => ({
+          title: route.params.source,
+          headerShown: true,
+          headerBackTitleVisible: false,
+        })}
+      />
+      <Stack.Screen
+        name="EditCredentials"
         options={{
-          headerTitleAlign: "center",
-          headerTitle: (props) => (
-            <Image
-              style={{ width: 36, height: 36 }}
-              source={require("../../assets/imgs/logo.png")}
-              resizeMode="contain"
-            />
-          ),
-          headerLeft: () => (
-            <Icon
-              type="material-community"
-              name="account"
-              onPress={() => {
-                navigation.navigate("Profile");
-              }}
-            />
-          ),
-          headerRight: () => (
-            <StyledButton
-              title="Log out"
-              onPress={signOut}
-              color={black}
-              backgroundColor={transparent}
-            />
-          ),
+          headerShown: true,
+          headerBackTitleVisible: false,
+          headerTitle: "Edit Profile",
+        }}
+        component={EditCredentialsPage}
+      />
+      <Stack.Screen
+        name="TweetDetail"
+        component={TweetDetailPage}
+        options={{
+          headerShown: true,
+          headerBackTitleVisible: false,
+          headerTitle: "Tweet",
         }}
       />
-      <Stack.Screen name="Profile" component={ProfilePage} />
+
+      <Stack.Screen name="NewTweet" component={NewTweetPage} />
+      <Stack.Screen name="Loading" component={LoadingPage} />
     </Stack.Navigator>
   );
 };

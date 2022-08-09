@@ -1,11 +1,21 @@
 import React, { FC } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { white } from "../../constants/colors";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { TabMenu } from "../../components";
+import { blue, white } from "../../constants/colors";
+import SearchPage from "./searchPage";
+import HomePage from "./homePage";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+
+const Tab = createMaterialTopTabNavigator();
+//  <TabMenu tabs={["All", "Mentions"]} setActiveTab={() => {}} />
 
 const NotificationsPage = () => {
   return (
     <View style={styles.container}>
-      <Text>Notifications Page</Text>
+      <Tab.Navigator>
+        <Tab.Screen name="Home" component={SearchPage} />
+        <Tab.Screen name="Settings" component={HomePage} />
+      </Tab.Navigator>
     </View>
   );
 };
@@ -17,7 +27,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-start",
     backgroundColor: white,
-    padding: 40,
   },
 });
 

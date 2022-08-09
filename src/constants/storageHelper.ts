@@ -1,13 +1,22 @@
 import { storage } from "../constants/firebase";
-import { uploadBytes, ref } from "firebase/storage";
+import {
+  uploadBytes,
+  ref,
+  getStorage,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 
-export const uploadImage = async (source: string): Promise<string> => {
+export const uploadImage = async (
+  path: string,
+  source: string
+): Promise<string> => {
   const response = await fetch(source);
   const blob = await response.blob();
   const filename = source.substring(source.lastIndexOf("/") + 1);
   var result = "Something went wrong during the image upload";
 
-  const spaceRef = ref(storage, `profile-pictures/${filename}`);
+  const spaceRef = ref(storage, path + filename);
   await uploadBytes(spaceRef, blob)
     .then((snapshot) => {
       console.log("Uploaded a blob or file!");
@@ -68,3 +77,36 @@ export const generateUniqueID = (function () {
     return id;
   };
 })();
+
+export const getImageURL = async (reference: string): Promise<string> => {
+  const storage = getStorage();
+  const imageRef = ref(storage, reference);
+
+  if (reference == "DEFAULT") {
+    return "DEFAULT";
+  }
+
+  let result: string = "DEFAULT";
+  // Get the download URL
+  result = await getDownloadURL(imageRef);
+  return result;
+};
+
+export const deleteImage = async (path: string, filename: string) => {
+  // Create a reference to the file to delete
+  const fileRef = ref(storage, path + filename);
+
+  if (filename != "DEFAULT") {
+    // Delete the file
+    deleteObject(fileRef)
+      .then(() => {
+        console.log("File deleted");
+
+        // File deleted successfully
+      })
+      .catch((error) => {
+        // Uh-oh, an error occurred!
+        console.log(error);
+      });
+  }
+};
