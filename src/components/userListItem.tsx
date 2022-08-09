@@ -7,7 +7,6 @@ import StyledText from "./styledText";
 interface RequiredProps {
   name: string;
   username: string;
-
   profilePicURL: string;
 }
 const UserListItem = (props: RequiredProps) => {

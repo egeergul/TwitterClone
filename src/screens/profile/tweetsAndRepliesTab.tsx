@@ -63,18 +63,7 @@ const TweetsAndRepliesTab = (props: Props) => {
       ) : (
         <View>
           {props.tweets.map((tweet) => {
-            return (
-              <Tweet
-                key={tweet.tweetId}
-                name={tweet.name}
-                username={tweet.username}
-                text={tweet.text}
-                mediaURL={tweet.mediaURL}
-                isPinned={tweet.isPinned}
-                profilePicURL={tweet.userProfilePicURL}
-                timestamp={parseInt(tweet.timestamp)}
-              />
-            );
+            return <Tweet tweet={tweet} />;
           })}
           <View
             style={{

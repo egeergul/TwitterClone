@@ -30,7 +30,21 @@ const HomePage = () => {
   const user = useContext(UserContext).userInfo;
   const { width, height } = Dimensions.get("screen");
 
-  const [tweets, setTweets] = useState<TweetModel[]>([]);
+  const timestamp = new Date().getTime();
+  const mockData = new TweetModel(
+    "key",
+    "data.uid",
+    "Ege Ergül",
+    "egeergull",
+    false,
+    "Today I dont feel like doing anything, Lololo lololo. I just wanna lay in my bed...",
+    timestamp + "",
+    "DEFAULT",
+    "DEFAULT",
+    "DEFAULT"
+  );
+
+  const [tweets, setTweets] = useState<TweetModel[]>([mockData]);
 
   const fetchTweets = () => {
     const dbRef = ref(database, `follows/${user.uid}/followings`);
@@ -119,7 +133,7 @@ const HomePage = () => {
         >
           {tweets.map((tweet) => {
             return (
-              <Tweet
+              /**uid={tweet.uid}
                 key={tweet.tweetId}
                 name={tweet.name}
                 username={tweet.username}
@@ -127,8 +141,8 @@ const HomePage = () => {
                 mediaURL={tweet.mediaURL}
                 isPinned={tweet.isPinned}
                 profilePicURL={tweet.userProfilePicURL}
-                timestamp={parseInt(tweet.timestamp)}
-              />
+                timestamp={parseInt(tweet.timestamp)} */
+              <Tweet tweet={tweet} />
             );
           })}
           <View

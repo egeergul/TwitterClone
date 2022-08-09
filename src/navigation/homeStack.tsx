@@ -7,8 +7,10 @@ import {
   NewTweetPage,
   ProfilePage,
   FollowInfoPage,
+  TweetDetailPage,
 } from "../screens";
-import { View, Text } from "react-native";
+import { View, Text, Image } from "react-native";
+import { TweetModel } from "../models";
 
 export type HomeStackParams = {
   Home: undefined;
@@ -18,6 +20,9 @@ export type HomeStackParams = {
   FollowInfo: {
     source: string;
     list: string[];
+  };
+  TweetDetail: {
+    tweet: TweetModel;
   };
   EditCredentials: undefined;
   NewTweet: undefined;
@@ -48,6 +53,16 @@ const HomeStack: FC = () => {
         }}
         component={EditCredentialsPage}
       />
+      <Stack.Screen
+        name="TweetDetail"
+        component={TweetDetailPage}
+        options={{
+          headerShown: true,
+          headerBackTitleVisible: false,
+          headerTitle: "Tweet",
+        }}
+      />
+
       <Stack.Screen name="NewTweet" component={NewTweetPage} />
       <Stack.Screen name="Loading" component={LoadingPage} />
     </Stack.Navigator>
