@@ -1,133 +1,102 @@
 import React, { useState } from "react";
-import { TextInput, View, Text, TouchableOpacity } from "react-native";
+import { TextInput, View, StyleSheet } from "react-native";
 import { blue, grey, transparent } from "../constants/colors";
 import StyledText from "./styledText";
 import { Icon } from "@rneui/themed";
 
-// Required props
-interface RequiredProps {
+interface Props {
+  // Required props
   placeholder: string;
   onChangeText: (text: string) => void;
+
+  // Optional props
+  secureTextEntry?: boolean;
+  maxLength?: number;
+  multiline?: boolean;
 }
-// Optional props
-interface OptionalProps {
-  secureTextEntry: boolean;
-  maxLength: number | undefined;
-  multiline: boolean;
-}
-// Combine required and optional props to build the full prop interface
-interface Props extends RequiredProps, OptionalProps {}
 
-// Use the optional prop interface to define the default props
-const defaultProps: OptionalProps = {
-  secureTextEntry: false,
-  maxLength: undefined,
-  multiline: false,
-};
-
-// Use the full props within the actual component
-
-const StyledInput = (props: Props) => {
+const StyledInput = ({
+  placeholder,
+  onChangeText,
+  secureTextEntry,
+  maxLength,
+  multiline,
+}: Props) => {
   const [color, setColor] = useState<string>(grey);
   const [remainingColor, setRemainingColor] = useState<string>(grey);
   const [length, setLength] = useState<number>(0);
-  const [hidden, setHidden] = useState<boolean>(props.secureTextEntry);
+  const [hidden, setHidden] = useState<boolean>(secureTextEntry || false);
+
   return (
-    <View style={{ alignSelf: "stretch", alignItems: "flex-end" }}>
-      <View
-        style={{
-          alignSelf: "stretch",
-          backgroundColor: transparent,
-          borderRadius: 5,
-          borderColor: color,
-          borderWidth: 1,
-          marginVertical: 10,
-        }}
-      >
+    <View style={styles.container}>
+      <View style={[styles.border, { borderColor: color }]}>
         <View
           style={{
             justifyContent: "space-between",
             flexDirection: "row",
+            alignItems: "center",
           }}
         >
-          {props.multiline ? (
+          {multiline || false ? (
             <TextInput
               multiline
-              style={{
-                flex: 1,
-                padding: 20,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
+              style={styles.textInput}
               placeholderTextColor={grey}
-              placeholder={props.placeholder}
+              placeholder={placeholder}
               secureTextEntry={hidden}
               onFocus={() => setColor(blue)}
               onBlur={() => setColor(grey)}
+              maxLength={maxLength}
               onChangeText={(text) => {
-                props.onChangeText(text);
+                onChangeText(text);
                 setLength(text.length);
-                if (props.maxLength) {
-                  if (text.length >= props.maxLength * 0.8) {
+                if (maxLength) {
+                  if (text.length >= maxLength * 0.8) {
                     setRemainingColor("red");
                   } else {
                     setRemainingColor(grey);
                   }
                 }
               }}
-              maxLength={props.maxLength}
             />
           ) : (
             <TextInput
-              style={{
-                flex: 1,
-                padding: 20,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
+              style={styles.textInput}
               placeholderTextColor={grey}
-              placeholder={props.placeholder}
+              placeholder={placeholder}
               secureTextEntry={hidden}
               onFocus={() => setColor(blue)}
               onBlur={() => setColor(grey)}
+              maxLength={maxLength}
               onChangeText={(text) => {
-                props.onChangeText(text);
+                onChangeText(text);
                 setLength(text.length);
-                if (props.maxLength) {
-                  if (text.length >= props.maxLength * 0.8) {
+                if (maxLength) {
+                  if (text.length >= maxLength * 0.8) {
                     setRemainingColor("red");
                   } else {
                     setRemainingColor(grey);
                   }
                 }
               }}
-              maxLength={props.maxLength}
             />
           )}
-          {props.secureTextEntry ? (
-            <View
-              style={{
-                justifyContent: "center",
-                marginRight: 10,
-              }}
-            >
-              <Icon
-                type="ionicon"
-                color={grey}
-                onPress={() => setHidden(!hidden)}
-                name={hidden ? "eye-outline" : "eye-off-outline"}
-              />
-            </View>
-          ) : (
-            <></>
+
+          {secureTextEntry && (
+            <Icon
+              style={{ marginRight: 10 }}
+              type="ionicon"
+              color={grey}
+              onPress={() => setHidden(!hidden)}
+              name={hidden ? "eye-outline" : "eye-off-outline"}
+            />
           )}
         </View>
       </View>
-      {props.maxLength == undefined ? (
-        <></>
-      ) : (
+
+      {maxLength != undefined && (
         <StyledText
-          text={length + "/" + props.maxLength}
+          text={length + "/" + maxLength}
           color={remainingColor}
           fontSize={12}
         />
@@ -136,6 +105,24 @@ const StyledInput = (props: Props) => {
   );
 };
 
-// Be sure to set the default props
-StyledInput.defaultProps = defaultProps;
+const styles = StyleSheet.create({
+  container: {
+    alignSelf: "stretch",
+    alignItems: "flex-end",
+  },
+  border: {
+    alignSelf: "stretch",
+    backgroundColor: transparent,
+    borderRadius: 5,
+    borderWidth: 1,
+    marginVertical: 10,
+  },
+  textInput: {
+    flex: 1,
+    padding: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
+
 export default StyledInput;

@@ -1,12 +1,10 @@
-import { Icon, renderNode } from "@rneui/base";
-import React, { FC, useContext, useEffect, useState } from "react";
+import { Icon } from "@rneui/base";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  Image,
   Dimensions,
-  Alert,
   TouchableOpacity,
   Pressable,
 } from "react-native";
@@ -21,33 +19,33 @@ import { TweetModel } from "../models";
 import { child, get, onValue, ref, remove, set } from "firebase/database";
 import { database } from "../constants/firebase";
 import { UserContext } from "../navigation/mainNav";
-
-/**uid: string;
-  name: string;
-  username: string;
-  text: string;
-  mediaURL: string;
-  isPinned: boolean;
-  profilePicURL: string;
-  timestamp: number; */
-// Required props
-interface RequiredProps {
-  tweet: TweetModel;
-}
-
-// Optional props
-interface OptionalProps {}
-// Combine required and optional props to build the full prop interface
-interface Props extends RequiredProps, OptionalProps {}
-
-// Use the optional prop interface to define the default props
-const defaultProps: OptionalProps = {};
+import ImageLoad from "react-native-img-placeholder";
 
 const { height, width } = Dimensions.get("screen");
 
+interface Props {
+  tweet: TweetModel;
+}
+
 const Tweet = (props: Props) => {
+  // Constants
   const navigation =
     useNavigation<NativeStackNavigationProp<HomeStackParams>>();
+  const uid = useContext(UserContext).userInfo.uid;
+
+  // Hooks
+  const [likedByViewer, setLikedByViewer] = useState<boolean>(false);
+  const [likeCount, setLikeCount] = useState<number>(0);
+  const [userProfilePictureURL, setUserProfilePictureURL] =
+    useState<string>("DEFAULT");
+
+  useEffect(() => {
+    fetchProfilePicURL();
+    fetchLikeCount();
+    fetchLikedByViewer();
+  }, []);
+
+  // Functions
   const goToProfile = () => {
     navigation.push("Profile", {
       uid: props.tweet.uid,
@@ -59,7 +57,6 @@ const Tweet = (props: Props) => {
       tweet: props.tweet,
     });
   };
-  const uid = useContext(UserContext).userInfo.uid;
 
   const likeTweet = async () => {
     await set(
@@ -86,10 +83,7 @@ const Tweet = (props: Props) => {
     setLikedByViewer(false);
   };
 
-  const [likedByViewer, setLikedByViewer] = useState<boolean>(false);
   const fetchLikedByViewer = async () => {
-    const dbRef = ref(database);
-
     get(
       child(
         ref(database),
@@ -104,13 +98,6 @@ const Tweet = (props: Props) => {
     });
   };
 
-  useEffect(() => {
-    fetchLikedByViewer();
-  }, []);
-
-  const [userProfilePictureURL, setUserProfilePictureURL] =
-    useState<string>("DEFAULT");
-
   const fetchProfilePicURL = async () => {
     get(
       child(ref(database), `users/${props.tweet.uid}/profilePictureURL`)
@@ -122,8 +109,6 @@ const Tweet = (props: Props) => {
       }
     });
   };
-
-  const [likeCount, setLikeCount] = useState<number>(0);
 
   const fetchLikeCount = async () => {
     get(
@@ -141,29 +126,12 @@ const Tweet = (props: Props) => {
     });
   };
 
-  useEffect(() => {
-    fetchProfilePicURL();
-    fetchLikeCount();
-  }, []);
-
   return (
     <TouchableOpacity onPress={goToTweet}>
-      <View
-        style={{
-          margin: 10,
-          borderBottomColor: lightgrey,
-          borderBottomWidth: 1,
-        }}
-      >
+      <View style={styles.container}>
         {/* PINNED */}
         {props.tweet.isPinned && (
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginBottom: 5,
-            }}
-          >
+          <View style={styles.pinned}>
             <Icon
               name="pin"
               type="material-community"
@@ -179,43 +147,23 @@ const Tweet = (props: Props) => {
             />
           </View>
         )}
+
         {/* MAIN */}
-        <View
-          style={{
-            flexDirection: "row",
-            width: (11 * width) / 14,
-          }}
-        >
+        <View style={{ flexDirection: "row" }}>
           <Pressable onPress={goToProfile}>
-            <Image
+            <ImageLoad
               source={
                 userProfilePictureURL == "DEFAULT"
                   ? require("../../assets/imgs/account_man_filled.png")
                   : { uri: userProfilePictureURL }
               }
-              style={{
-                width: width / 7,
-                height: width / 7,
-                borderRadius: width / 14,
-              }}
+              style={styles.profilePic}
             />
           </Pressable>
 
-          <View
-            style={{
-              marginLeft: 10,
-              flexDirection: "column",
-              width: (11 * width) / 14,
-            }}
-          >
+          <View style={styles.bodyRight}>
             {/* USERNAME & DATE */}
-            <View
-              style={{
-                marginBottom: 5,
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
+            <View style={styles.usernameAndDate}>
               <View style={{ flexDirection: "row" }}>
                 <Pressable onPress={goToProfile}>
                   <StyledText text={props.tweet.name} fontWeight={"bold"} />
@@ -229,10 +177,7 @@ const Tweet = (props: Props) => {
                 </Pressable>
               </View>
               <View style={{ flexDirection: "row" }}>
-                <Text>
-                  {" "}
-                  {getFormattedDate(parseInt(props.tweet.timestamp))}{" "}
-                </Text>
+                <Text>{getFormattedDate(parseInt(props.tweet.timestamp))}</Text>
                 <Icon
                   color={grey}
                   type="ionicon"
@@ -243,34 +188,22 @@ const Tweet = (props: Props) => {
             </View>
 
             {/* TWEET TEXT */}
-            {props.tweet.text == "DEFAULT" ? (
-              <></>
-            ) : (
+            {props.tweet.text != "DEFAULT" && (
               <StyledText text={props.tweet.text} />
             )}
 
             {/* TWEET MEDIA */}
-            {props.tweet.mediaURL == "DEFAULT" ? (
-              <></>
-            ) : (
+            {props.tweet.mediaURL != "DEFAULT" && (
               <View style={{ marginTop: 10 }}>
                 <FullWidthImage
                   uriSource={props.tweet.mediaURL}
                   width={(width * 11) / 14}
-                  borderRadius={15}
                 />
               </View>
             )}
 
             {/* ICONS */}
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginTop: 5,
-                marginBottom: 10,
-              }}
-            >
+            <View style={styles.icons}>
               <Icon type="evilicon" name="comment" />
               <Icon type="evilicon" name="retweet" />
               <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -306,9 +239,38 @@ const Tweet = (props: Props) => {
   );
 };
 
-Tweet.defaultProps = defaultProps;
 export default Tweet;
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    margin: 10,
+    borderBottomColor: lightgrey,
+    borderBottomWidth: 1,
+  },
+  pinned: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 5,
+  },
+  profilePic: {
+    width: width / 7,
+    height: width / 7,
+    borderRadius: width / 14,
+  },
+  bodyRight: {
+    marginLeft: 10,
+    flexDirection: "column",
+    width: (11 * width) / 14,
+  },
+  usernameAndDate: {
+    marginBottom: 5,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  icons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 5,
+    marginBottom: 10,
+  },
 });

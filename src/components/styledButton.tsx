@@ -1,80 +1,74 @@
-import React, { FC } from "react";
+import React from "react";
 import { Text, TouchableOpacity, StyleSheet } from "react-native";
-
 import { black, white } from "../constants/colors";
 
-// Required props
-interface RequiredProps {
+// Props
+interface Props {
+  // required
   title: string;
   onPress: () => void;
-}
-// Optional props
-interface OptionalProps {
-  color: string;
-  backgroundColor: string;
-  fontSize: number;
-  fontWeight: any;
-  borderColor: any;
-  borderWidth: number;
-  alignSelf: any;
-  margin: [number, number, number, number];
-  padding: [number, number, number, number];
-}
-// Combine required and optional props to build the full prop interface
-interface Props extends RequiredProps, OptionalProps {}
 
-// Use the optional prop interface to define the default props
-const defaultProps: OptionalProps = {
-  color: white,
-  backgroundColor: black,
-  fontSize: 16,
-  fontWeight: "bold",
-  borderColor: black,
-  borderWidth: 0,
-  alignSelf: "center",
-  margin: [0, 0, 0, 0],
-  padding: [10, 10, 10, 10],
-};
+  //optionals
+  color?: string;
+  backgroundColor?: string;
+  fontSize?: number;
+  fontWeight?: any;
+  borderColor?: any;
+  borderWidth?: number;
+  alignSelf?: any;
+  margin?: [number, number, number, number];
+  padding?: [number, number, number, number];
+}
 
-// Use the full props within the actual component
-const StyledButton = (props: Props) => {
+const StyledButton = ({
+  title,
+  onPress,
+  color,
+  backgroundColor,
+  fontSize,
+  fontWeight,
+  borderColor,
+  borderWidth,
+  alignSelf,
+  margin,
+  padding,
+}: Props) => {
+  const styles = StyleSheet.create({
+    style: {
+      borderRadius: 100,
+      alignItems: "center",
+      justifyContent: "center",
+
+      marginTop: margin ? margin[0] : 0,
+      marginRight: margin ? margin[1] : 0,
+      marginBottom: margin ? margin[2] : 0,
+      marginLeft: margin ? margin[3] : 0,
+
+      paddingTop: padding ? padding[0] : 10,
+      paddingRight: padding ? padding[1] : 10,
+      paddingBottom: padding ? padding[2] : 10,
+      paddingLeft: padding ? padding[3] : 10,
+
+      alignSelf: alignSelf || "center",
+      backgroundColor: backgroundColor || black,
+      borderWidth: borderWidth || 0,
+      borderColor: borderColor || black,
+    },
+  });
+
   return (
-    <TouchableOpacity
-      style={{
-        borderRadius: 100,
-        alignItems: "center",
-        justifyContent: "center",
-
-        marginTop: props.margin[0],
-        marginRight: props.margin[1],
-        marginBottom: props.margin[2],
-        marginLeft: props.margin[3],
-
-        paddingTop: props.padding[0],
-        paddingRight: props.padding[1],
-        paddingBottom: props.padding[2],
-        paddingLeft: props.padding[3],
-
-        alignSelf: props.alignSelf,
-        backgroundColor: props.backgroundColor,
-        borderWidth: props.borderWidth,
-        borderColor: props.borderColor,
-      }}
-      onPress={props.onPress}
-    >
+    <TouchableOpacity style={styles.style} onPress={onPress}>
       <Text
         style={{
-          color: props.color,
-          fontSize: props.fontSize,
-          fontWeight: props.fontWeight,
+          color: color || white,
+          fontSize: fontSize || 16,
+          fontWeight: fontWeight || "bold",
         }}
       >
-        {props.title}
+        {title}
       </Text>
     </TouchableOpacity>
   );
 };
 
-// Be sure to set the default props
-StyledButton.defaultProps = defaultProps;
 export default StyledButton;
