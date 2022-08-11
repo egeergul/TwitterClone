@@ -71,6 +71,7 @@ const Tweet = (props: Props) => {
         liked: true,
       }
     );
+    setLikeCount(likeCount + 1);
     setLikedByViewer(true);
   };
 
@@ -81,6 +82,7 @@ const Tweet = (props: Props) => {
         `tweets/${props.tweet.uid}/${props.tweet.tweetId}/likes/${uid}`
       )
     );
+    setLikeCount(likeCount - 1);
     setLikedByViewer(false);
   };
 
@@ -121,8 +123,27 @@ const Tweet = (props: Props) => {
     });
   };
 
+  const [likeCount, setLikeCount] = useState<number>(0);
+
+  const fetchLikeCount = async () => {
+    get(
+      child(
+        ref(database),
+        `tweets/${props.tweet.uid}/${props.tweet.tweetId}/likes`
+      )
+    ).then(async (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot;
+        setLikeCount(data.size);
+      } else {
+        setLikeCount(0);
+      }
+    });
+  };
+
   useEffect(() => {
     fetchProfilePicURL();
+    fetchLikeCount();
   }, []);
 
   return (
@@ -252,11 +273,29 @@ const Tweet = (props: Props) => {
             >
               <Icon type="evilicon" name="comment" />
               <Icon type="evilicon" name="retweet" />
-              {likedByViewer ? (
-                <Icon type="ionicon" name="heart" onPress={unlikeTweet} />
-              ) : (
-                <Icon type="ionicon" name="heart-outline" onPress={likeTweet} />
-              )}
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                {likedByViewer ? (
+                  <Icon
+                    type="ionicon"
+                    color="red"
+                    name="heart"
+                    onPress={unlikeTweet}
+                  />
+                ) : (
+                  <Icon
+                    type="ionicon"
+                    name="heart-outline"
+                    onPress={likeTweet}
+                  />
+                )}
+                {likeCount != 0 && (
+                  <StyledText
+                    text={likeCount + ""}
+                    color={grey}
+                    margin={[0, 0, 0, 5]}
+                  />
+                )}
+              </View>
               <Icon type="evilicon" name="share-google" />
               <Icon type="evilicon" name="chart" />
             </View>

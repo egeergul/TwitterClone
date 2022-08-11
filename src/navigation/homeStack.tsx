@@ -8,6 +8,7 @@ import {
   ProfilePage,
   FollowInfoPage,
   TweetDetailPage,
+  WhoLikedPage,
 } from "../screens";
 import { View, Text, Image } from "react-native";
 import { TweetModel } from "../models";
@@ -23,6 +24,9 @@ export type HomeStackParams = {
   };
   TweetDetail: {
     tweet: TweetModel;
+  };
+  WhoLiked: {
+    likedUIDs: string[];
   };
   EditCredentials: undefined;
   NewTweet: undefined;
@@ -40,6 +44,15 @@ const HomeStack: FC = () => {
         component={FollowInfoPage}
         options={({ route }) => ({
           title: route.params.source,
+          headerShown: true,
+          headerBackTitleVisible: false,
+        })}
+      />
+      <Stack.Screen
+        name="WhoLiked"
+        component={WhoLikedPage}
+        options={() => ({
+          title: "Liked By",
           headerShown: true,
           headerBackTitleVisible: false,
         })}

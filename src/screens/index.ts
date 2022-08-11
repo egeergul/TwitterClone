@@ -22,6 +22,7 @@ import MentionsTab from "./notification_tabs/mentionsTab";
 import AllTab from "./notification_tabs/allTab";
 import FollowInfoPage from "./profile/followInfoPage";
 import TweetDetailPage from "./tweets/tweetDetailPage";
+import WhoLikedPage from "./tweets/whoLikedPage";
 
 export {
   WelcomePage,
@@ -48,4 +49,5 @@ export {
   AllTab,
   FollowInfoPage,
   TweetDetailPage,
+  WhoLikedPage,
 };
