@@ -152,31 +152,36 @@ function App(props: UserProps) {
 
   const fetchTweets = () => {
     const dbRef = ref(database, TWEETS + user.uid);
-    onValue(dbRef, (snapshot) => {
-      if (snapshot.exists()) {
-        setTweets([]);
-        snapshot.forEach((childSnapshot) => {
-          if (childSnapshot.exists()) {
-            const key = childSnapshot.key;
-            const data = childSnapshot.val();
-            const tweet = new TweetModel(
-              key!,
-              data.uid,
-              data.name,
-              data.username,
-              data.isPinned,
-              data.text,
-              data.timestamp,
-              data.mediaURL,
-              data.mediaFilename,
-              data.userProfilePicURL
-            );
+    onValue(
+      dbRef,
+      (snapshot) => {
+        if (snapshot.exists()) {
+          snapshot.forEach((childSnapshot) => {
+            if (childSnapshot.exists()) {
+              const key = childSnapshot.key;
+              const data = childSnapshot.val();
+              const tweet = new TweetModel(
+                key!,
+                data.uid,
+                data.name,
+                data.username,
+                data.isPinned,
+                data.text,
+                data.timestamp,
+                data.mediaURL,
+                data.mediaFilename,
+                data.userProfilePicURL
+              );
 
-            setTweets((oldArray) => [tweet, ...oldArray]);
-          }
-        });
+              setTweets((oldArray) => [tweet, ...oldArray]);
+            }
+          });
+        }
+      },
+      {
+        onlyOnce: true,
       }
-    });
+    );
   };
   useEffect(() => {
     setTweets([]);
@@ -265,14 +270,6 @@ function App(props: UserProps) {
     setIsFollowing(false);
   };
 
-  const [refreshing, setRefreshing] = React.useState(false);
-
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    fetchTweets();
-
-    setRefreshing(false);
-  }, []);
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -413,9 +410,6 @@ function App(props: UserProps) {
 
       {/* Tweets/profile */}
       <Animated.ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
         stickyHeaderIndices={[1]}
         showsVerticalScrollIndicator={false}
         pagingEnabled
