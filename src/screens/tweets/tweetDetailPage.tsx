@@ -1,5 +1,7 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Icon } from "@rneui/themed";
+import { ref, remove, get, child, set } from "firebase/database";
+import { useContext, useState, useEffect } from "react";
 
 import {
   View,
@@ -9,18 +11,73 @@ import {
   Image,
   Dimensions,
 } from "react-native";
+
 import { FullWidthImage, StyledText } from "../../components";
 import { grey, lightgrey, white } from "../../constants/colors";
+import { database } from "../../constants/firebase";
 import { getFormatedDateWithHour } from "../../helpers/helpers";
 import { HomeStackParams } from "../../navigation/homeStack";
+import { UserContext } from "../../navigation/mainNav";
 
 type Props = NativeStackScreenProps<HomeStackParams, "TweetDetail">;
 const { width, height } = Dimensions.get("screen");
 const TweetDetailPage = ({ route }: Props) => {
+  const uid = useContext(UserContext).userInfo.uid;
+
+  const likeTweet = async () => {
+    await set(
+      ref(
+        database,
+        `tweets/${route.params.tweet.uid}/${route.params.tweet.tweetId}/likes/${uid}`
+      ),
+      {
+        liked: true,
+      }
+    );
+    setLikedByViewer(true);
+  };
+
+  const unlikeTweet = async () => {
+    await remove(
+      ref(
+        database,
+        `tweets/${route.params.tweet.uid}/${route.params.tweet.tweetId}/likes/${uid}`
+      )
+    );
+    setLikedByViewer(false);
+  };
+
+  const [likedByViewer, setLikedByViewer] = useState<boolean>(false);
+  const fetchLikedByViewer = async () => {
+    const dbRef = ref(database);
+
+    get(
+      child(
+        ref(database),
+        `tweets/${route.params.tweet.uid}/${route.params.tweet.tweetId}/likes/${uid}`
+      )
+    ).then((snapshot) => {
+      if (snapshot.exists()) {
+        setLikedByViewer(true);
+      } else {
+        setLikedByViewer(false);
+      }
+    });
+  };
+
+  useEffect(() => {
+    fetchLikedByViewer();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <ScrollView style={{ padding: 10 }}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <ScrollView style={{ alignSelf: "stretch", padding: 10 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
           <Image
             source={
               route.params.tweet.userProfilePicURL == "DEFAULT"
@@ -102,7 +159,11 @@ const TweetDetailPage = ({ route }: Props) => {
         >
           <Icon type="evilicon" name="comment" />
           <Icon type="evilicon" name="retweet" />
-          <Icon type="ionicon" name="heart-outline" />
+          {likedByViewer ? (
+            <Icon type="ionicon" name="heart" onPress={unlikeTweet} />
+          ) : (
+            <Icon type="ionicon" name="heart-outline" onPress={likeTweet} />
+          )}
           <Icon type="evilicon" name="share-google" />
         </View>
         <View

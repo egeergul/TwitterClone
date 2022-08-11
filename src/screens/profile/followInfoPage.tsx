@@ -72,8 +72,8 @@ const FollowInfoPage = ({ route }: Props) => {
       {route.params.list.length == 0 ? (
         <View
           style={{
+            padding: 40,
             backgroundColor: white,
-
             height: "100%",
           }}
         >

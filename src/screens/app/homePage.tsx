@@ -19,7 +19,7 @@ import { StyledButton, StyledText, Tweet } from "../../components";
 import { UserContext } from "../../navigation/mainNav";
 import { Icon } from "@rneui/themed";
 import { AppBottomTabStackParams } from "../../navigation/appBottomTabStack";
-import { onValue, ref } from "firebase/database";
+import { child, get, onValue, ref } from "firebase/database";
 import { TweetModel } from "../../models";
 
 const HomePage = () => {
@@ -27,39 +27,33 @@ const HomePage = () => {
     useNavigation<NativeStackNavigationProp<HomeStackParams>>();
   const navigationBottomStack =
     useNavigation<NativeStackNavigationProp<AppBottomTabStackParams>>();
+
   const user = useContext(UserContext).userInfo;
   const { width, height } = Dimensions.get("screen");
 
   const timestamp = new Date().getTime();
-  const mockData = new TweetModel(
-    "key",
-    "data.uid",
-    "Ege Ergül",
-    "egeergull",
-    false,
-    "Today I dont feel like doing anything, Lololo lololo. I just wanna lay in my bed...",
-    timestamp + "",
-    "DEFAULT",
-    "DEFAULT",
-    "DEFAULT"
-  );
-
-  const [tweets, setTweets] = useState<TweetModel[]>([mockData]);
+  const [tweets, setTweets] = useState<TweetModel[]>([]);
 
   const fetchTweets = () => {
     const dbRef = ref(database, `follows/${user.uid}/followings`);
+
     onValue(dbRef, (snapshot) => {
+      setTweets([]);
       if (snapshot.exists()) {
         snapshot.forEach((childSnapshot) => {
           if (childSnapshot.exists()) {
-            const key = childSnapshot.key;
-            onValue(ref(database, `tweets/${key}`), (tweetSnapshot) => {
+            const uid = childSnapshot.key;
+
+            get(child(ref(database), `tweets/${uid}`)).then((tweetSnapshot) => {
               if (tweetSnapshot.exists()) {
                 tweetSnapshot.forEach((childTweetSnapshot) => {
                   if (childTweetSnapshot.exists()) {
+                    const tweetId = childTweetSnapshot.key;
                     const data = childTweetSnapshot.val();
+                    console.log("Tweet with text is added: " + data.text);
+
                     const tweet = new TweetModel(
-                      key!,
+                      tweetId!,
                       data.uid,
                       data.name,
                       data.username,
@@ -70,8 +64,6 @@ const HomePage = () => {
                       data.mediaFilename,
                       data.userProfilePicURL
                     );
-
-                    console.log(tweet.toString());
 
                     setTweets((oldList) => [tweet, ...oldList]);
                   }
@@ -89,6 +81,7 @@ const HomePage = () => {
     fetchTweets();
   }, []);
 
+  const goToNewTweet = () => navigation.navigate("NewTweet");
   return (
     <View style={styles.emptyContainer}>
       {tweets.length == 0 ? (
@@ -132,18 +125,7 @@ const HomePage = () => {
           showsVerticalScrollIndicator={false}
         >
           {tweets.map((tweet) => {
-            return (
-              /**uid={tweet.uid}
-                key={tweet.tweetId}
-                name={tweet.name}
-                username={tweet.username}
-                text={tweet.text}
-                mediaURL={tweet.mediaURL}
-                isPinned={tweet.isPinned}
-                profilePicURL={tweet.userProfilePicURL}
-                timestamp={parseInt(tweet.timestamp)} */
-              <Tweet tweet={tweet} />
-            );
+            return <Tweet key={tweet.tweetId} tweet={tweet} />;
           })}
           <View
             style={{
@@ -159,7 +141,7 @@ const HomePage = () => {
       )}
 
       <TouchableOpacity
-        onPress={() => navigation.navigate("NewTweet")}
+        onPress={goToNewTweet}
         style={{
           zIndex: 1000,
           position: "absolute",

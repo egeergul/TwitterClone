@@ -112,8 +112,10 @@ const NewTweetPage: FC = () => {
         userProfilePicURL: user.profilePicURL,
       });
 
-      navigation.dispatch(StackActions.popToTop());
-      navigation.navigate("Home");
+      //navigation.dispatch(StackActions.popToTop());
+      //navigation.navigate("Home");
+      navigation.goBack();
+      navigation.goBack();
     } else {
       Alert.alert("You have to type something first.");
     }

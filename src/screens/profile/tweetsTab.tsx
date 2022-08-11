@@ -63,7 +63,7 @@ const TweetsTab = (props: Props) => {
       ) : (
         <View>
           {props.tweets.map((tweet) => {
-            return <Tweet tweet={tweet} />;
+            return <Tweet key={tweet.tweetId} tweet={tweet} />;
           })}
           <View
             style={{

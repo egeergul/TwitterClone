@@ -27,6 +27,7 @@ const SearchPage = () => {
 
   const fetchUsers = () => {
     const dbRef = ref(database, USERS);
+    setUsers([]);
     onValue(
       dbRef,
       (snapshot) => {
@@ -47,9 +48,6 @@ const SearchPage = () => {
                 data.headerPictureFilename,
                 data.joinedAt
               );
-
-              console.log(user.toString());
-
               setUsers((oldArray) => [user, ...oldArray]);
             }
           });

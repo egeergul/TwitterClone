@@ -151,36 +151,31 @@ function App(props: UserProps) {
 
   const fetchTweets = () => {
     const dbRef = ref(database, TWEETS + user.uid);
-    onValue(
-      dbRef,
-      (snapshot) => {
-        if (snapshot.exists()) {
-          snapshot.forEach((childSnapshot) => {
-            if (childSnapshot.exists()) {
-              const key = childSnapshot.key;
-              const data = childSnapshot.val();
-              const tweet = new TweetModel(
-                key!,
-                data.uid,
-                data.name,
-                data.username,
-                data.isPinned,
-                data.text,
-                data.timestamp,
-                data.mediaURL,
-                data.mediaFilename,
-                data.userProfilePicURL
-              );
+    onValue(dbRef, (snapshot) => {
+      if (snapshot.exists()) {
+        setTweets([]);
+        snapshot.forEach((childSnapshot) => {
+          if (childSnapshot.exists()) {
+            const key = childSnapshot.key;
+            const data = childSnapshot.val();
+            const tweet = new TweetModel(
+              key!,
+              data.uid,
+              data.name,
+              data.username,
+              data.isPinned,
+              data.text,
+              data.timestamp,
+              data.mediaURL,
+              data.mediaFilename,
+              data.userProfilePicURL
+            );
 
-              setTweets((oldArray) => [tweet, ...oldArray]);
-            }
-          });
-        }
-      },
-      {
-        onlyOnce: true,
+            setTweets((oldArray) => [tweet, ...oldArray]);
+          }
+        });
       }
-    );
+    });
   };
   useEffect(() => {
     setTweets([]);

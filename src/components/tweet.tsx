@@ -1,5 +1,5 @@
-import { Icon } from "@rneui/base";
-import React, { FC } from "react";
+import { Icon, renderNode } from "@rneui/base";
+import React, { FC, useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   Dimensions,
   Alert,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import { FullWidthImage } from ".";
 import { grey, lightgrey } from "../constants/colors";
@@ -17,6 +18,9 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { HomeStackParams } from "../navigation/homeStack";
 import { TweetModel } from "../models";
+import { child, get, onValue, ref, remove, set } from "firebase/database";
+import { database } from "../constants/firebase";
+import { UserContext } from "../navigation/mainNav";
 
 /**uid: string;
   name: string;
@@ -55,6 +59,72 @@ const Tweet = (props: Props) => {
       tweet: props.tweet,
     });
   };
+  const uid = useContext(UserContext).userInfo.uid;
+
+  const likeTweet = async () => {
+    await set(
+      ref(
+        database,
+        `tweets/${props.tweet.uid}/${props.tweet.tweetId}/likes/${uid}`
+      ),
+      {
+        liked: true,
+      }
+    );
+    setLikedByViewer(true);
+  };
+
+  const unlikeTweet = async () => {
+    await remove(
+      ref(
+        database,
+        `tweets/${props.tweet.uid}/${props.tweet.tweetId}/likes/${uid}`
+      )
+    );
+    setLikedByViewer(false);
+  };
+
+  const [likedByViewer, setLikedByViewer] = useState<boolean>(false);
+  const fetchLikedByViewer = async () => {
+    const dbRef = ref(database);
+
+    get(
+      child(
+        ref(database),
+        `tweets/${props.tweet.uid}/${props.tweet.tweetId}/likes/${uid}`
+      )
+    ).then((snapshot) => {
+      if (snapshot.exists()) {
+        setLikedByViewer(true);
+      } else {
+        setLikedByViewer(false);
+      }
+    });
+  };
+
+  useEffect(() => {
+    fetchLikedByViewer();
+  }, []);
+
+  const [userProfilePictureURL, setUserProfilePictureURL] =
+    useState<string>("DEFAULT");
+
+  const fetchProfilePicURL = async () => {
+    get(
+      child(ref(database), `users/${props.tweet.uid}/profilePictureURL`)
+    ).then(async (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+
+        setUserProfilePictureURL(data.userProfilePicURL);
+      }
+    });
+  };
+
+  useEffect(() => {
+    fetchProfilePicURL();
+  }, []);
+
   return (
     <TouchableOpacity onPress={goToTweet}>
       <View
@@ -65,7 +135,7 @@ const Tweet = (props: Props) => {
         }}
       >
         {/* PINNED */}
-        {props.tweet.isPinned ? (
+        {props.tweet.isPinned && (
           <View
             style={{
               flexDirection: "row",
@@ -87,8 +157,6 @@ const Tweet = (props: Props) => {
               fontSize={14}
             />
           </View>
-        ) : (
-          <></>
         )}
         {/* MAIN */}
         <View
@@ -97,12 +165,12 @@ const Tweet = (props: Props) => {
             width: (11 * width) / 14,
           }}
         >
-          <TouchableOpacity onPress={goToProfile}>
+          <Pressable onPress={goToProfile}>
             <Image
               source={
-                props.tweet.userProfilePicURL == "DEFAULT"
+                userProfilePictureURL == "DEFAULT"
                   ? require("../../assets/imgs/account_man_filled.png")
-                  : { uri: props.tweet.userProfilePicURL }
+                  : { uri: userProfilePictureURL }
               }
               style={{
                 width: width / 7,
@@ -110,7 +178,7 @@ const Tweet = (props: Props) => {
                 borderRadius: width / 14,
               }}
             />
-          </TouchableOpacity>
+          </Pressable>
 
           <View
             style={{
@@ -128,16 +196,16 @@ const Tweet = (props: Props) => {
               }}
             >
               <View style={{ flexDirection: "row" }}>
-                <TouchableOpacity onPress={goToProfile}>
+                <Pressable onPress={goToProfile}>
                   <StyledText text={props.tweet.name} fontWeight={"bold"} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={goToProfile}>
+                </Pressable>
+                <Pressable onPress={goToProfile}>
                   <StyledText
                     text={"@" + props.tweet.username}
                     color={grey}
                     margin={[0, 0, 0, 5]}
                   />
-                </TouchableOpacity>
+                </Pressable>
               </View>
               <View style={{ flexDirection: "row" }}>
                 <Text>
@@ -184,7 +252,11 @@ const Tweet = (props: Props) => {
             >
               <Icon type="evilicon" name="comment" />
               <Icon type="evilicon" name="retweet" />
-              <Icon type="ionicon" name="heart-outline" />
+              {likedByViewer ? (
+                <Icon type="ionicon" name="heart" onPress={unlikeTweet} />
+              ) : (
+                <Icon type="ionicon" name="heart-outline" onPress={likeTweet} />
+              )}
               <Icon type="evilicon" name="share-google" />
               <Icon type="evilicon" name="chart" />
             </View>
