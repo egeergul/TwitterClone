@@ -1,14 +1,9 @@
-import React, { FC } from "react";
-import {
-  DirectMessagesPage,
-  HomePage,
-  NotificationsPage,
-  SearchPage,
-} from "../screens";
+import React, { FC, useContext } from "react";
+import { DirectMessagesPage, HomePage, SearchPage } from "../screens";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import HomeStack, { HomeStackParams } from "./homeStack";
+import { HomeStackParams } from "./homeStack";
 import { Icon } from "@rneui/themed";
-import { Image, TouchableOpacity, View } from "react-native";
+import { Image, TouchableOpacity, View, StyleSheet } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StackActions, useNavigation } from "@react-navigation/native";
 import { StyledButton } from "../components";
@@ -18,6 +13,7 @@ import { NavigationContext } from "../../App";
 import { AUTH_STACK } from "../constants/navigation";
 import { UserContext } from "./mainNav";
 import NotificationStack from "./notificationStack";
+import ImageLoad from "react-native-img-placeholder";
 
 export type AppBottomTabStackParams = {
   HomeTab: undefined;
@@ -25,151 +21,146 @@ export type AppBottomTabStackParams = {
   Notifications: undefined;
   DirectMessages: undefined;
 };
+
 const TabStack = createBottomTabNavigator<AppBottomTabStackParams>();
 
 const AppBottomTabStack: FC = () => {
+  // Constants
   const navigation =
     useNavigation<NativeStackNavigationProp<HomeStackParams>>();
+  const userContext = useContext(UserContext);
+  const navigationContext = useContext(NavigationContext);
 
-  const signOut = (setNavStack: (stack: string) => void) => {
+  // Functions
+  const signOut = () => {
     auth.signOut();
     navigation.dispatch(StackActions.popToTop());
-    setNavStack(AUTH_STACK);
+    navigationContext.setNavStack(AUTH_STACK);
+  };
+
+  const goToProfile = () => {
+    navigation.navigate("Profile", {
+      uid: userContext.userInfo.uid,
+    });
   };
 
   return (
-    <UserContext.Consumer>
-      {(userContext) => (
-        <NavigationContext.Consumer>
-          {(navigationContext) => (
-            <TabStack.Navigator
-              screenOptions={{
-                headerShown: true,
-                tabBarShowLabel: false,
-                headerLeft: () => (
-                  <View>
-                    {userContext.userInfo.profilePicURL == "DEFAULT" ? (
-                      <Icon
-                        type="material-community"
-                        name="account"
-                        onPress={() => {
-                          navigation.navigate("Profile", {
-                            uid: userContext.userInfo.uid,
-                          });
-                        }}
-                        style={{ marginLeft: 10 }}
-                      />
-                    ) : (
-                      <TouchableOpacity
-                        onPress={() => {
-                          navigation.navigate("Profile", {
-                            uid: userContext.userInfo.uid,
-                          });
-                        }}
-                      >
-                        <Image
-                          source={{ uri: userContext.userInfo.profilePicURL }}
-                          style={{
-                            marginLeft: 10,
-                            width: 40,
-                            height: 40,
-                            borderRadius: 20,
-                          }}
-                        />
-                      </TouchableOpacity>
-                    )}
-                  </View>
-                ),
-              }}
-            >
-              <TabStack.Screen
-                name="HomeTab"
-                component={HomePage}
-                options={{
-                  headerTitleAlign: "center",
-                  headerTitle: (props) => (
-                    <Image
-                      style={{ width: 36, height: 36 }}
-                      source={require("../../assets/imgs/logo.png")}
-                      resizeMode="contain"
-                    />
-                  ),
+    <TabStack.Navigator
+      screenOptions={{
+        headerShown: true,
+        tabBarShowLabel: false,
+        headerLeft: () => (
+          <View style={{ marginLeft: 10 }}>
+            <ImageLoad
+              source={
+                userContext.userInfo.profilePicURL == "DEFAULT"
+                  ? require("../../assets/imgs/account_man_filled.png")
+                  : { uri: userContext.userInfo.profilePicURL }
+              }
+              placeholderStyle={styles.profilePic}
+              borderRadius={20}
+              style={styles.profilePic}
+            />
+          </View>
+        ),
+      }}
+    >
+      {/* Home Tab */}
+      <TabStack.Screen
+        name="HomeTab"
+        component={HomePage}
+        options={{
+          headerTitleAlign: "center",
+          headerTitle: (props) => (
+            <Image
+              style={{ width: 36, height: 36 }}
+              source={require("../../assets/imgs/logo.png")}
+              resizeMode="contain"
+            />
+          ),
 
-                  headerRight: () => (
-                    <View>
-                      <StyledButton
-                        title="Log out"
-                        onPress={() => {
-                          signOut(navigationContext.setNavStack);
-                        }}
-                        color={black}
-                        backgroundColor={transparent}
-                      />
-                    </View>
-                  ),
-                  tabBarIcon: ({ focused }) =>
-                    focused ? (
-                      <Icon type="ionicon" name="home" />
-                    ) : (
-                      <Icon type="ionicon" name="home-outline" />
-                    ),
-                }}
+          headerRight: () => (
+            <View>
+              <StyledButton
+                title="Log out"
+                onPress={signOut}
+                color={black}
+                backgroundColor={transparent}
               />
-              <TabStack.Screen
-                name="Search"
-                component={SearchPage}
-                options={{
-                  tabBarIcon: ({}) => <Icon type="ionicon" name="search" />,
-                  headerRight: () => (
-                    <View style={{ marginRight: 10 }}>
-                      <Icon type="ionicon" name="settings-outline" />
-                    </View>
-                  ),
-                }}
-              />
-              <TabStack.Screen
-                name="Notifications"
-                component={NotificationStack}
-                options={{
-                  tabBarIcon: ({ focused }) =>
-                    focused ? (
-                      <Icon type="ionicon" name="notifications" />
-                    ) : (
-                      <Icon type="ionicon" name="notifications-outline" />
-                    ),
+            </View>
+          ),
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <Icon type="ionicon" name="home" />
+            ) : (
+              <Icon type="ionicon" name="home-outline" />
+            ),
+        }}
+      />
 
-                  headerRight: () => (
-                    <View style={{ marginRight: 10 }}>
-                      <Icon type="ionicon" name="settings-outline" />
-                    </View>
-                  ),
-                }}
-              />
+      {/* Search Tab */}
+      <TabStack.Screen
+        name="Search"
+        component={SearchPage}
+        options={{
+          tabBarIcon: ({}) => <Icon type="ionicon" name="search" />,
+          headerRight: () => (
+            <View style={{ marginRight: 10 }}>
+              <Icon type="ionicon" name="settings-outline" />
+            </View>
+          ),
+        }}
+      />
 
-              <TabStack.Screen
-                name="DirectMessages"
-                component={DirectMessagesPage}
-                options={{
-                  headerTitle: "Direct Messages",
-                  tabBarIcon: ({ focused }) =>
-                    focused ? (
-                      <Icon type="material-community" name="email" />
-                    ) : (
-                      <Icon type="material-community" name="email-outline" />
-                    ),
-                  headerRight: () => (
-                    <View style={{ marginRight: 10 }}>
-                      <Icon type="ionicon" name="settings-outline" />
-                    </View>
-                  ),
-                }}
-              />
-            </TabStack.Navigator>
-          )}
-        </NavigationContext.Consumer>
-      )}
-    </UserContext.Consumer>
+      {/* Notifications Tab */}
+      <TabStack.Screen
+        name="Notifications"
+        component={NotificationStack}
+        options={{
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <Icon type="ionicon" name="notifications" />
+            ) : (
+              <Icon type="ionicon" name="notifications-outline" />
+            ),
+
+          headerRight: () => (
+            <View style={{ marginRight: 10 }}>
+              <Icon type="ionicon" name="settings-outline" />
+            </View>
+          ),
+        }}
+      />
+
+      {/* Direct Messages Tab */}
+      <TabStack.Screen
+        name="DirectMessages"
+        component={DirectMessagesPage}
+        options={{
+          headerTitle: "Direct Messages",
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <Icon type="material-community" name="email" />
+            ) : (
+              <Icon type="material-community" name="email-outline" />
+            ),
+          headerRight: () => (
+            <View style={{ marginRight: 10 }}>
+              <Icon type="ionicon" name="settings-outline" />
+            </View>
+          ),
+        }}
+      />
+    </TabStack.Navigator>
   );
 };
+
+const styles = StyleSheet.create({
+  profilePic: {
+    borerRadius: 20,
+    width: 40,
+    height: 40,
+  },
+});
 
 export default AppBottomTabStack;

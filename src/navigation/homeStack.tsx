@@ -10,7 +10,6 @@ import {
   TweetDetailPage,
   WhoLikedPage,
 } from "../screens";
-import { View, Text, Image } from "react-native";
 import { TweetModel } from "../models";
 
 export type HomeStackParams = {
@@ -51,11 +50,11 @@ const HomeStack: FC = () => {
       <Stack.Screen
         name="WhoLiked"
         component={WhoLikedPage}
-        options={() => ({
+        options={{
           title: "Liked By",
           headerShown: true,
           headerBackTitleVisible: false,
-        })}
+        }}
       />
       <Stack.Screen
         name="EditCredentials"
@@ -75,7 +74,6 @@ const HomeStack: FC = () => {
           headerTitle: "Tweet",
         }}
       />
-
       <Stack.Screen name="NewTweet" component={NewTweetPage} />
       <Stack.Screen name="Loading" component={LoadingPage} />
     </Stack.Navigator>
