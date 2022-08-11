@@ -10,29 +10,44 @@ export const getFormattedDate = (timestamp: number): string => {
   } else if (diff < 60 * 60 * 24 * 7) {
     return (diff / (60 * 60 * 24)).toFixed() + " d";
   } else {
-    let month = "Jan";
-    if (date.getMonth() == 2) {
-      month = "Feb";
-    } else if (date.getMonth() == 3) {
-      month = "Mar";
-    } else if (date.getMonth() == 4) {
-      month = "Apr";
-    } else if (date.getMonth() == 5) {
-      month = "May";
-    } else if (date.getMonth() == 6) {
-      month = "Jun";
-    } else if (date.getMonth() == 7) {
-      month = "Jul";
-    } else if (date.getMonth() == 8) {
-      month = "Aug";
-    } else if (date.getMonth() == 9) {
-      month = "Sep";
-    } else if (date.getMonth() == 10) {
-      month = "Oct";
-    } else if (date.getMonth() == 11) {
-      month = "Now";
-    } else if (date.getMonth() == 12) {
-      month = "Dec";
+    let month;
+    switch (date.getMonth()) {
+      case 1:
+        month = "Jan";
+        break;
+      case 2:
+        month = "Feb";
+        break;
+      case 3:
+        month = "Mar";
+        break;
+      case 4:
+        month = "Apr";
+        break;
+      case 5:
+        month = "May";
+        break;
+      case 6:
+        month = "Jun";
+        break;
+      case 7:
+        month = "Jul";
+        break;
+      case 8:
+        month = "Aug";
+        break;
+      case 9:
+        month = "Sep";
+        break;
+      case 10:
+        month = "Oct";
+        break;
+      case 11:
+        month = "Nov";
+        break;
+      case 12:
+        month = "Dec";
+        break;
     }
 
     var formatted =
@@ -44,43 +59,50 @@ export const getFormattedDate = (timestamp: number): string => {
 
 export const getFormatedDateWithHour = (timestamp: number): string => {
   var date = new Date(timestamp);
-  var now = Date.now();
 
-  let month = "Jan";
-  if (date.getMonth() == 2) {
-    month = "Feb";
-  } else if (date.getMonth() == 3) {
-    month = "Mar";
-  } else if (date.getMonth() == 4) {
-    month = "Apr";
-  } else if (date.getMonth() == 5) {
-    month = "May";
-  } else if (date.getMonth() == 6) {
-    month = "Jun";
-  } else if (date.getMonth() == 7) {
-    month = "Jul";
-  } else if (date.getMonth() == 8) {
-    month = "Aug";
-  } else if (date.getMonth() == 9) {
-    month = "Sep";
-  } else if (date.getMonth() == 10) {
-    month = "Oct";
-  } else if (date.getMonth() == 11) {
-    month = "Now";
-  } else if (date.getMonth() == 12) {
-    month = "Dec";
+  let month;
+  switch (date.getMonth()) {
+    case 1:
+      month = "Jan";
+      break;
+    case 2:
+      month = "Feb";
+      break;
+    case 3:
+      month = "Mar";
+      break;
+    case 4:
+      month = "Apr";
+      break;
+    case 5:
+      month = "May";
+      break;
+    case 6:
+      month = "Jun";
+      break;
+    case 7:
+      month = "Jul";
+      break;
+    case 8:
+      month = "Aug";
+      break;
+    case 9:
+      month = "Sep";
+      break;
+    case 10:
+      month = "Oct";
+      break;
+    case 11:
+      month = "Nov";
+      break;
+    case 12:
+      month = "Dec";
+      break;
   }
 
-  var formatted =
-    date.getHours() +
-    ":" +
-    date.getMinutes() +
-    " · " +
-    date.getDate() +
-    " " +
-    month +
-    " " +
-    (date.getFullYear() - 2000);
+  var formatted = `${date.getHours()}:${date.getMinutes()} · ${date.getDate()} ${month} ${
+    date.getFullYear() - 2000
+  }`;
 
   return formatted;
 };

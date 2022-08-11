@@ -12,11 +12,7 @@ class TweetModel {
 
   /** TODO
    *
-   * Followers
-   * Following
    * Date of birth
-   * Joined Date
-   * Tweets
    *
    */
 
