@@ -28,11 +28,9 @@
  *
  * Tweet attığında PP gidiyor bugunu çöz
  * LIKE VE RETWEET YAPILSIN
- * refresh
+ *
  * service den manasız data gelirse ona polaceholder ata
  * PRESSABLE VİEW
  * MODAL
  *
  */
-
-// https://reactnative.dev/docs/refreshcontrol

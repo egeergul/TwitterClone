@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect, useContext } from "react";
 import {
   Animated,
   ImageBackground,
+  RefreshControl,
   StatusBar,
   StyleSheet,
   TouchableOpacity,
@@ -263,6 +264,15 @@ function App(props: UserProps) {
     );
     setIsFollowing(false);
   };
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    fetchTweets();
+
+    setRefreshing(false);
+  }, []);
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -403,6 +413,9 @@ function App(props: UserProps) {
 
       {/* Tweets/profile */}
       <Animated.ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         stickyHeaderIndices={[1]}
         showsVerticalScrollIndicator={false}
         pagingEnabled

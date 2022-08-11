@@ -9,6 +9,7 @@ import {
   Alert,
   Image,
   Dimensions,
+  RefreshControl,
 } from "react-native";
 import { white, blue, grey } from "../../constants/colors";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -50,7 +51,6 @@ const HomePage = () => {
                   if (childTweetSnapshot.exists()) {
                     const tweetId = childTweetSnapshot.key;
                     const data = childTweetSnapshot.val();
-                    console.log("Tweet with text is added: " + data.text);
 
                     const tweet = new TweetModel(
                       tweetId!,
@@ -82,6 +82,15 @@ const HomePage = () => {
   }, []);
 
   const goToNewTweet = () => navigation.navigate("NewTweet");
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    fetchTweets();
+
+    setRefreshing(false);
+  }, []);
   return (
     <View style={styles.emptyContainer}>
       {tweets.length == 0 ? (
@@ -123,6 +132,9 @@ const HomePage = () => {
         <ScrollView
           style={{ backgroundColor: white, width: "100%" }}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         >
           {tweets.map((tweet) => {
             return <Tweet key={tweet.tweetId} tweet={tweet} />;
@@ -177,3 +189,6 @@ const styles = StyleSheet.create({
 });
 
 export default HomePage;
+function wait(arg0: number) {
+  throw new Error("Function not implemented.");
+}
