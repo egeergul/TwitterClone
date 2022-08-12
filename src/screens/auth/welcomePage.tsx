@@ -1,19 +1,10 @@
-import React, { FC, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  Text,
-  Alert,
-} from "react-native";
+import React from "react";
+import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { StyledButton, StyledText } from "../../components";
 import { blue, grey, white, transparent } from "../../constants/colors";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParams } from "../../navigation/authStack";
-import { deleteImage } from "../../constants/storageHelper";
-import { HEADER_PICTURES } from "../../constants/firebase";
 
 const WelcomePage = () => {
   const navigation =

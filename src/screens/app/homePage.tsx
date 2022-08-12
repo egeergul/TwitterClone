@@ -1,12 +1,10 @@
-import React, { FC, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  Button,
   ScrollView,
   TouchableOpacity,
-  Alert,
   Image,
   Dimensions,
   RefreshControl,
@@ -15,7 +13,7 @@ import { white, blue, grey } from "../../constants/colors";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { HomeStackParams } from "../../navigation/homeStack";
 import { useNavigation } from "@react-navigation/native";
-import { auth, database } from "../../constants/firebase";
+import { database } from "../../constants/firebase";
 import { StyledButton, StyledText, Tweet } from "../../components";
 import { UserContext } from "../../navigation/mainNav";
 import { Icon } from "@rneui/themed";
@@ -24,16 +22,31 @@ import { child, get, onValue, ref } from "firebase/database";
 import { TweetModel } from "../../models";
 
 const HomePage = () => {
+  // Constants
   const navigation =
     useNavigation<NativeStackNavigationProp<HomeStackParams>>();
   const navigationBottomStack =
     useNavigation<NativeStackNavigationProp<AppBottomTabStackParams>>();
-
   const user = useContext(UserContext).userInfo;
   const { width, height } = Dimensions.get("screen");
 
-  const timestamp = new Date().getTime();
+  // Hooks
   const [tweets, setTweets] = useState<TweetModel[]>([]);
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  useEffect(() => {
+    setTweets([]);
+    fetchTweets();
+  }, []);
+
+  // Functions
+  const goToNewTweet = () => navigation.navigate("NewTweet");
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    fetchTweets();
+    setRefreshing(false);
+  }, []);
 
   const fetchTweets = () => {
     const dbRef = ref(database, `follows/${user.uid}/followings`);
@@ -76,32 +89,11 @@ const HomePage = () => {
     });
   };
 
-  useEffect(() => {
-    setTweets([]);
-    fetchTweets();
-  }, []);
-
-  const goToNewTweet = () => navigation.navigate("NewTweet");
-
-  const [refreshing, setRefreshing] = React.useState(false);
-
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    fetchTweets();
-
-    setRefreshing(false);
-  }, []);
   return (
     <View style={styles.emptyContainer}>
       {tweets.length == 0 ? (
         <View style={{ padding: 40 }}>
-          <View
-            style={{
-              alignSelf: "stretch",
-              flexDirection: "row",
-              justifyContent: "center",
-            }}
-          >
+          <View style={styles.emptyImageContainer}>
             <Image
               style={{ width: width * 0.7, height: width * 0.7 }}
               source={require("../../../assets/imgs/no_tweets.png")}
@@ -139,38 +131,13 @@ const HomePage = () => {
           {tweets.map((tweet) => {
             return <Tweet key={tweet.tweetId} tweet={tweet} />;
           })}
-          <View
-            style={{
-              flex: 1,
-              height: 70,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+          <View style={styles.bottomGap}>
             <Text>.</Text>
           </View>
         </ScrollView>
       )}
 
-      <TouchableOpacity
-        onPress={goToNewTweet}
-        style={{
-          zIndex: 1000,
-          position: "absolute",
-          bottom: 20,
-          right: 20,
-          backgroundColor: blue,
-          height: 50,
-          width: 50,
-          borderRadius: 25,
-          alignItems: "center",
-          justifyContent: "center",
-          shadowColor: "#171717",
-          shadowOffset: { width: 2, height: 4 },
-          shadowOpacity: 0.3,
-          shadowRadius: 3,
-        }}
-      >
+      <TouchableOpacity onPress={goToNewTweet} style={styles.newTweet}>
         <Icon name="plus" type="antdesign" color="white" size={26} />
       </TouchableOpacity>
     </View>
@@ -186,9 +153,33 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "center",
   },
+  emptyImageContainer: {
+    alignSelf: "stretch",
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  bottomGap: {
+    flex: 1,
+    height: 70,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  newTweet: {
+    zIndex: 1000,
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    backgroundColor: blue,
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#171717",
+    shadowOffset: { width: 2, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+  },
 });
 
 export default HomePage;
-function wait(arg0: number) {
-  throw new Error("Function not implemented.");
-}

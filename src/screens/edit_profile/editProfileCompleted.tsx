@@ -1,5 +1,5 @@
-import { FC } from "react";
-import { View, StyleSheet, Image, Alert } from "react-native";
+import { FC, useContext } from "react";
+import { View, StyleSheet, Image } from "react-native";
 import { StyledButton, StyledText } from "../../components";
 import { RootStackParams } from "../../navigation/authStack";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -10,31 +10,28 @@ import { HOME_STACK } from "../../constants/navigation";
 const EditProfileCompleted: FC = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParams>>();
+  const setNavStack = useContext(NavigationContext).setNavStack;
   return (
-    <NavigationContext.Consumer>
-      {(context) => (
-        <View style={styles.container}>
-          <Image
-            style={{ width: 50, height: 50, marginBottom: 50 }}
-            source={require("../../../assets/imgs/logo.png")}
-          />
-          <StyledText
-            text="Your profile is created"
-            fontWeight={"bold"}
-            fontSize={24}
-          />
-          <StyledButton
-            margin={[35, 0, 0, 0]}
-            title="Continue"
-            onPress={() => {
-              navigation.dispatch(StackActions.popToTop());
-              context.setNavStack(HOME_STACK);
-            }}
-            alignSelf="stretch"
-          />
-        </View>
-      )}
-    </NavigationContext.Consumer>
+    <View style={styles.container}>
+      <Image
+        style={{ width: 50, height: 50, marginBottom: 50 }}
+        source={require("../../../assets/imgs/logo.png")}
+      />
+      <StyledText
+        text="Your profile is created"
+        fontWeight={"bold"}
+        fontSize={24}
+      />
+      <StyledButton
+        margin={[35, 0, 0, 0]}
+        title="Continue"
+        onPress={() => {
+          navigation.dispatch(StackActions.popToTop());
+          setNavStack(HOME_STACK);
+        }}
+        alignSelf="stretch"
+      />
+    </View>
   );
 };
 

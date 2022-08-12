@@ -12,11 +12,14 @@ import * as ImagePicker from "expo-image-picker";
 type Props = NativeStackScreenProps<RootStackParams, "EditProfilePicture">;
 
 const EditProfilePicturePage = ({ route }: Props) => {
+  // Constants
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParams>>();
 
+  // Hooks
   const [profilePic, setProfilePic] = useState<null | string>(null);
 
+  // Functions
   const pickProfilePic = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -65,7 +68,7 @@ const EditProfilePicturePage = ({ route }: Props) => {
           </View>
         ) : (
           <Icon
-            size={50}
+            size={85}
             type="ionicon"
             name="camera-outline"
             color={grey}

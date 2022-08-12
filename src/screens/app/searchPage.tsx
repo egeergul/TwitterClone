@@ -1,14 +1,6 @@
-import React, { FC, useContext, useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  TextInput,
-  Alert,
-} from "react-native";
-import { black, blue, grey, lightgrey, white } from "../../constants/colors";
+import React, { useContext, useEffect, useState } from "react";
+import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import { blue, white } from "../../constants/colors";
 import { UserContext } from "../../navigation/mainNav";
 import { Icon } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
@@ -20,11 +12,19 @@ import { User } from "../../models";
 import { UserListItem } from "../../components";
 
 const SearchPage = () => {
+  // Constants
+  const currentUser = useContext(UserContext).userInfo;
   const navigation =
     useNavigation<NativeStackNavigationProp<HomeStackParams>>();
-  const [users, setUsers] = useState<User[]>([]);
-  const currentUser = useContext(UserContext).userInfo;
 
+  // Hooks
+  const [users, setUsers] = useState<User[]>([]);
+  useEffect(() => {
+    setUsers([]);
+    fetchUsers();
+  }, []);
+
+  // Functions
   const fetchUsers = () => {
     const dbRef = ref(database, USERS);
     setUsers([]);
@@ -59,13 +59,6 @@ const SearchPage = () => {
     );
   };
 
-  useEffect(() => {
-    setUsers([]);
-    fetchUsers();
-  }, []);
-
-  /**
-   */
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -99,22 +92,7 @@ const SearchPage = () => {
       </ScrollView>
       <TouchableOpacity
         onPress={() => navigation.navigate("NewTweet")}
-        style={{
-          zIndex: 1000,
-          position: "absolute",
-          bottom: 20,
-          right: 20,
-          backgroundColor: blue,
-          height: 50,
-          width: 50,
-          borderRadius: 25,
-          alignItems: "center",
-          justifyContent: "center",
-          shadowColor: "#171717",
-          shadowOffset: { width: 2, height: 4 },
-          shadowOpacity: 0.3,
-          shadowRadius: 3,
-        }}
+        style={styles.newTweet}
       >
         <Icon name="plus" type="antdesign" color="white" size={26} />
       </TouchableOpacity>
@@ -128,6 +106,22 @@ const styles = StyleSheet.create({
     backgroundColor: white,
     paddingHorizontal: 40,
     paddingTop: 20,
+  },
+  newTweet: {
+    zIndex: 1000,
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    backgroundColor: blue,
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#171717",
+    shadowOffset: { width: 2, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
   },
 });
 

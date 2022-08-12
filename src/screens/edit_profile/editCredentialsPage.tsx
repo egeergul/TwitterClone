@@ -8,7 +8,6 @@ import {
   Image,
   Dimensions,
   ImageBackground,
-  Alert,
 } from "react-native";
 import { Icon } from "@rneui/base";
 import { grey, lightgrey, white, blue, black } from "../../constants/colors";
@@ -21,7 +20,7 @@ import {
   PROFILE_PICTURES,
 } from "../../constants/firebase";
 import * as ImagePicker from "expo-image-picker";
-import { getDatabase, ref, child, push, update } from "firebase/database";
+import { ref, update } from "firebase/database";
 import {
   deleteImage,
   getImageURL,
@@ -29,12 +28,16 @@ import {
 } from "../../constants/storageHelper";
 import { useNavigation, StackActions } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParams } from "../../navigation/authStack";
 import { HomeStackParams } from "../../navigation/homeStack";
 
 const { height, width } = Dimensions.get("screen");
 
 const EditCredentialsPage: FC = () => {
+  // Constants
+  const navigation =
+    useNavigation<NativeStackNavigationProp<HomeStackParams>>();
+
+  // Hooks
   const user = useContext(UserContext).userInfo;
   const setUser = useContext(UserContext).setUserInfo;
 
@@ -53,9 +56,7 @@ const EditCredentialsPage: FC = () => {
   const [headerPic, setHeaderPic] = useState<null | string>(null);
   const [profilePic, setProfilePic] = useState<null | string>(null);
 
-  const navigation =
-    useNavigation<NativeStackNavigationProp<HomeStackParams>>();
-
+  // Components
   const styledInput = (
     inputName: string,
     textState: string,
@@ -111,6 +112,7 @@ const EditCredentialsPage: FC = () => {
     );
   };
 
+  // Functions
   const pickHeader = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -185,12 +187,7 @@ const EditCredentialsPage: FC = () => {
       {/**  HEADER & PROFILE PICTURE SECTION */}
       <View style={{ justifyContent: "center", alignContent: "center" }}>
         <ImageBackground
-          style={{
-            height: width / 3,
-            width: width,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+          style={styles.headerPlaceholder}
           source={
             headerPic
               ? { uri: headerPic }
@@ -199,21 +196,7 @@ const EditCredentialsPage: FC = () => {
               : { uri: user.headerPicURL }
           }
         >
-          <View
-            style={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              left: 0,
-              backgroundColor: black,
-              height: width / 3,
-              width: width,
-              justifyContent: "center",
-              alignItems: "center",
-              opacity: 0.5,
-              zIndex: 1,
-            }}
-          />
+          <View style={styles.headerOverlay} />
           <View style={{ zIndex: 100, opacity: 1 }}>
             <Icon
               onPress={pickHeader}
@@ -225,20 +208,7 @@ const EditCredentialsPage: FC = () => {
           </View>
         </ImageBackground>
 
-        <View
-          style={{
-            width: 80,
-            height: 80,
-            borderRadius: 40,
-            backgroundColor: white,
-            borderColor: white,
-            borderWidth: 3,
-            marginTop: -25,
-            marginLeft: 15,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+        <View style={styles.profilePicPlaceholder}>
           <Image
             style={{ width: 75, height: 75, borderRadius: 40 }}
             source={
@@ -249,20 +219,7 @@ const EditCredentialsPage: FC = () => {
                 : { uri: user.profilePicURL }
             }
           />
-          <View
-            style={{
-              position: "absolute",
-              top: 0,
-              backgroundColor: black,
-              opacity: 0.5,
-              width: 75,
-              height: 75,
-              borderRadius: 40,
-              justifyContent: "center",
-              alignItems: "center",
-              zIndex: 1,
-            }}
-          />
+          <View style={styles.profilePicOverlay} />
           <View style={{ position: "absolute", zIndex: 100, opacity: 1 }}>
             <Icon
               onPress={pickProfilePic}
@@ -344,5 +301,48 @@ const styles = StyleSheet.create({
     color: grey,
     fontSize: 16,
     marginBottom: 7,
+  },
+  headerPlaceholder: {
+    height: width / 3,
+    width: width,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headerOverlay: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    left: 0,
+    backgroundColor: black,
+    height: width / 3,
+    width: width,
+    justifyContent: "center",
+    alignItems: "center",
+    opacity: 0.5,
+    zIndex: 1,
+  },
+  profilePicPlaceholder: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: white,
+    borderColor: white,
+    borderWidth: 3,
+    marginTop: -25,
+    marginLeft: 15,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  profilePicOverlay: {
+    position: "absolute",
+    top: 0,
+    backgroundColor: black,
+    opacity: 0.5,
+    width: 75,
+    height: 75,
+    borderRadius: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1,
   },
 });
