@@ -1,13 +1,8 @@
-import React, { FC, useState } from "react";
-import { View, StyleSheet, Text, Alert } from "react-native";
+import React, { FC, useContext, useState } from "react";
+import { View, StyleSheet, Alert } from "react-native";
 import { StyledButton, StyledInput, StyledText } from "../../components";
-
-import { black, blue, grey, transparent, white } from "../../constants/colors";
-import {
-  auth,
-  HEADER_PICTURES,
-  PROFILE_PICTURES,
-} from "../../constants/firebase";
+import { black, grey, white } from "../../constants/colors";
+import { auth } from "../../constants/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { NavigationContext } from "../../../App";
 import { HOME_STACK } from "../../constants/navigation";
@@ -18,19 +13,20 @@ import { database } from "../../constants/firebase";
 import { ref, get, child } from "firebase/database";
 import { UserContext } from "../../navigation/mainNav";
 import { User } from "../../models";
-import { getImageURL } from "../../constants/storageHelper";
 
 const LoginPage: FC = () => {
+  // Constants
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParams>>();
+  const setUserInfo = useContext(UserContext).setUserInfo;
+  const setNavStack = useContext(NavigationContext).setNavStack;
+
+  // Hooks
   const [email, setEmail] = useState<null | string>(null);
   const [password, setPassword] = useState<null | string>(null);
 
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParams>>();
-
-  const signin = async (
-    setNavStack: (stack: string) => void,
-    setUserInfo: any
-  ) => {
+  // Functions
+  const signin = async () => {
     if (email === null) {
       Alert.alert("Email must be filled!");
     } else if (password === null) {
@@ -82,7 +78,6 @@ const LoginPage: FC = () => {
               } else {
                 Alert.alert("Something went wrong!");
               }
-
               navigation.goBack();
             });
         })
@@ -116,61 +111,48 @@ const LoginPage: FC = () => {
   };
 
   return (
-    <UserContext.Consumer>
-      {(userContext) => (
-        <NavigationContext.Consumer>
-          {(navigationContext) => (
-            <View style={styles.container}>
-              <View style={{ alignSelf: "stretch" }}>
-                <StyledText
-                  textAlign={"left"}
-                  fontWeight={"bold"}
-                  fontSize={28}
-                  text="Enter your email and password"
-                />
-                <StyledInput
-                  placeholder="Email"
-                  onChangeText={(text) => {
-                    setEmail(text);
-                  }}
-                />
-                <StyledInput
-                  placeholder="Password"
-                  onChangeText={(text) => {
-                    setPassword(text);
-                  }}
-                  secureTextEntry={true}
-                />
-              </View>
+    <View style={styles.container}>
+      <View style={{ alignSelf: "stretch" }}>
+        <StyledText
+          textAlign={"left"}
+          fontWeight={"bold"}
+          fontSize={28}
+          text="Enter your email and password"
+        />
+        <StyledInput
+          placeholder="Email"
+          onChangeText={(text) => {
+            setEmail(text);
+          }}
+        />
+        <StyledInput
+          placeholder="Password"
+          onChangeText={(text) => {
+            setPassword(text);
+          }}
+          secureTextEntry={true}
+        />
+      </View>
 
-              <View style={styles.buttonContainer}>
-                <StyledButton
-                  title="Forgot password?"
-                  color={black}
-                  backgroundColor={white}
-                  borderColor={grey}
-                  borderWidth={1}
-                  margin={[0, 0, 40, 0]}
-                  onPress={() => alert("Try to remember!")}
-                />
-                <StyledButton
-                  title="Log in"
-                  color={white}
-                  backgroundColor={black}
-                  margin={[0, 0, 40, 0]}
-                  onPress={() =>
-                    signin(
-                      navigationContext.setNavStack,
-                      userContext.setUserInfo
-                    )
-                  }
-                />
-              </View>
-            </View>
-          )}
-        </NavigationContext.Consumer>
-      )}
-    </UserContext.Consumer>
+      <View style={styles.buttonContainer}>
+        <StyledButton
+          title="Forgot password?"
+          color={black}
+          backgroundColor={white}
+          borderColor={grey}
+          borderWidth={1}
+          margin={[0, 0, 40, 0]}
+          onPress={() => alert("Try to remember!")}
+        />
+        <StyledButton
+          title="Log in"
+          color={white}
+          backgroundColor={black}
+          margin={[0, 0, 40, 0]}
+          onPress={signin}
+        />
+      </View>
+    </View>
   );
 };
 

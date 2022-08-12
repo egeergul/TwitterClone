@@ -26,20 +26,24 @@ import {
   getImageURL,
   uploadImage,
 } from "../../constants/storageHelper";
+import ImageLoad from "react-native-img-placeholder";
 
 const MAX_CHARCTERS = 280;
 const { height, width } = Dimensions.get("screen");
 
 const NewTweetPage: FC = () => {
+  // Constants
   const user = useContext(UserContext).userInfo;
   const navigation =
     useNavigation<NativeStackNavigationProp<HomeStackParams>>();
+
+  // Hooks
   const [tweet, setTweet] = useState<string | null>(null);
   const [percentage, setPercentage] = useState<number>(0);
   const [percentageColor, setPercentageColor] = useState(blue);
-
   const [media, setMedia] = useState<null | string>();
 
+  // Functions
   const pickMedia = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -112,8 +116,10 @@ const NewTweetPage: FC = () => {
         userProfilePicURL: user.profilePicURL,
       });
 
-      navigation.dispatch(StackActions.popToTop());
-      navigation.navigate("Home");
+      //navigation.dispatch(StackActions.popToTop());
+      //navigation.navigate("Home");
+      navigation.goBack();
+      navigation.goBack();
     } else {
       Alert.alert("You have to type something first.");
     }
@@ -136,19 +142,15 @@ const NewTweetPage: FC = () => {
       {/** TWEET TEXT INPUT */}
       <ScrollView>
         <View style={styles.writeTweet}>
-          <Image
+          <ImageLoad
             source={
               user.profilePicURL == "DEFAULT"
                 ? require("../../../assets/imgs/account_man_filled.png")
                 : { uri: user.profilePicURL }
             }
-            style={{
-              width: width / 7 - 5,
-              height: width / 7 - 5,
-              borderRadius: width / 14,
-              marginRight: 10,
-              marginLeft: 10,
-            }}
+            placeholderStyle={styles.profilePic}
+            borderRadius={width / 14}
+            style={styles.profilePic}
           />
           <View
             style={{
@@ -174,7 +176,7 @@ const NewTweetPage: FC = () => {
             />
 
             {/** MEDIA SECTION */}
-            {media ? (
+            {media && (
               <View style={{ marginTop: 15 }}>
                 <View style={{ position: "absolute", right: 0, zIndex: 100 }}>
                   <Icon
@@ -189,15 +191,8 @@ const NewTweetPage: FC = () => {
                     reverse
                   />
                 </View>
-
-                <FullWidthImage
-                  uriSource={media}
-                  width={(width * 11) / 14}
-                  borderRadius={15}
-                />
+                <FullWidthImage uriSource={media} width={(width * 11) / 14} />
               </View>
-            ) : (
-              <></>
             )}
           </View>
         </View>
@@ -221,16 +216,12 @@ const NewTweetPage: FC = () => {
             shadowColor="#999"
             bgColor="#fff"
           >
-            {tweet == null ? (
-              <></>
-            ) : tweet.length > MAX_CHARCTERS * 0.8 ? (
+            {tweet != null && tweet.length > MAX_CHARCTERS * 0.8 && (
               <Text
                 style={{ paddingLeft: 5, fontSize: 12, alignSelf: "center" }}
               >
                 {MAX_CHARCTERS - tweet.length}{" "}
               </Text>
-            ) : (
-              <></>
             )}
           </ProgressCircle>
           <Icon
@@ -269,5 +260,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+  },
+  profilePic: {
+    width: width / 7 - 5,
+    height: width / 7 - 5,
+    borderRadius: width / 14,
+    marginRight: 10,
+    marginLeft: 10,
   },
 });

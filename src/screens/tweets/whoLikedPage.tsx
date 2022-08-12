@@ -10,27 +10,24 @@ import {
   Text,
   View,
   StyleSheet,
-  Image,
   Dimensions,
   TouchableOpacity,
 } from "react-native";
 import { StyledText } from "../../components";
-import { grey, lightgrey, white } from "../../constants/colors";
+import { grey, white, lightgrey } from "../../constants/colors";
 import { database } from "../../constants/firebase";
 import { User } from "../../models";
-import { AppBottomTabStackParams } from "../../navigation/appBottomTabStack";
 import { HomeStackParams } from "../../navigation/homeStack";
 import ImageLoad from "react-native-img-placeholder";
 
-type Props = NativeStackScreenProps<HomeStackParams, "FollowInfo">;
+type Props = NativeStackScreenProps<HomeStackParams, "WhoLiked">;
+
 const { width, height } = Dimensions.get("screen");
 
-const FollowInfoPage = ({ route }: Props) => {
+const WhoLikedPage = ({ route }: Props) => {
   // Constants
   const navigation =
     useNavigation<NativeStackNavigationProp<HomeStackParams>>();
-  const navigationBottomStack =
-    useNavigation<NativeStackNavigationProp<AppBottomTabStackParams>>();
 
   // Hooks
   const [users, setUsers] = useState<User[]>([]);
@@ -42,7 +39,7 @@ const FollowInfoPage = ({ route }: Props) => {
 
   // Functions
   const fetcUsers = () => {
-    route.params.list.map((uid) => {
+    route.params.likedUIDs.map((uid) => {
       get(child(ref(database), `users/${uid}`)).then(async (snapshot) => {
         if (snapshot.exists()) {
           const data = snapshot.val();
@@ -67,19 +64,18 @@ const FollowInfoPage = ({ route }: Props) => {
   };
 
   return (
-    <View style={{ backgroundColor: white, height: "100%" }}>
+    <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {users.map((user) => {
           return (
             <TouchableOpacity
-              key={user.uid}
               onPress={() => {
                 navigation.push("Profile", {
                   uid: user.uid,
                 });
               }}
             >
-              <View style={styles.userContainer}>
+              <View style={styles.userItem}>
                 <ImageLoad
                   source={
                     user.profilePicURL == "DEFAULT"
@@ -87,7 +83,7 @@ const FollowInfoPage = ({ route }: Props) => {
                       : { uri: user.profilePicURL }
                   }
                   placeholderStyle={styles.profilePic}
-                  borderRadius={25}
+                  borderRadius={30}
                   style={styles.profilePic}
                 />
 
@@ -113,21 +109,20 @@ const FollowInfoPage = ({ route }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  userContainer: {
+  container: { backgroundColor: white, height: "100%" },
+  userItem: {
     flexDirection: "row",
     margin: 20,
     alignItems: "center",
-    backgroundColor: white,
   },
   profilePic: {
-    borerRadius: 25,
-    width: 50,
-    height: 50,
+    borerRadius: 30,
+    width: 60,
+    height: 60,
   },
   line: {
     borderBottomColor: lightgrey,
     borderBottomWidth: 1,
   },
 });
-
-export default FollowInfoPage;
+export default WhoLikedPage;

@@ -1,13 +1,13 @@
 import { Icon } from "@rneui/base";
-import React, { FC } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  Image,
   Dimensions,
-  Alert,
   TouchableOpacity,
+  Pressable,
+  Alert,
 } from "react-native";
 import { FullWidthImage } from ".";
 import { grey, lightgrey } from "../constants/colors";
@@ -17,33 +17,36 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { HomeStackParams } from "../navigation/homeStack";
 import { TweetModel } from "../models";
-
-/**uid: string;
-  name: string;
-  username: string;
-  text: string;
-  mediaURL: string;
-  isPinned: boolean;
-  profilePicURL: string;
-  timestamp: number; */
-// Required props
-interface RequiredProps {
-  tweet: TweetModel;
-}
-
-// Optional props
-interface OptionalProps {}
-// Combine required and optional props to build the full prop interface
-interface Props extends RequiredProps, OptionalProps {}
-
-// Use the optional prop interface to define the default props
-const defaultProps: OptionalProps = {};
+import { child, get, onValue, ref, remove, set } from "firebase/database";
+import { database } from "../constants/firebase";
+import { UserContext } from "../navigation/mainNav";
+import ImageLoad from "react-native-img-placeholder";
 
 const { height, width } = Dimensions.get("screen");
 
+interface Props {
+  tweet: TweetModel;
+}
+
 const Tweet = (props: Props) => {
+  // Constants
   const navigation =
     useNavigation<NativeStackNavigationProp<HomeStackParams>>();
+  const uid = useContext(UserContext).userInfo.uid;
+
+  // Hooks
+  const [likedByViewer, setLikedByViewer] = useState<boolean>(false);
+  const [likeCount, setLikeCount] = useState<number>(0);
+  const [userProfilePictureURL, setUserProfilePictureURL] =
+    useState<string>("DEFAULT");
+
+  useEffect(() => {
+    fetchProfilePicURL();
+    fetchLikeCount();
+    fetchLikedByViewer();
+  }, []);
+
+  // Functions
   const goToProfile = () => {
     navigation.push("Profile", {
       uid: props.tweet.uid,
@@ -55,24 +58,85 @@ const Tweet = (props: Props) => {
       tweet: props.tweet,
     });
   };
+
+  const popAlert = () => {
+    Alert.alert("Not implemented yet!");
+  };
+
+  const likeTweet = async () => {
+    await set(
+      ref(
+        database,
+        `tweets/${props.tweet.uid}/${props.tweet.tweetId}/likes/${uid}`
+      ),
+      {
+        liked: true,
+      }
+    );
+    setLikeCount(likeCount + 1);
+    setLikedByViewer(true);
+  };
+
+  const unlikeTweet = async () => {
+    await remove(
+      ref(
+        database,
+        `tweets/${props.tweet.uid}/${props.tweet.tweetId}/likes/${uid}`
+      )
+    );
+    setLikeCount(likeCount - 1);
+    setLikedByViewer(false);
+  };
+
+  const fetchLikedByViewer = async () => {
+    get(
+      child(
+        ref(database),
+        `tweets/${props.tweet.uid}/${props.tweet.tweetId}/likes/${uid}`
+      )
+    ).then((snapshot) => {
+      if (snapshot.exists()) {
+        setLikedByViewer(true);
+      } else {
+        setLikedByViewer(false);
+      }
+    });
+  };
+
+  const fetchProfilePicURL = async () => {
+    get(
+      child(ref(database), `users/${props.tweet.uid}/profilePictureURL`)
+    ).then(async (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+
+        setUserProfilePictureURL(data.userProfilePicURL);
+      }
+    });
+  };
+
+  const fetchLikeCount = async () => {
+    get(
+      child(
+        ref(database),
+        `tweets/${props.tweet.uid}/${props.tweet.tweetId}/likes`
+      )
+    ).then(async (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot;
+        setLikeCount(data.size);
+      } else {
+        setLikeCount(0);
+      }
+    });
+  };
+
   return (
     <TouchableOpacity onPress={goToTweet}>
-      <View
-        style={{
-          margin: 10,
-          borderBottomColor: lightgrey,
-          borderBottomWidth: 1,
-        }}
-      >
+      <View style={styles.container}>
         {/* PINNED */}
-        {props.tweet.isPinned ? (
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginBottom: 5,
-            }}
-          >
+        {props.tweet.isPinned && (
+          <View style={styles.pinned}>
             <Icon
               name="pin"
               type="material-community"
@@ -87,64 +151,42 @@ const Tweet = (props: Props) => {
               fontSize={14}
             />
           </View>
-        ) : (
-          <></>
         )}
-        {/* MAIN */}
-        <View
-          style={{
-            flexDirection: "row",
-            width: (11 * width) / 14,
-          }}
-        >
-          <TouchableOpacity onPress={goToProfile}>
-            <Image
-              source={
-                props.tweet.userProfilePicURL == "DEFAULT"
-                  ? require("../../assets/imgs/account_man_filled.png")
-                  : { uri: props.tweet.userProfilePicURL }
-              }
-              style={{
-                width: width / 7,
-                height: width / 7,
-                borderRadius: width / 14,
-              }}
-            />
-          </TouchableOpacity>
 
-          <View
-            style={{
-              marginLeft: 10,
-              flexDirection: "column",
-              width: (11 * width) / 14,
-            }}
-          >
+        {/* MAIN */}
+        <View style={{ flexDirection: "row" }}>
+          <View>
+            <Pressable onPress={goToProfile}>
+              <ImageLoad
+                source={
+                  userProfilePictureURL == "DEFAULT"
+                    ? require("../../assets/imgs/account_man_filled.png")
+                    : { uri: userProfilePictureURL }
+                }
+                style={styles.profilePic}
+              />
+            </Pressable>
+          </View>
+
+          <View style={styles.bodyRight}>
             {/* USERNAME & DATE */}
-            <View
-              style={{
-                marginBottom: 5,
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
+            <View style={styles.usernameAndDate}>
               <View style={{ flexDirection: "row" }}>
-                <TouchableOpacity onPress={goToProfile}>
+                <Pressable onPress={goToProfile}>
                   <StyledText text={props.tweet.name} fontWeight={"bold"} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={goToProfile}>
+                </Pressable>
+                <Pressable onPress={goToProfile}>
                   <StyledText
                     text={"@" + props.tweet.username}
                     color={grey}
                     margin={[0, 0, 0, 5]}
                   />
-                </TouchableOpacity>
+                </Pressable>
               </View>
               <View style={{ flexDirection: "row" }}>
-                <Text>
-                  {" "}
-                  {getFormattedDate(parseInt(props.tweet.timestamp))}{" "}
-                </Text>
+                <Text>{getFormattedDate(parseInt(props.tweet.timestamp))}</Text>
                 <Icon
+                  onPress={popAlert}
                   color={grey}
                   type="ionicon"
                   size={16}
@@ -154,39 +196,49 @@ const Tweet = (props: Props) => {
             </View>
 
             {/* TWEET TEXT */}
-            {props.tweet.text == "DEFAULT" ? (
-              <></>
-            ) : (
+            {props.tweet.text != "DEFAULT" && (
               <StyledText text={props.tweet.text} />
             )}
 
             {/* TWEET MEDIA */}
-            {props.tweet.mediaURL == "DEFAULT" ? (
-              <></>
-            ) : (
+            {props.tweet.mediaURL != "DEFAULT" && (
               <View style={{ marginTop: 10 }}>
                 <FullWidthImage
                   uriSource={props.tweet.mediaURL}
                   width={(width * 11) / 14}
-                  borderRadius={15}
                 />
               </View>
             )}
 
             {/* ICONS */}
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginTop: 5,
-                marginBottom: 10,
-              }}
-            >
-              <Icon type="evilicon" name="comment" />
-              <Icon type="evilicon" name="retweet" />
-              <Icon type="ionicon" name="heart-outline" />
-              <Icon type="evilicon" name="share-google" />
-              <Icon type="evilicon" name="chart" />
+            <View style={styles.icons}>
+              <Icon onPress={popAlert} type="evilicon" name="comment" />
+              <Icon onPress={popAlert} type="evilicon" name="retweet" />
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                {likedByViewer ? (
+                  <Icon
+                    type="ionicon"
+                    color="red"
+                    name="heart"
+                    onPress={unlikeTweet}
+                  />
+                ) : (
+                  <Icon
+                    type="ionicon"
+                    name="heart-outline"
+                    onPress={likeTweet}
+                  />
+                )}
+                {likeCount != 0 && (
+                  <StyledText
+                    text={likeCount + ""}
+                    color={grey}
+                    margin={[0, 0, 0, 5]}
+                  />
+                )}
+              </View>
+              <Icon onPress={popAlert} type="evilicon" name="share-google" />
+              <Icon onPress={popAlert} type="evilicon" name="chart" />
             </View>
           </View>
         </View>
@@ -195,9 +247,38 @@ const Tweet = (props: Props) => {
   );
 };
 
-Tweet.defaultProps = defaultProps;
 export default Tweet;
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    margin: 10,
+    borderBottomColor: lightgrey,
+    borderBottomWidth: 1,
+  },
+  pinned: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 5,
+  },
+  profilePic: {
+    width: width / 7,
+    height: width / 7,
+    borderRadius: width / 14,
+  },
+  bodyRight: {
+    marginLeft: 10,
+    flexDirection: "column",
+    width: (11 * width) / 14,
+  },
+  usernameAndDate: {
+    marginBottom: 5,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  icons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 5,
+    marginBottom: 10,
+  },
 });

@@ -58,113 +58,23 @@ const AuthStack: FC = () => {
       initialRouteName="Welcome"
       screenOptions={{
         headerShown: true,
+        headerTitle: (props) => (
+          <Image
+            style={{ width: 36, height: 36 }}
+            source={require("../../assets/imgs/logo.png")}
+            resizeMode="contain"
+          />
+        ),
         headerTitleAlign: "center",
         headerBackTitleVisible: false,
+        headerShadowVisible: false,
       }}
     >
-      <RootStack.Screen
-        name="Welcome"
-        component={WelcomePage}
-        options={{
-          headerShadowVisible: false,
-          headerTitle: (props) => (
-            <Image
-              style={{
-                width: 36,
-                height: 36,
-              }}
-              source={require("../../assets/imgs/logo.png")}
-              resizeMode="contain"
-            />
-          ),
-        }}
-      />
-      <RootStack.Screen
-        name="Signup"
-        component={SignUpPage}
-        options={{
-          headerShadowVisible: false,
-          headerTitle: (props) => (
-            <Image
-              style={{ width: 36, height: 36 }}
-              source={require("../../assets/imgs/logo.png")}
-              resizeMode="contain"
-            />
-          ),
-        }}
-      />
-      <RootStack.Screen
-        name="Login"
-        component={LoginPage}
-        options={{
-          headerShadowVisible: false,
-          headerTitle: (props) => (
-            <Image
-              style={{ width: 36, height: 36 }}
-              source={require("../../assets/imgs/logo.png")}
-              resizeMode="contain"
-            />
-          ),
-        }}
-      />
-
-      <RootStack.Screen
-        name="EditUsername"
-        component={EditUsername}
-        options={{
-          headerShadowVisible: false,
-          headerTitle: (props) => (
-            <Image
-              style={{ width: 36, height: 36 }}
-              source={require("../../assets/imgs/logo.png")}
-              resizeMode="contain"
-            />
-          ),
-        }}
-      />
-      <RootStack.Screen
-        name="EditProfilePicture"
-        component={EditProfilePicturePage}
-        options={{
-          headerShadowVisible: false,
-          headerTitle: (props) => (
-            <Image
-              style={{ width: 36, height: 36 }}
-              source={require("../../assets/imgs/logo.png")}
-              resizeMode="contain"
-            />
-          ),
-        }}
-      />
-      <RootStack.Screen
-        name="EditHeaderPicture"
-        component={EditHeaderPicturePage}
-        options={{
-          headerShadowVisible: false,
-          headerTitle: (props) => (
-            <Image
-              style={{ width: 36, height: 36 }}
-              source={require("../../assets/imgs/logo.png")}
-              resizeMode="contain"
-            />
-          ),
-        }}
-      />
-
-      <RootStack.Screen
-        name="EditBio"
-        component={EditBioPage}
-        options={{
-          headerShadowVisible: false,
-          headerTitle: (props) => (
-            <Image
-              style={{ width: 36, height: 36 }}
-              source={require("../../assets/imgs/logo.png")}
-              resizeMode="contain"
-            />
-          ),
-        }}
-      />
+      <RootStack.Screen name="Welcome" component={WelcomePage} />
+      <RootStack.Screen name="Signup" component={SignUpPage} />
+      <RootStack.Screen name="Login" component={LoginPage} />
+      <RootStack.Screen name="EditUsername" component={EditUsername} />
+      <RootStack.Screen name="EditBio" component={EditBioPage} />
       <RootStack.Screen
         name="Loading"
         component={LoadingPage}
@@ -174,6 +84,14 @@ const AuthStack: FC = () => {
         name="Completed"
         component={EditProfileCompletedPage}
         options={{ headerShown: false }}
+      />
+      <RootStack.Screen
+        name="EditProfilePicture"
+        component={EditProfilePicturePage}
+      />
+      <RootStack.Screen
+        name="EditHeaderPicture"
+        component={EditHeaderPicturePage}
       />
     </RootStack.Navigator>
   );

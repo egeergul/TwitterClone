@@ -1,16 +1,10 @@
-import React, { FC } from "react";
-import { View, Text, StyleSheet, Alert, TouchableOpacity } from "react-native";
-import { color } from "react-native-reanimated";
+import React from "react";
+import { View, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import { StyledButton, StyledText } from "../../components";
 import { blue, grey, white } from "../../constants/colors";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { Icon } from "@rneui/themed";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { HomeStackParams } from "../../navigation/homeStack";
 
 const DirectMessagesPage = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<HomeStackParams>>();
   return (
     <View style={styles.container}>
       <StyledText
@@ -35,22 +29,7 @@ const DirectMessagesPage = () => {
 
       <TouchableOpacity
         onPress={() => Alert.alert("DM coming soon!")}
-        style={{
-          zIndex: 1000,
-          position: "absolute",
-          bottom: 20,
-          right: 20,
-          backgroundColor: blue,
-          height: 50,
-          width: 50,
-          borderRadius: 25,
-          alignItems: "center",
-          justifyContent: "center",
-          shadowColor: "#171717",
-          shadowOffset: { width: 2, height: 4 },
-          shadowOpacity: 0.3,
-          shadowRadius: 3,
-        }}
+        style={styles.newTweet}
       >
         <Icon
           name="email-plus-outline"
@@ -71,6 +50,22 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     backgroundColor: white,
     padding: 40,
+  },
+  newTweet: {
+    zIndex: 1000,
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    backgroundColor: blue,
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#171717",
+    shadowOffset: { width: 2, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
   },
 });
 

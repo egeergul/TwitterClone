@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React from "react";
 import { Text, View, StyleSheet, Dimensions, Image } from "react-native";
 import { StyledText, Tweet } from "../../components";
 import { grey, white } from "../../constants/colors";
@@ -6,46 +6,29 @@ import { TweetModel } from "../../models";
 
 const { width, height } = Dimensions.get("screen");
 
-// Required props
-interface RequiredProps {
+interface Props {
   tweets: TweetModel[];
   isMyProfile: boolean;
+  username?: string;
 }
-// Optional props
-interface OptionalProps {
-  username: string;
-}
-// Combine required and optional props to build the full prop interface
-interface Props extends RequiredProps, OptionalProps {}
 
-// Use the optional prop interface to define the default props
-const defaultProps: OptionalProps = {
-  username: "",
-};
-
-const TweetsAndRepliesTab = (props: Props) => {
+const TweetsAndRepliesTab = ({ tweets, isMyProfile, username }: Props) => {
   return (
     <View>
-      {props.tweets.length == 0 ? (
+      {tweets.length == 0 ? (
         <View style={styles.emptyContainer}>
-          <View
-            style={{
-              alignSelf: "stretch",
-              flexDirection: "row",
-              justifyContent: "center",
-            }}
-          >
+          <View style={styles.imageContainer}>
             <Image
-              style={{ width: width * 0.7, height: width * 0.7 }}
+              style={styles.image}
               source={require("../../../assets/imgs/no_replies.png")}
               resizeMode="contain"
             />
           </View>
           <StyledText
             text={
-              props.isMyProfile
+              isMyProfile
                 ? "Create some Tweets"
-                : props.username! + " hasn't Tweeted or replied to posts"
+                : username! + " hasn't Tweeted or replied to posts"
             }
             fontWeight={"bold"}
             fontSize={32}
@@ -54,7 +37,7 @@ const TweetsAndRepliesTab = (props: Props) => {
             margin={[15, 0, 0, 0]}
             color={grey}
             text={
-              props.isMyProfile
+              isMyProfile
                 ? "All of your Tweets and your replies to others' Tweets will be shown here."
                 : "Once they do, those Tweets will show up here."
             }
@@ -62,17 +45,10 @@ const TweetsAndRepliesTab = (props: Props) => {
         </View>
       ) : (
         <View>
-          {props.tweets.map((tweet) => {
-            return <Tweet tweet={tweet} />;
+          {tweets.map((tweet) => {
+            return <Tweet key={tweet.tweetId} tweet={tweet} />;
           })}
-          <View
-            style={{
-              flex: 1,
-              height: 70,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+          <View style={styles.bottomGap}>
             <Text>.</Text>
           </View>
         </View>
@@ -89,10 +65,20 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     backgroundColor: white,
     padding: 40,
-
     height: height * 0.85,
+  },
+  imageContainer: {
+    alignSelf: "stretch",
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  image: { width: width * 0.7, height: width * 0.7 },
+  bottomGap: {
+    flex: 1,
+    height: 70,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
-TweetsAndRepliesTab.defaultProps = defaultProps;
 export default TweetsAndRepliesTab;

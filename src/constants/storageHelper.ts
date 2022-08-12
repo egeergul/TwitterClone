@@ -100,9 +100,8 @@ export const deleteImage = async (path: string, filename: string) => {
     // Delete the file
     deleteObject(fileRef)
       .then(() => {
-        console.log("File deleted");
-
         // File deleted successfully
+        console.log("File deleted");
       })
       .catch((error) => {
         // Uh-oh, an error occurred!

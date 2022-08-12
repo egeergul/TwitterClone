@@ -10,13 +10,16 @@ import { fetchSignInMethodsForEmail } from "firebase/auth";
 import { auth } from "../../constants/firebase";
 
 const SignupPage: FC = () => {
+  // Constants
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParams>>();
+
+  // Hooks
   const [name, setName] = useState<null | string>(null);
   const [email, setEmail] = useState<null | string>(null);
   const [password, setPassword] = useState<null | string>(null);
 
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParams>>();
-
+  // Fuctions
   const checkEmail = async (email: string): Promise<boolean> => {
     var result: boolean = false;
     await fetchSignInMethodsForEmail(auth, email)

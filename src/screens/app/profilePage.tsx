@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect, useContext } from "react";
 import {
   Animated,
   ImageBackground,
+  RefreshControl,
   StatusBar,
   StyleSheet,
   TouchableOpacity,
@@ -268,6 +269,7 @@ function App(props: UserProps) {
     );
     setIsFollowing(false);
   };
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />

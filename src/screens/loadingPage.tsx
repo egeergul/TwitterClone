@@ -21,8 +21,6 @@ const LoadingPage: FC = () => {
   );
 };
 
-export default LoadingPage;
-
 const styles = StyleSheet.create({
   contaier: {
     flex: 1,
@@ -33,3 +31,5 @@ const styles = StyleSheet.create({
     padding: 75,
   },
 });
+
+export default LoadingPage;

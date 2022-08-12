@@ -1,31 +1,41 @@
-import { useEffect, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  Image,
-  ImageBackground,
-  Dimensions,
-} from "react-native";
+import { useState } from "react";
+import { View, StyleSheet, Image, Dimensions } from "react-native";
 import { StyledButton, StyledText } from "../../components";
 import { black, grey, transparent, white } from "../../constants/colors";
 import { RootStackParams } from "../../navigation/authStack";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Icon } from "@rneui/themed";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { ref, set } from "firebase/database";
-import { auth, database } from "../../constants/firebase";
-import { useNavigation, StackActions } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import * as ImagePicker from "expo-image-picker";
 
 type Props = NativeStackScreenProps<RootStackParams, "EditHeaderPicture">;
 
 const { width, height } = Dimensions.get("screen");
+
 const EditHeaderPicturePage = ({ route }: Props) => {
+  // Constants
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParams>>();
 
+  // Hooks
   const [headerPic, setHeaderPic] = useState<null | string>(null);
+
+  // Functions
+  const emptyHeaderPic = () => {
+    setHeaderPic(null);
+  };
+
+  const goToEditBio = () => {
+    navigation.navigate("EditBio", {
+      name: route.params.name,
+      username: route.params.username,
+      email: route.params.email,
+      password: route.params.password,
+      profilePic: route.params.profilePic,
+      headerPic: headerPic,
+    });
+  };
 
   const pickProfilePic = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -59,26 +69,38 @@ const EditHeaderPicturePage = ({ route }: Props) => {
 
       <View style={{ alignSelf: "stretch" }}>
         {headerPic ? (
-          <Image
-            source={{ uri: headerPic }}
-            style={{
-              width: width - 40,
-              height: (width - 40) / 3,
-              alignSelf: "center",
-            }}
-          />
+          <>
+            <View
+              style={{
+                position: "absolute",
+                right: -20,
+                top: -20,
+                zIndex: 100,
+              }}
+            >
+              <Icon
+                size={15}
+                type="ionicon"
+                name="close"
+                onPress={emptyHeaderPic}
+                color={black}
+                reverseColor={white}
+                reverse
+              />
+            </View>
+            <Image
+              source={{ uri: headerPic }}
+              style={{
+                width: width - 80,
+                height: (width - 80) / 2.5,
+                alignSelf: "center",
+              }}
+            />
+          </>
         ) : (
-          <View
-            style={{
-              padding: 30,
-              flexDirection: "row",
-              backgroundColor: "#b2b2b2",
-              alignSelf: "stretch",
-              justifyContent: "center",
-              alignContent: "center",
-            }}
-          >
+          <View style={styles.headerPlaceholder}>
             <Icon
+              backgroundColor={"red"}
               size={25}
               type="ionicon"
               name="camera-outline"
@@ -90,38 +112,15 @@ const EditHeaderPicturePage = ({ route }: Props) => {
           </View>
         )}
 
-        {headerPic ? (
-          <StyledButton
-            title="Cancel"
-            color={black}
-            backgroundColor={transparent}
-            onPress={() => setHeaderPic(null)}
+        <View style={styles.userInfo}>
+          <Image
+            source={
+              route.params.profilePic
+                ? { uri: route.params.profilePic }
+                : require("../../../assets/imgs/account_man_filled.png")
+            }
+            style={styles.profilePic}
           />
-        ) : (
-          <></>
-        )}
-        <View
-          style={{
-            marginTop: 20,
-            alignSelf: "baseline",
-            alignItems: "center",
-          }}
-        >
-          {route.params.profilePic ? (
-            <Image
-              source={{ uri: route.params.profilePic }}
-              style={{ width: 100, height: 100, borderRadius: 50 }}
-            />
-          ) : (
-            <Icon
-              type="material-community"
-              name="account"
-              size={40}
-              color={grey}
-              reverseColor={white}
-              reverse
-            />
-          )}
           <StyledText
             fontWeight={"bold"}
             fontSize={28}
@@ -132,16 +131,7 @@ const EditHeaderPicturePage = ({ route }: Props) => {
 
       <StyledButton
         title={headerPic ? "Next" : "Skip for now"}
-        onPress={() => {
-          navigation.navigate("EditBio", {
-            name: route.params.name,
-            username: route.params.username,
-            email: route.params.email,
-            password: route.params.password,
-            profilePic: route.params.profilePic,
-            headerPic: headerPic,
-          });
-        }}
+        onPress={goToEditBio}
         backgroundColor={transparent}
         borderColor={black}
         color={black}
@@ -161,6 +151,28 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     backgroundColor: white,
     padding: 40,
+  },
+  headerPlaceholder: {
+    width: width - 80,
+    height: (width - 80) / 2.5,
+    flexDirection: "column",
+    backgroundColor: "#b2b2b2",
+    alignSelf: "stretch",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  userInfo: {
+    marginTop: -37,
+    marginLeft: 20,
+    alignSelf: "baseline",
+    alignItems: "flex-start",
+  },
+  profilePic: {
+    width: 75,
+    height: 75,
+    borderRadius: 50,
+    borderColor: white,
+    borderWidth: 3,
   },
 });
 

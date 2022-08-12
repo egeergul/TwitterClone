@@ -1,53 +1,30 @@
 import React, { useState } from "react";
-import {
-  Dimensions,
-  TabBarIOS,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { TouchableOpacity, View, StyleSheet } from "react-native";
 import StyledText from "./styledText";
-import { black, blue, grey, lightgrey, white } from "../constants/colors";
-import { Alert } from "native-base";
+import { blue, lightgrey, white } from "../constants/colors";
 
-interface RequiredProps {
+interface Props {
   tabs: string[];
   setActiveTab: (tab: number) => void;
   initialTab?: number;
 }
 
-const { height, width } = Dimensions.get("screen");
+const TabMenu = ({ tabs, setActiveTab, initialTab }: Props) => {
+  const [activeIndex, setActiveIndex] = useState(initialTab || 0);
 
-const TabMenu = (props: RequiredProps) => {
-  const [activeIndex, setActiveIndex] = useState(props.initialTab || 0);
   return (
-    <View
-      style={{
-        paddingTop: 10,
-        backgroundColor: white,
-        flexDirection: "row",
-        justifyContent: "space-around",
-        alignSelf: "stretch",
-        borderBottomColor: lightgrey,
-        borderBottomWidth: 1,
-      }}
-    >
-      {props.tabs.map((tab, index) => {
+    <View style={styles.container}>
+      {tabs.map((tab, index) => {
         return (
           <TouchableOpacity
+            key={index}
             onPress={() => {
               setActiveIndex(index);
-              props.setActiveTab(index);
+              setActiveTab(index);
             }}
           >
             {activeIndex == index ? (
-              <View
-                style={{
-                  borderBottomColor: blue,
-                  borderBottomWidth: 3,
-                  paddingBottom: 7,
-                }}
-              >
+              <View style={styles.borderBottom}>
                 <StyledText
                   text={tab}
                   textAlign="center"
@@ -66,4 +43,20 @@ const TabMenu = (props: RequiredProps) => {
   );
 };
 
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: 10,
+    backgroundColor: white,
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignSelf: "stretch",
+    borderBottomColor: lightgrey,
+    borderBottomWidth: 1,
+  },
+  borderBottom: {
+    borderBottomColor: blue,
+    borderBottomWidth: 3,
+    paddingBottom: 7,
+  },
+});
 export default TabMenu;

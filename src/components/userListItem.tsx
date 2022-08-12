@@ -1,37 +1,44 @@
-import { FC } from "react";
-import { Text, View, Image } from "react-native";
-import { grey } from "../constants/colors";
+import { View, Image, StyleSheet } from "react-native";
+import { grey, white } from "../constants/colors";
 import StyledText from "./styledText";
+import ImageLoad from "react-native-img-placeholder";
 
-// Required props
-interface RequiredProps {
+interface Props {
   name: string;
   username: string;
   profilePicURL: string;
 }
-const UserListItem = (props: RequiredProps) => {
+const UserListItem = ({ name, username, profilePicURL }: Props) => {
   return (
-    <View
-      style={{
-        alignSelf: "stretch",
-        flexDirection: "row",
-        alignItems: "center",
-      }}
-    >
-      <Image
+    <View style={styles.container}>
+      <ImageLoad
         source={
-          props.profilePicURL == "DEFAULT"
+          profilePicURL == "DEFAULT"
             ? require("../../assets/imgs/account_man_filled.png")
-            : { uri: props.profilePicURL }
+            : { uri: profilePicURL }
         }
-        style={{ width: 40, height: 40, borderRadius: 20 }}
+        placeholderStyle={styles.profilePic}
+        borderRadius={25}
+        style={styles.profilePic}
       />
       <View style={{ marginLeft: 10 }}>
-        <StyledText text={props.name} fontWeight={"bold"} />
-        <StyledText text={"@" + props.username} color={grey} />
+        <StyledText text={name} fontWeight={"bold"} />
+        <StyledText text={"@" + username} color={grey} />
       </View>
     </View>
   );
 };
 
+const styles = StyleSheet.create({
+  container: {
+    alignSelf: "stretch",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  profilePic: {
+    borerRadius: 25,
+    width: 50,
+    height: 50,
+  },
+});
 export default UserListItem;

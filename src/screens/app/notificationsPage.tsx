@@ -1,13 +1,11 @@
-import React, { FC } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { TabMenu } from "../../components";
-import { blue, white } from "../../constants/colors";
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { white } from "../../constants/colors";
 import SearchPage from "./searchPage";
 import HomePage from "./homePage";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 const Tab = createMaterialTopTabNavigator();
-//  <TabMenu tabs={["All", "Mentions"]} setActiveTab={() => {}} />
 
 const NotificationsPage = () => {
   return (

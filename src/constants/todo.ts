@@ -26,8 +26,14 @@
 
 /** PATH
  *
- * FOllowers ları görğntüle
- * FOLLOW ETTIKLERIN FEEDE DÜŞSÜN
+ * Tweet attığında PP gidiyor bugunu çöz
  * LIKE VE RETWEET YAPILSIN
+ * service den manasız data gelirse ona polaceholder data
  *
  */
+
+// ICONS
+
+//https://reactnativeelements.com/docs/next/components/icon
+//import { Icon } from "@rneui/themed";
+//https://oblador.github.io/react-native-vector-icons/

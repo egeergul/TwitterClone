@@ -1,31 +1,25 @@
-import { View, StyleSheet, Image, Alert, TouchableOpacity } from "react-native";
-
+import { View, StyleSheet, Alert } from "react-native";
 import { StyledButton, StyledInput, StyledText } from "../../components";
-import { black, grey, transparent, white } from "../../constants/colors";
+import { black, transparent, white } from "../../constants/colors";
 import { RootStackParams } from "../../navigation/authStack";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useEffect, useState } from "react";
-import { USERS, database } from "../../constants/firebase";
-import {
-  onValue,
-  orderByChild,
-  ref,
-  query,
-  equalTo,
-  get,
-  child,
-} from "firebase/database";
+import { useState } from "react";
+import { database } from "../../constants/firebase";
+import { orderByChild, ref, query, equalTo, get } from "firebase/database";
 
 type Props = NativeStackScreenProps<RootStackParams, "EditProfilePicture">;
 
 const EditUsername = ({ route }: Props) => {
+  // Constants
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParams>>();
 
+  // Hooks
   const [username, setUsername] = useState<null | string>();
 
+  // Functions
   const checkUsernameIsUnique = async (username: string): Promise<boolean> => {
     let result = true;
     const topUserPostsRef = query(
