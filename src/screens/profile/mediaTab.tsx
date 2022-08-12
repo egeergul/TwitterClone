@@ -6,46 +6,29 @@ import { TweetModel } from "../../models";
 
 const { width, height } = Dimensions.get("screen");
 
-// Required props
-interface RequiredProps {
+interface Props {
   tweets: TweetModel[];
   isMyProfile: boolean;
+  username?: string;
 }
-// Optional props
-interface OptionalProps {
-  username: string;
-}
-// Combine required and optional props to build the full prop interface
-interface Props extends RequiredProps, OptionalProps {}
 
-// Use the optional prop interface to define the default props
-const defaultProps: OptionalProps = {
-  username: "",
-};
-
-const MediaTab = (props: Props) => {
+const MediaTab = ({ tweets, isMyProfile, username }: Props) => {
   return (
     <View>
-      {props.tweets.length == 0 ? (
+      {tweets.length == 0 ? (
         <View style={styles.emptyContainer}>
-          <View
-            style={{
-              alignSelf: "stretch",
-              flexDirection: "row",
-              justifyContent: "center",
-            }}
-          >
+          <View style={styles.imageContainer}>
             <Image
-              style={{ width: width * 0.7, height: width * 0.7 }}
+              style={styles.image}
               source={require("../../../assets/imgs/no_media.png")}
               resizeMode="contain"
             />
           </View>
           <StyledText
             text={
-              props.isMyProfile
+              isMyProfile
                 ? "Ligts, camera... attachments!"
-                : props.username! + " hasn't Tweeted media"
+                : username! + " hasn't Tweeted media"
             }
             fontWeight={"bold"}
             fontSize={32}
@@ -54,7 +37,7 @@ const MediaTab = (props: Props) => {
             margin={[15, 0, 0, 0]}
             color={grey}
             text={
-              props.isMyProfile
+              isMyProfile
                 ? "Your photo and video Tweets will show up here."
                 : "Once they do, those Tweets will show up here."
             }
@@ -62,17 +45,10 @@ const MediaTab = (props: Props) => {
         </View>
       ) : (
         <View>
-          {props.tweets.map((tweet) => {
+          {tweets.map((tweet) => {
             return <Tweet key={tweet.tweetId} tweet={tweet} />;
           })}
-          <View
-            style={{
-              flex: 1,
-              height: 70,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+          <View style={styles.bottomGap}>
             <Text>.</Text>
           </View>
         </View>
@@ -91,7 +67,18 @@ const styles = StyleSheet.create({
     padding: 40,
     height: height * 0.85,
   },
+  imageContainer: {
+    alignSelf: "stretch",
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  image: { width: width * 0.7, height: width * 0.7 },
+  bottomGap: {
+    flex: 1,
+    height: 70,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
 
-MediaTab.defaultProps = defaultProps;
 export default MediaTab;

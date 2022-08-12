@@ -75,8 +75,16 @@ const AuthStack: FC = () => {
       <RootStack.Screen name="Login" component={LoginPage} />
       <RootStack.Screen name="EditUsername" component={EditUsername} />
       <RootStack.Screen name="EditBio" component={EditBioPage} />
-      <RootStack.Screen name="Loading" component={LoadingPage} />
-      <RootStack.Screen name="Completed" component={EditProfileCompletedPage} />
+      <RootStack.Screen
+        name="Loading"
+        component={LoadingPage}
+        options={{ headerShown: false }}
+      />
+      <RootStack.Screen
+        name="Completed"
+        component={EditProfileCompletedPage}
+        options={{ headerShown: false }}
+      />
       <RootStack.Screen
         name="EditProfilePicture"
         component={EditProfilePicturePage}

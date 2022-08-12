@@ -21,8 +21,8 @@ import ProfilePage from "./app/profilePage";
 import MentionsTab from "./notification_tabs/mentionsTab";
 import AllTab from "./notification_tabs/allTab";
 import FollowInfoPage from "./profile/followInfoPage";
-import TweetDetailPage from "./tweets/tweetDetailPage";
 import WhoLikedPage from "./tweets/whoLikedPage";
+import TweetDetailPage from "./tweets/tweetDetailPage";
 
 export {
   WelcomePage,

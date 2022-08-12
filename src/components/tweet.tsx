@@ -7,6 +7,7 @@ import {
   Dimensions,
   TouchableOpacity,
   Pressable,
+  Alert,
 } from "react-native";
 import { FullWidthImage } from ".";
 import { grey, lightgrey } from "../constants/colors";
@@ -56,6 +57,10 @@ const Tweet = (props: Props) => {
     navigation.navigate("TweetDetail", {
       tweet: props.tweet,
     });
+  };
+
+  const popAlert = () => {
+    Alert.alert("Not implemented yet!");
   };
 
   const likeTweet = async () => {
@@ -150,16 +155,18 @@ const Tweet = (props: Props) => {
 
         {/* MAIN */}
         <View style={{ flexDirection: "row" }}>
-          <Pressable onPress={goToProfile}>
-            <ImageLoad
-              source={
-                userProfilePictureURL == "DEFAULT"
-                  ? require("../../assets/imgs/account_man_filled.png")
-                  : { uri: userProfilePictureURL }
-              }
-              style={styles.profilePic}
-            />
-          </Pressable>
+          <View>
+            <Pressable onPress={goToProfile}>
+              <ImageLoad
+                source={
+                  userProfilePictureURL == "DEFAULT"
+                    ? require("../../assets/imgs/account_man_filled.png")
+                    : { uri: userProfilePictureURL }
+                }
+                style={styles.profilePic}
+              />
+            </Pressable>
+          </View>
 
           <View style={styles.bodyRight}>
             {/* USERNAME & DATE */}
@@ -179,6 +186,7 @@ const Tweet = (props: Props) => {
               <View style={{ flexDirection: "row" }}>
                 <Text>{getFormattedDate(parseInt(props.tweet.timestamp))}</Text>
                 <Icon
+                  onPress={popAlert}
                   color={grey}
                   type="ionicon"
                   size={16}
@@ -204,8 +212,8 @@ const Tweet = (props: Props) => {
 
             {/* ICONS */}
             <View style={styles.icons}>
-              <Icon type="evilicon" name="comment" />
-              <Icon type="evilicon" name="retweet" />
+              <Icon onPress={popAlert} type="evilicon" name="comment" />
+              <Icon onPress={popAlert} type="evilicon" name="retweet" />
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 {likedByViewer ? (
                   <Icon
@@ -229,8 +237,8 @@ const Tweet = (props: Props) => {
                   />
                 )}
               </View>
-              <Icon type="evilicon" name="share-google" />
-              <Icon type="evilicon" name="chart" />
+              <Icon onPress={popAlert} type="evilicon" name="share-google" />
+              <Icon onPress={popAlert} type="evilicon" name="chart" />
             </View>
           </View>
         </View>

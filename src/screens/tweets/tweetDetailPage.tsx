@@ -6,28 +6,52 @@ import {
 import { Icon } from "@rneui/themed";
 import { ref, remove, get, child, set } from "firebase/database";
 import { useContext, useState, useEffect } from "react";
-
 import {
   View,
-  Text,
   StyleSheet,
   ScrollView,
   Image,
   Dimensions,
   Pressable,
+  Alert,
+  TouchableOpacity,
 } from "react-native";
-
 import { FullWidthImage, StyledText } from "../../components";
 import { grey, lightgrey, white } from "../../constants/colors";
 import { database } from "../../constants/firebase";
 import { getFormatedDateWithHour } from "../../helpers/helpers";
 import { HomeStackParams } from "../../navigation/homeStack";
 import { UserContext } from "../../navigation/mainNav";
+import ImageLoad from "react-native-img-placeholder";
 
 type Props = NativeStackScreenProps<HomeStackParams, "TweetDetail">;
 const { width, height } = Dimensions.get("screen");
+
 const TweetDetailPage = ({ route }: Props) => {
+  // Constants
   const uid = useContext(UserContext).userInfo.uid;
+  const navigation =
+    useNavigation<NativeStackNavigationProp<HomeStackParams>>();
+
+  // Hooks
+  const [likedByViewer, setLikedByViewer] = useState<boolean>(false);
+  const [likes, setLikes] = useState<string[]>([]);
+  useEffect(() => {
+    setLikes([]);
+    fetchLikes();
+    fetchLikedByViewer();
+  }, []);
+
+  // Functions
+  const popAlert = () => {
+    Alert.alert("Not implemented yet!");
+  };
+
+  const goToWhoLiked = () => {
+    navigation.navigate("WhoLiked", {
+      likedUIDs: likes,
+    });
+  };
 
   const likeTweet = async () => {
     await set(
@@ -40,7 +64,6 @@ const TweetDetailPage = ({ route }: Props) => {
       }
     );
     setLikes((oldList) => [...oldList, uid]);
-
     setLikedByViewer(true);
   };
 
@@ -52,14 +75,10 @@ const TweetDetailPage = ({ route }: Props) => {
       )
     );
     setLikes(likes.filter((likedUsersId) => likedUsersId != uid));
-
     setLikedByViewer(false);
   };
 
-  const [likedByViewer, setLikedByViewer] = useState<boolean>(false);
   const fetchLikedByViewer = async () => {
-    const dbRef = ref(database);
-
     get(
       child(
         ref(database),
@@ -73,12 +92,6 @@ const TweetDetailPage = ({ route }: Props) => {
       }
     });
   };
-
-  useEffect(() => {
-    fetchLikedByViewer();
-  }, []);
-
-  const [likes, setLikes] = useState<string[]>([]);
 
   const fetchLikes = async () => {
     get(
@@ -100,55 +113,39 @@ const TweetDetailPage = ({ route }: Props) => {
     });
   };
 
-  useEffect(() => {
-    fetchLikes();
-  }, []);
-
-  const navigation =
-    useNavigation<NativeStackNavigationProp<HomeStackParams>>();
-
-  const goToWhoLiked = () => {
-    navigation.navigate("WhoLiked", {
-      likedUIDs: likes,
-    });
-  };
   return (
     <View style={styles.container}>
       <ScrollView style={{ alignSelf: "stretch", padding: 10 }}>
+        {/**  Profile pic & Username  */}
         <View
           style={{
             flexDirection: "row",
             alignItems: "center",
           }}
         >
-          <Image
+          <ImageLoad
             source={
               route.params.tweet.userProfilePicURL == "DEFAULT"
                 ? require("../../../assets/imgs/account_man_filled.png")
                 : { uri: route.params.tweet.userProfilePicURL }
             }
-            style={{
-              height: 50,
-              width: 50,
-              borderRadius: 25,
-              marginRight: 10,
-            }}
+            placeholderStyle={styles.profilePic}
+            borderRadius={25}
+            style={styles.profilePic}
           />
-
-          <View>
+          <View style={styles.nameNusername}>
             <StyledText text={route.params.tweet.name} fontWeight="bold" />
             <StyledText text={"@" + route.params.tweet.username} color={grey} />
           </View>
         </View>
 
+        {/**  Tweet Content */}
         <StyledText
           fontSize={22}
           text={route.params.tweet.text}
           margin={[10, 0, 10, 0]}
         />
-        {route.params.tweet.mediaURL == "DEFAULT" ? (
-          <></>
-        ) : (
+        {route.params.tweet.mediaURL != "DEFAULT" && (
           <FullWidthImage
             width={width - 20}
             uriSource={route.params.tweet.mediaURL}
@@ -157,66 +154,42 @@ const TweetDetailPage = ({ route }: Props) => {
 
         <StyledText
           text={getFormatedDateWithHour(parseInt(route.params.tweet.timestamp))}
-          margin={[10, 0, 0, 0]}
+          margin={[10, 0, 20, 0]}
           color={grey}
         />
-        <View
-          style={{
-            marginTop: 20,
-            borderBottomColor: lightgrey,
-            borderBottomWidth: 1,
-          }}
-        />
-        <View
+        <View style={styles.line} />
+
+        {/**  Tweet Activitiy */}
+        <TouchableOpacity
+          onPress={popAlert}
           style={{ flexDirection: "row", height: 40, alignItems: "center" }}
         >
           <Icon type="evilicon" name="chart" />
           <StyledText text="View Tweet activity" color={grey} />
-        </View>
+        </TouchableOpacity>
+        <View style={styles.line} />
+
+        {/**  Likes */}
         {likes.length != 0 && (
           <>
-            <View
-              style={{
-                borderBottomColor: lightgrey,
-                borderBottomWidth: 1,
-              }}
-            />
             <Pressable onPress={goToWhoLiked}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  height: 40,
-                  alignItems: "center",
-                }}
-              >
+              <View style={styles.likes}>
                 <StyledText
                   text={likes.length + ""}
                   fontWeight={"bold"}
                   margin={[0, 5, 0, 0]}
                 />
-
                 <StyledText text="Likes" color={grey} />
               </View>
             </Pressable>
+            <View style={styles.line} />
           </>
         )}
-        <View
-          style={{
-            borderBottomColor: lightgrey,
-            borderBottomWidth: 1,
-          }}
-        />
 
-        <View
-          style={{
-            height: 40,
-            alignItems: "center",
-            flexDirection: "row",
-            justifyContent: "space-around",
-          }}
-        >
-          <Icon type="evilicon" name="comment" />
-          <Icon type="evilicon" name="retweet" />
+        {/**  Icons */}
+        <View style={styles.icons}>
+          <Icon type="evilicon" name="comment" onPress={popAlert} />
+          <Icon type="evilicon" name="retweet" onPress={popAlert} />
           {likedByViewer ? (
             <Icon
               type="ionicon"
@@ -227,14 +200,9 @@ const TweetDetailPage = ({ route }: Props) => {
           ) : (
             <Icon type="ionicon" name="heart-outline" onPress={likeTweet} />
           )}
-          <Icon type="evilicon" name="share-google" />
+          <Icon type="evilicon" name="share-google" onPress={popAlert} />
         </View>
-        <View
-          style={{
-            borderBottomColor: lightgrey,
-            borderBottomWidth: 1,
-          }}
-        />
+        <View style={styles.line} />
       </ScrollView>
     </View>
   );
@@ -246,6 +214,29 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: white,
+  },
+  profilePic: {
+    borerRadius: 25,
+    width: 50,
+    height: 50,
+  },
+  nameNusername: {
+    marginLeft: 10,
+  },
+  line: {
+    borderBottomColor: lightgrey,
+    borderBottomWidth: 1,
+  },
+  likes: {
+    flexDirection: "row",
+    height: 40,
+    alignItems: "center",
+  },
+  icons: {
+    height: 40,
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-around",
   },
 });
 

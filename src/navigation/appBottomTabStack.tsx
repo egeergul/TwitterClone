@@ -50,7 +50,7 @@ const AppBottomTabStack: FC = () => {
         headerShown: true,
         tabBarShowLabel: false,
         headerLeft: () => (
-          <View style={{ marginLeft: 10 }}>
+          <TouchableOpacity onPress={goToProfile} style={{ marginLeft: 10 }}>
             <ImageLoad
               source={
                 userContext.userInfo.profilePicURL == "DEFAULT"
@@ -61,7 +61,7 @@ const AppBottomTabStack: FC = () => {
               borderRadius={20}
               style={styles.profilePic}
             />
-          </View>
+          </TouchableOpacity>
         ),
       }}
     >
